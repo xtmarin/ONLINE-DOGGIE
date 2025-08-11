@@ -6,6 +6,7 @@
     box-sizing: border-box;
     font-family: 'Oswald', sans-serif;
 }
+
 header {
     display: flex;
     align-items: center;
@@ -14,27 +15,171 @@ header {
     padding: 10px 20px;
     border-bottom: 1px solid #dddddd;
 }
+
 header img {
     height: 100px;
 }
+
+
 nav ul {
     list-style: none;
     display: flex;
+    position: relative;
 }
+
 nav ul li {
+    position: relative;
     margin-left: 20px;
 }
+
 nav ul li a {
     text-decoration: none;
     color: #333;
     font-weight: bold;
     transition: color 0.3s ease;
 }
-nav ul li a:hover {
-    color: #e20f0fcc;
+
+nav ul li:hover > a {
+    color: rgb(235, 11, 11);
 }
 
+/* ACERCA DE*/
+nav ul li .acerca {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #dddddd;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+}
 
+nav ul li:hover .acerca {
+    display: block;
+}
 
+nav ul li .acerca li {
+    padding: 8px 20px;
+}
 
+nav ul li .acerca li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
 
+nav ul li .acerca li a:hover {
+    background-color: #f2f2f2;
+}
+/* USUARIO */
+nav ul li .usuario {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #dddddd;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+}
+
+nav ul li:hover .usuario {
+    display: block;
+}
+
+nav ul li .usuario li {
+    padding: 8px 20px;
+}
+
+nav ul li .usuario li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
+
+nav ul li .usuario li a:hover {
+    background-color: #f2f2f2;
+}
+/* CATEGORIAS */
+nav ul li .categoria {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #dddddd;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+}
+
+nav ul li:hover .categoria {
+    display: block;
+}
+
+nav ul li .categoria li {
+    padding: 8px 20px;
+}
+
+nav ul li .categoria li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
+
+nav ul li .categoria li a:hover {
+    background-color: #f2f2f2;
+}
+/* Productos */
+nav ul li .productos {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #dddddd;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+}
+
+nav ul li:hover .productos {
+    display: block;
+}
+
+nav ul li .productos li {
+    padding: 8px 20px;
+}
+
+nav ul li .productos li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
+
+nav ul li .productos li a:hover {
+    background-color: #f2f2f2;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(219, 9, 9);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 100;
+}
+
+main {
+    padding: 20px;
+}
