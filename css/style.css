@@ -109,8 +109,8 @@ nav ul li .usuario li a:hover {
 nav ul li .categoria {
     display: none;
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 0;
+    left: 100%;
     background: #dddddd;
     padding: 10px 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -118,7 +118,7 @@ nav ul li .categoria {
     z-index: 1000;
 }
 
-nav ul li:hover .categoria {
+nav ul li .productos li:hover .categoria {
     display: block;
 }
 
@@ -215,7 +215,7 @@ main {
     padding: 30px 25px;
     border-radius: 12px;
     box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
-    border-top: 4px solid #fb1616; 
+    border-top: 6px solid #fb1616; 
 }
 
 .registro h2 {
@@ -282,4 +282,3 @@ main {
 .login-link a:hover {
     text-decoration: underline;
 }
-
