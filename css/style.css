@@ -168,18 +168,118 @@ nav ul li .productos li a:hover {
     background-color: #f2f2f2;
 }
 
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: rgb(219, 9, 9);
-    color: white;
-    text-align: center;
-    padding: 10px 0;
-    z-index: 100;
+/* Derechos reservados */
+.footer {
+    position: fixed;         
+    bottom: 0;               
+    left: 0;                
+    width: 100%;             
+    background-color: #d11616;
+    color: #ffffff;          
+    text-align: center;      
+    padding: 15px 20px;      
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-size: 14px;        
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2); 
+    z-index: 1000;         
 }
+
+.footer-content {
+    max-width: 1200px;       
+    margin: 0 auto;         
+}
+
 
 main {
     padding: 20px;
 }
+
+/* Inicio de seccion */
+main {
+    margin: 100px auto;
+    padding: 20px;
+    max-width: 400px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.logo {
+    width: 100px;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.0);
+}
+
+.registro {
+    background-color: #ffffff;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
+    border-top: 4px solid #fb1616; /* Línea superior que da identidad visual */
+}
+
+.registro h2 {
+    margin-bottom: 20px;
+    color: #1e1e1e;
+    font-size: 24px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.registro label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+}
+
+.registro input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.registro input:focus {
+    outline: none;
+    border-color: #fb1616;
+    box-shadow: 0 0 0 2px rgba(251, 22, 22, 0.2);
+}
+
+.registro button {
+    width: 100%;
+    padding: 12px;
+    background-color: #fb1616;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.registro button:hover {
+    background-color: #c30c0c;
+}
+
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #fb1616;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
