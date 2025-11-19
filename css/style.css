@@ -195,45 +195,30 @@ main {
 }
 
 /* Inicio de seccion */
-main {
-    margin: 100px auto;
-    padding: 20px;
-    max-width: 400px;
+.registro-section {
+    max-width: 500px; /* ancho máximo */
+    width: 90%;       /* adaptable a pantallas pequeñas */
+    margin: 50px auto; /* centrado horizontal y espacio arriba/abajo */
     text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.logo {
-    width: 100px;
-    margin-bottom: 15px;
-    border-radius: 3px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.0);
 }
 
 .registro {
     background-color: #ffffff;
-    padding: 30px 25px;
+    padding: 25px 20px;
     border-radius: 12px;
     box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.15);
-    border-top: 6px solid #fb1616; 
+    border-top: 6px solid #fb1616;
 }
 
 .registro h2 {
     margin-bottom: 20px;
-    color: #1e1e1e;
     font-size: 24px;
+    color: #1e1e1e;
 }
 
 .form-group {
     text-align: left;
     margin-bottom: 15px;
-}
-
-.registro label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #333;
 }
 
 .registro input {
@@ -242,13 +227,6 @@ main {
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
-    transition: border-color 0.3s ease;
-}
-
-.registro input:focus {
-    outline: none;
-    border-color: #fb1616;
-    box-shadow: 0 0 0 2px rgba(251, 22, 22, 0.2);
 }
 
 .registro button {
@@ -261,24 +239,190 @@ main {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease;
 }
 
 .registro button:hover {
     background-color: #c30c0c;
 }
 
-.login-link {
-    margin-top: 15px;
-    font-size: 14px;
+
+
+/* Inicio de la pagina */
+
+.hero {
+    display: flex;
+    align-items: center;
+    height: 400px; /* altura moderada */
+    max-width: 1200px; /* ancho máximo */
+    margin: 50px auto; /* centrado horizontal */
+    gap: 40px;
+    padding: 0 20px;
 }
 
-.login-link a {
-    color: #fb1616;
-    text-decoration: none;
+.hero-img-container {
+    flex: 1;
+    height: 100%;
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.hero-text {
+    flex: 1;
+    color: #333;
+}
+
+.hero-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+
+/* --------------------------- */
+/* BANNER */
+/* --------------------------- */
+
+.banner-productos {
+    background: linear-gradient(#d40000b0, #d40000b0), url('../assets/img/Fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    padding: 80px 20px;
+    text-align: center;
+    color: rgb(16, 15, 15);
+}
+
+.banner-productos h2 {
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.banner-productos p {
+    margin-top: 8px;
+    font-size: 18px;
+}
+
+/* --------------------------- */
+/* FILTROS Y BUSCADOR */
+/* --------------------------- */
+
+.filtros {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 25px;
+}
+
+.buscador, .select-filtro {
+    width: 250px;
+    padding: 12px;
+    border: 2px solid #d40000;
+    border-radius: 10px;
+    outline: none;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.buscador:focus, .select-filtro:focus {
+    box-shadow: 0 0 8px rgba(212, 0, 0, 0.4);
+}
+
+/* --------------------------- */
+/* PRODUCTOS */
+/* --------------------------- */
+
+.lista-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 25px;
+    padding: 30px;
+}
+
+.producto {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.producto:hover {
+    transform: translateY(-7px);
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.15);
+}
+
+.producto img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.producto h3 {
+    margin-top: 12px;
+    font-size: 18px;
     font-weight: 600;
 }
 
-.login-link a:hover {
-    text-decoration: underline;
+.precio {
+    margin: 10px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #d40000;
+}
+
+.btn-agregar {
+    padding: 10px 15px;
+    background: #d40000;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-agregar:hover {
+    background: #a00000;
+}
+
+/* --------------------------- */
+/* FOOTER */
+/* --------------------------- */
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #d40000;
+    color: white;
+    margin-top: 40px;
+}
+
+/* --------------------------- */
+/* RESPONSIVE */
+/* --------------------------- */
+
+@media (max-width: 768px) {
+    .navbar ul {
+        flex-direction: column;
+        background: white;
+        position: absolute;
+        top: 75px;
+        right: 0;
+        width: 200px;
+        padding: 20px;
+        display: none;
+    }
+
+    .navbar ul.show {
+        display: flex;
+    }
 }
