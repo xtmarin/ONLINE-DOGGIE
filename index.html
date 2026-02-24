@@ -50,10 +50,10 @@
             </ul>
         </div>
 
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-pagination"></div>
-            </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+        </div>
     </header>
 
     <main class="main-content">
@@ -74,6 +74,30 @@
             <p>&copy; 2025 Persona Profesional. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <!--carrito de compras -->
+
+    <script>
+        function agregarAlCarrito(nombre, precio) {
+            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+            let productoExistente = carrito.find(p => p.nombre === nombre);
+
+            if (productoExistente) {
+                productoExistente.cantidad++;
+            } else {
+                carrito.push({
+                    nombre: nombre,
+                    precio: precio,
+                    cantidad: 1
+                });
+            }
+
+            localStorage.setItem("carrito", JSON.stringify(carrito));
+
+            alert("Producto agregado al carrito 🛒");
+        }
+    </script>
 
 
     <script src="./js/app.js"></script>
