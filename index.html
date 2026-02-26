@@ -10,50 +10,21 @@
 </head>
 
 <body>
+
     <header class="header">
         <div class="logo">
             <img src="assets/img/Logo.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
 
-        <!-- Menú moderno -->
         <nav class="navbar">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li class="active"><a href="productos.html">Productos</a></li>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
                 <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
-        <div>
-            <ul>
-                <li class="submenu">
-                    <img src="./assets/img/carrito de compras.svg" id="img-carrito" alt="">
-                    <div id="carrito">
-                        <table id="lista-carrito">
-                            <thead>
-                                <tr>
-                                    <th>Imagen</th>
-                                    <th>Nombre</th>
-                                    <th>Precio</th>
-                                    <th>Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Los productos del carrito se agregarán aquí dinámicamente -->
-                            </tbody>
-                        </table>
-                        <a href="#" id="vaciar-carrito" class="btn-3">Vaciar Carrito</a>
-
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination"></div>
-        </div>
     </header>
 
     <main class="main-content">
@@ -69,54 +40,33 @@
         </section>
     </main>
 
+    <!-- MINI CARRITO LATERAL -->
+    <div id="overlay-mini"></div>
+
+    <div id="mini-carrito" class="mini-carrito">
+        <div class="mini-header">
+            <h3>🛒 Tu carrito</h3>
+            <span id="cerrar-mini">&times;</span>
+        </div>
+
+        <div id="mini-carrito-body"></div>
+
+        <div class="mini-footer">
+            <h4 id="mini-total">Total: $0</h4>
+            <a href="carrito.html" class="btn-ver-carrito">Ver carrito completo</a>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2025 Persona Profesional. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-    <!--carrito de compras -->
+    <!-- SCRIPTS CORRECTOS -->
+    <script src="./js/carrito-funciones.js"></script>
+    <script src="./js/carrito.js"></script>
 
-    <script>
-        function agregarAlCarrito(nombre, precio) {
-            let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-            let productoExistente = carrito.find(p => p.nombre === nombre);
-
-            if (productoExistente) {
-                productoExistente.cantidad++;
-            } else {
-                carrito.push({
-                    nombre: nombre,
-                    precio: precio,
-                    cantidad: 1
-                });
-            }
-
-            localStorage.setItem("carrito", JSON.stringify(carrito));
-
-            alert("Producto agregado al carrito 🛒");
-        }
-    </script>
-
-
-    <!-- MINI CARRITO LATERAL -->
-<div id="mini-carrito" class="mini-carrito">
-    <div class="mini-header">
-        <h3>🛒 Tu carrito</h3>
-        <span id="cerrar-mini">&times;</span>
-    </div>
-
-    <div id="mini-carrito-body"></div>
-
-    <div class="mini-footer">
-        <h4 id="mini-total">Total: $0</h4>
-        <a href="carrito.html" class="btn-ver-carrito">Ver carrito completo</a>
-    </div>
-    
-</div>
-
-    <script src="./js/app.js"></script>
 </body>
 
 </html>
