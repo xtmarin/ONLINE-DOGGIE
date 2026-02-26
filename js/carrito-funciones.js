@@ -20,6 +20,20 @@ function agregarAlCarrito(nombre, precio, boton) {
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
+
+    actualizarContador();
     abrirMiniCarrito();
+}
+
+function eliminarDesdeMini(index) {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    carrito.splice(index, 1);
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    actualizarMiniCarrito();
+    mostrarCarrito();
+    actualizarContador();
 }
 

@@ -23,7 +23,6 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li class="active"><a href="productos.html">Productos</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
                 <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
@@ -308,19 +307,28 @@
 
     </section>
 
-    <!-- MINI CARRITO LATERAL -->
+    <!-- Overlay oscuro -->
+    <div id="overlay-mini"></div>
+
+    <!-- MINI CARRITO -->
     <div id="mini-carrito" class="mini-carrito">
         <div class="mini-header">
-            <h3>🛒 Tu carrito</h3>
-            <button id="cerrar-mini">✖</button>
+            <h3>Tu carrito</h3>
+            <button id="cerrar-mini">✕</button>
         </div>
 
         <div id="mini-carrito-body"></div>
 
         <div class="mini-footer">
             <p id="mini-total">Total: $0</p>
-            <a href="carrito.html">Ver carrito completo</a>
+            <a href="carrito.html" class="btn-ver-carrito">Finalizar compra</a>
         </div>
+    </div>
+
+    <!-- BOTÓN FLOTANTE CARRITO -->
+    <div class="carrito-flotante" onclick="abrirMiniCarrito()">
+        🛒
+        <span id="contador-carrito">0</span>
     </div>
 
     <footer class="footer">
