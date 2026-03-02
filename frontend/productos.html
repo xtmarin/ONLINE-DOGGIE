@@ -37,9 +37,9 @@
 
     <!-- BUSCADOR Y FILTROS -->
     <section class="filtros">
-        <input type="text" placeholder="Buscar producto..." class="buscador">
+        <input type="text"  id="buscador" placeholder="Buscar producto..." class="buscador">
 
-        <select class="select-filtro">
+        <select id="filtro-categoria" class="select-filtro">
             <option value="todos">Todas las categorías</option>
             <option value="perros">Perros</option>
             <option value="gatos">Gatos</option>
@@ -50,7 +50,7 @@
     <!-- LISTA DE PRODUCTOS -->
     <section class="lista-productos">
 
-        <div class="producto">
+        <div class="producto" data-nombre="Collar para perro" data-categoria="perros">
             <img src="./assets/img/collar para perros.webp" alt="Producto">
             <h3>Collar para perro</h3>
             <p class="descripcion">Ideal para perros medianos y grandes</p>
@@ -63,7 +63,7 @@
 
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Juguete para gato pelota de tela" data-categoria="gatos">
             <img src="assets/img/juguete para gato pelota de tela.webp" alt="Producto">
             <h3>Juguete para gato pelota de tela</h3>
             <p class="descripcion">Ideal para tu mascota</p>
@@ -74,7 +74,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Correa resistente para perro" data-categoria="perros">
             <img src="assets/img/Correa resistente para perro.webp" alt="Correa resistente para perro">
             <h3>Correa resistente para perro</h3>
             <p class="descripcion">Ideal para perros medianos y grandes</p>
@@ -85,7 +85,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Arnés ajustable" data-categoria="perros">
             <img src="assets/img/Arnés ajustable.webp" alt="Correa resistente para perro">
             <h3>Arnés ajustable</h3>
             <p class="descripcion">Arnés acolchado con ajuste regulable para mayor control y comodidad.</p>
@@ -96,7 +96,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Collar con placa" data-categoria="perros">
             <img src="assets/img/collar con placa.webp" alt="Correa resistente para perro">
             <h3>Collar con placa</h3>
             <p class="descripcion">Collar resistente con placa metálica para identificación segura.</p>
@@ -107,7 +107,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Comedero antideslizante" data-categoria="accesorios">
             <img src="assets/img/Comedero antideslizante.webp" alt="Correa resistente para perro">
             <h3>Comedero antideslizante</h3>
             <p class="descripcion">Plato con base antideslizante que evita derrames al comer.</p>
@@ -118,7 +118,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Cama acolchada" data-categoria="accesorios">
             <img src="assets/img/Cama acolchada.webp" alt="Correa resistente para perro">
             <h3>Cama acolchada</h3>
             <p class="descripcion">Cama suave y cómoda para el descanso perfecto de tu mascota.</p>
@@ -129,7 +129,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Shampoo antipulgas" data-categoria="accesorios">
             <img src="assets/img/Shampoo antipulgas.webp" alt="Correa resistente para perro">
             <h3>Shampoo antipulgas</h3>
             <p class="descripcion">Limpieza profunda que protege contra pulgas y malos olores.</p>
@@ -140,7 +140,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Juguete mordedor" data-categoria="perros">
             <img src="assets/img/Juguete mordedor.webp" alt="Correa resistente para perro">
             <h3>Juguete mordedor</h3>
             <p class="descripcion">Mordedor resistente que fortalece los dientes y reduce el estrés.</p>
@@ -151,7 +151,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Pelota resistente" data-categoria="perros">
             <img src="assets/img/Pelota resistente.webp" alt="Correa resistente para perro">
             <h3>Pelota resistente</h3>
             <p class="descripcion">Pelota duradera ideal para juegos al aire libre.</p>
@@ -162,7 +162,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Hueso de goma" data-categoria="perros">
             <img src="assets/img/Hueso de goma.webp" alt="Correa resistente para perro">
             <h3>Hueso de goma</h3>
             <p class="descripcion">Juguete flexible y seguro para entretener a tu perro.</p>
@@ -173,7 +173,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Alimento premium (10kg)" data-categoria="perros">
             <img src="assets/img/Alimento premium (10kg).webp" alt="Correa resistente para perro">
             <h3>Alimento premium (10kg)</h3>
             <p class="descripcion">Nutrición balanceada para una vida sana y activa.</p>
@@ -184,7 +184,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Snacks naturales" data-categoria="perros">
             <img src="assets/img/Snacks naturales.webp" alt="Correa resistente para perro">
             <h3>Snacks naturales</h3>
             <p class="descripcion">Premios saludables ideales para entrenamiento.</p>
@@ -195,7 +195,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Transportadora" data-categoria="accesorios">
             <img src="assets/img/Transportadora.webp" alt="Correa resistente para perro">
             <h3>Transportadora</h3>
             <p class="descripcion">Transportadora segura y cómoda para viajes.</p>
@@ -206,7 +206,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Arena para gato (5kg)" data-categoria="gatos">
             <img src="assets/img/Arena para gato (5kg).jpg" alt="Correa resistente para perro">
             <h3>Arena para gato (5kg)</h3>
             <p class="descripcion">Arena absorbente que controla olores y facilita la limpieza.</p>
@@ -217,7 +217,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Arenero cerrado" data-categoria="gatos">
             <img src="assets/img/Arenero cerrado.webp" alt="Correa resistente para perro">
             <h3>Arenero cerrado</h3>
             <p class="descripcion">Arenero con tapa que brinda mayor higiene y privacidad.</p>
@@ -228,7 +228,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Rascador" data-categoria="gatos">
             <img src="assets/img/Rascador.webp" alt="Correa resistente para perro">
             <h3>Rascador</h3>
             <p class="descripcion">Rascador resistente que protege tus muebles y entretiene a tu gato.</p>
@@ -239,7 +239,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Juguete pluma" data-categoria="gatos">
             <img src="assets/img/Juguete pluma.webp" alt="Correa resistente para perro">
             <h3>Juguete pluma</h3>
             <p class="descripcion">Juguete interactivo que estimula el instinto natural de caza.</p>
@@ -250,7 +250,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Collar con cascabel" data-categoria="gatos">
             <img src="assets/img/Collar con cascabel.webp" alt="Correa resistente para perro">
             <h3>Collar con cascabel</h3>
             <p class="descripcion">Collar ligero con cascabel para mayor seguridad.</p>
@@ -261,7 +261,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Cama tipo cueva" data-categoria="gatos">
             <img src="assets/img/Cama tipo cueva.webp" alt="Correa resistente para perro">
             <h3>Cama tipo cueva</h3>
             <p class="descripcion">Espacio cómodo y cálido para el descanso de tu gato.</p>
@@ -272,7 +272,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Fuente de agua automática" data-categoria="accesorios">
             <img src="assets/img/Fuente de agua automática.webp" alt="Correa resistente para perro">
             <h3>Fuente de agua automática</h3>
             <p class="descripcion">Fuente con flujo constante que mantiene el agua fresca.</p>
@@ -283,7 +283,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Comida para gato adulto (7kg)" data-categoria="gatos">
             <img src="assets/img/Comida para gato adulto (7kg).webp" alt="Correa resistente para perro">
             <h3>Comida para gato adulto (7kg)</h3>
             <p class="descripcion">Alimento balanceado para mantener su salud y energía.</p>
@@ -294,7 +294,7 @@
             </button>
         </div>
 
-        <div class="producto">
+        <div class="producto" data-nombre="Comida para gatito (3kg)" data-categoria="gatos">
             <img src="assets/img/Comida para gatito (3kg).webp" alt="Correa resistente para perro">
             <h3>Comida para gatito (3kg)</h3>
             <p class="descripcion">Fórmula especial para un crecimiento fuerte y saludable.</p>
@@ -335,6 +335,7 @@
         <p>© 2025 Online Doggie — Todos los derechos reservados.</p>
     </footer>
 
+    <script src="./js/filtros-productos.js"></script>
     <script src="./js/carrito-funciones.js"></script>
     <script src="./js/carrito.js"></script>
 
