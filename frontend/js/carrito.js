@@ -139,3 +139,29 @@ function actualizarContador() {
         contador.innerText = totalCantidad;
     }
 }
+
+function agregarAlCarrito(id, nombre, precio, imagen) {
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    const productoExistente = carrito.find(p => p.id === id);
+
+    if (productoExistente) {
+        productoExistente.cantidad++;
+    } else {
+        carrito.push({
+            id,
+            nombre,
+            precio,
+            imagen: "./assets/img/" + imagen,
+            cantidad: 1
+        });
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    actualizarContador();
+    actualizarMiniCarrito();
+
+    alert("Producto agregado al carrito 🛒");
+}

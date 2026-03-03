@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,53 +11,91 @@
 
 <body>
 
-<header class="header">
-    <div class="logo">
-        <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
-        <h1>Online Doggie</h1>
-    </div>
+    <header class="header">
+        <div class="logo">
+            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <h1>Online Doggie</h1>
+        </div>
 
-    <nav class="navbar">
-        <ul>
-            <li><a href="index.html">Inicio</a></li>
-            <li><a href="productos.html">Productos</a></li>
-            <li class="active"><a href="carrito.html">Carrito</a></li>
-            <li><a href="perfil.html">Mi Perfil</a></li>
-            <li><a href="login.html" class="btn-login">Login</a></li>
-        </ul>
-    </nav>
-</header>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li class="active"><a href="carrito.html">Carrito</a></li>
+                <li><a href="perfil.html">Mi Perfil</a></li>
+                <li><a href="login.html" class="btn-login">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<main style="padding:40px">
+    <main style="padding:40px">
 
-    <h1>🛒 Tu Carrito</h1>
+        <h1>🛒 Tu Carrito</h1>
 
-    <table border="1" width="100%">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Subtotal</th>
-                <th>Eliminar</th>
-            </tr>
-        </thead>
-        <tbody id="carrito-body"></tbody>
-    </table>
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="carrito-body"></tbody>
+        </table>
 
-    <h2 id="total">Total: $0</h2>
+        <h2 id="total">Total: $0</h2>
 
-    <button onclick="vaciarCarrito()" class="btn-agregar">
-        Vaciar carrito
-    </button>
+        <button onclick="vaciarCarrito()" class="btn-agregar">
+            Vaciar carrito
+        </button>
 
-</main>
+        <br><br>
 
-<footer class="footer">
-    <p>© 2025 Online Doggie — Todos los derechos reservados.</p>
-</footer>
+        <button id="btn-finalizar" class="btn-agregar">
+            Finalizar compra
+        </button>
 
-<script src="./js/carrito.js"></script>
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 Online Doggie — Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const btnFinalizar = document.getElementById("btn-finalizar");
+
+    btnFinalizar.addEventListener("click", function() {
+
+        const token = localStorage.getItem("token");
+        const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+        if (carrito.length === 0) {
+            alert("Tu carrito está vacío 🛒");
+            return;
+        }
+
+        if (!token) {
+            alert("Debes iniciar sesión para finalizar la compra 🔐");
+            window.location.href = "login.html";
+            return;
+        }
+
+        alert("Compra procesada correctamente 🎉");
+
+        // Aquí luego enviaremos el pedido al backend
+        localStorage.removeItem("carrito");
+        window.location.reload();
+    });
+
+});
+</script>
+
+    <script src="./js/carrito.js"></script>
 
 </body>
+
 </html>
