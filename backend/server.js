@@ -1,15 +1,53 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const db=require('./config/db');
+const path = require('path');
+
+const db = require('./config/db');
+
+// rutas
 const authRoutes = require('./routes/auth.routes');
+const productosRoutes = require('./routes/productos.routes');
+const pedidosRoutes = require('./routes/pedidos.routes');
+
+// middleware de autenticación
 const { verificarToken, verificarAdmin } = require('./middleware/auth.middleware');
 
 const app = express();
 
+/* ============================= */
+/* MIDDLEWARES */
+/* ============================= */
+
 app.use(cors());
 app.use(express.json());
+
+/* ============================= */
+/* SERVIR FRONTEND */
+/* ============================= */
+
+// Servir todo el frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Servir imágenes
+app.use('/assets', express.static(path.join(__dirname, '../frontend/assets')));
+
+/* ============================= */
+/* RUTAS API */
+/* ============================= */
+
+// autenticación
 app.use('/api/auth', authRoutes);
+
+// productos
+app.use('/api/productos', productosRoutes);
+
+// pedidos
+app.use('/api/pedidos', pedidosRoutes);
+
+/* ============================= */
+/* CONEXIÓN A MYSQL */
+/* ============================= */
 
 db.getConnection()
     .then(connection => {
@@ -20,15 +58,17 @@ db.getConnection()
         console.error("❌ Error conectando a MySQL:", err);
     });
 
+/* ============================= */
+/* RUTA BASE */
+/* ============================= */
+
 app.get("/", (req, res) => {
     res.send("API Online Doggie funcionando 🐶");
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+/* ============================= */
+/* RUTAS PROTEGIDAS DE PRUEBA */
+/* ============================= */
 
 app.get("/api/protegido", verificarToken, (req, res) => {
     res.json({
@@ -44,15 +84,12 @@ app.get("/api/admin", verificarToken, verificarAdmin, (req, res) => {
     });
 });
 
-app.get("/api/productos", async (req, res) => {
-    try {
-        const [productos] = await db.query("SELECT * FROM productos");
-        res.json(productos);
-    } catch (error) {
-        console.error("ERROR REAL:", error);
-        res.status(500).json({ 
-            mensaje: "Error obteniendo productos",
-            error: error.message
-        });
-    }
+/* ============================= */
+/* SERVIDOR */
+/* ============================= */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
 });

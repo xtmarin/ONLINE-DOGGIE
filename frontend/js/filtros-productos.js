@@ -2,18 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const buscador = document.getElementById("buscador");
     const filtroCategoria = document.getElementById("filtro-categoria");
-    const productos = document.querySelectorAll(".producto");
 
     function filtrarProductos() {
 
         const texto = buscador.value.toLowerCase();
         const categoria = filtroCategoria.value;
 
-        let productosVisibles = 0;
+        const productos = document.querySelectorAll(".producto");
 
         productos.forEach(producto => {
 
-            const nombre = producto.dataset.nombre.toLowerCase();
+            const nombre = producto.dataset.nombre;
             const categoriaProducto = producto.dataset.categoria;
 
             const coincideTexto = nombre.includes(texto);
@@ -22,10 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (coincideTexto && coincideCategoria) {
                 producto.style.display = "block";
-                productosVisibles++;
             } else {
                 producto.style.display = "none";
             }
+
         });
 
     }

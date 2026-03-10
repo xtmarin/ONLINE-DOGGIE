@@ -53,7 +53,7 @@
 
         <br><br>
 
-        <button id="btn-finalizar" class="btn-agregar">
+        <button onclick="finalizarCompra()" class="btn-agregar">
             Finalizar compra
         </button>
 
@@ -64,35 +64,35 @@
     </footer>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
-    const btnFinalizar = document.getElementById("btn-finalizar");
+            const btnFinalizar = document.getElementById("btn-finalizar");
 
-    btnFinalizar.addEventListener("click", function() {
+            btnFinalizar.addEventListener("click", function () {
 
-        const token = localStorage.getItem("token");
-        const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+                const token = localStorage.getItem("token");
+                const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-        if (carrito.length === 0) {
-            alert("Tu carrito está vacío 🛒");
-            return;
-        }
+                if (carrito.length === 0) {
+                    alert("Tu carrito está vacío 🛒");
+                    return;
+                }
 
-        if (!token) {
-            alert("Debes iniciar sesión para finalizar la compra 🔐");
-            window.location.href = "login.html";
-            return;
-        }
+                if (!token) {
+                    alert("Debes iniciar sesión para finalizar la compra 🔐");
+                    window.location.href = "login.html";
+                    return;
+                }
 
-        alert("Compra procesada correctamente 🎉");
+                alert("Compra procesada correctamente 🎉");
 
-        // Aquí luego enviaremos el pedido al backend
-        localStorage.removeItem("carrito");
-        window.location.reload();
-    });
+                // Aquí luego enviaremos el pedido al backend
+                localStorage.removeItem("carrito");
+                window.location.reload();
+            });
 
-});
-</script>
+        });
+    </script>
 
     <script src="./js/carrito.js"></script>
 

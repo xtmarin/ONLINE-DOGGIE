@@ -165,3 +165,66 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
 
     alert("Producto agregado al carrito 🛒");
 }
+
+async function finalizarCompra() {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Debes iniciar sesión para comprar");
+        window.location.href = "login.html";
+        return;
+    }
+
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    if (carrito.length === 0) {
+        alert("Tu carrito está vacío");
+        return;
+    }
+
+    let total = 0;
+
+    carrito.forEach(producto => {
+        total += producto.precio * producto.cantidad;
+    });
+
+    try {
+
+        const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                carrito,
+                total
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+
+            alert("Compra realizada con éxito 🐶");
+
+            localStorage.removeItem("carrito");
+
+            window.location.href = "index.html";
+
+        } else {
+
+            alert(data.mensaje);
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Error al procesar compra");
+
+    }
+
+}

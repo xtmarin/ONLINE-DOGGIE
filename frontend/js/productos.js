@@ -12,11 +12,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const div = document.createElement("div");
             div.classList.add("producto");
 
+            div.setAttribute("data-nombre", producto.nombre.toLowerCase());
+            div.setAttribute("data-categoria", producto.categoria.toLowerCase());
+
             div.innerHTML = `
-                <img src="./assets/img/${producto.imagen}" alt="${producto.nombre}">
+                <img src="http://localhost:3000/assets/img/${producto.imagen}" alt="${producto.nombre}">
                 <h3>${producto.nombre}</h3>
                 <p class="descripcion">${producto.descripcion}</p>
-                <p class="precio">$${producto.precio.toLocaleString()}</p>
+                <p class="precio">$${Number(producto.precio).toLocaleString("es-CO")}</p>
                 <p class="stock">${producto.stock > 0 ? "Disponible" : "Agotado"}</p>
 
                 <button class="btn-agregar"

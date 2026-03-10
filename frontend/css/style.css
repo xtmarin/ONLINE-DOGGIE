@@ -379,22 +379,33 @@ nav ul li ul li a:hover {
 
 .registro {
     background-color: var(--blanco);
-    padding: 30px 25px;
+    padding: 35px 30px;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     border-top: 6px solid var(--azul-primario);
 }
 
 .registro h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: 25px;
+    font-size: 26px;
     color: var(--gris-texto);
 }
+
+/* FORMULARIO */
 
 .form-group {
     text-align: left;
     margin-bottom: 18px;
 }
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* INPUTS */
 
 .registro input {
     width: 100%;
@@ -407,13 +418,16 @@ nav ul li ul li a:hover {
 
 .registro input:focus {
     border-color: var(--azul-primario);
-    box-shadow: 0 0 6px rgba(30, 60, 255, 0.2);
+    box-shadow: 0 0 6px rgba(30, 60, 255, 0.25);
     outline: none;
 }
+
+/* BOTÓN */
 
 .registro button {
     width: 100%;
     padding: 12px;
+    margin-top: 10px;
     background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
     color: white;
     border: none;
@@ -428,26 +442,130 @@ nav ul li ul li a:hover {
     background: var(--azul-hover);
 }
 
-/* ========================= */
-/* TITULO SECCION PRODUCTOS */
-/* ========================= */
+/* LINK LOGIN / REGISTRO */
 
-.banner-productos {
-    text-align: center;
-    padding: 60px 20px 30px 20px;
-    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
-    color: white;
-    border-radius: 0 0 40px 40px;
-    margin-bottom: 30px;
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
 }
 
-.banner-productos h2 {
-    font-size: 38px;
-    font-weight: 700;
-    margin-bottom: 10px;
+.login-link a {
+    color: var(--azul-primario);
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.banner-productos p {
-    font-size: 18px;
-    opacity: 0.95;
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* ========================= */
+/* PANEL ADMIN */
+/* ========================= */
+
+.admin-panel{
+max-width:900px;
+margin:50px auto;
+padding:20px;
+}
+
+.admin-panel h1{
+text-align:center;
+margin-bottom:30px;
+}
+
+/* FORMULARIO */
+
+.admin-form{
+background:var(--blanco);
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+margin-bottom:40px;
+}
+
+.admin-form form{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.admin-form input{
+padding:12px;
+border:1px solid var(--gris-borde);
+border-radius:8px;
+font-size:14px;
+}
+
+.admin-form button{
+padding:12px;
+border:none;
+border-radius:8px;
+background:linear-gradient(135deg,var(--azul-primario),var(--azul-secundario));
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.admin-form button:hover{
+background:var(--azul-hover);
+}
+
+/* LISTA PRODUCTOS */
+
+.admin-productos{
+background:var(--blanco);
+padding:25px;
+border-radius:12px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.admin-productos h2{
+margin-bottom:20px;
+}
+
+/* PRODUCTO INDIVIDUAL */
+
+.admin-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+margin-bottom:12px;
+border-radius:10px;
+border:1px solid var(--gris-borde);
+background:var(--azul-fondo);
+}
+
+.admin-info{
+display:flex;
+flex-direction:column;
+}
+
+.admin-info h3{
+font-size:16px;
+margin-bottom:5px;
+}
+
+.admin-precio{
+font-weight:bold;
+color:var(--azul-primario);
+}
+
+/* BOTON ELIMINAR */
+
+.admin-item button{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+background:linear-gradient(135deg,var(--azul-primario),var(--azul-secundario));
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.admin-item button:hover{
+background:var(--azul-hover);
 }

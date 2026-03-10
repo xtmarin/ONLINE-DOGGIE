@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Panel Administrador</title>
+    <link rel="stylesheet" href="./css/style.css">
+
+</head>
+
+<body>
+
+    <section class="admin-panel">
+
+        <h1>Panel de Administración</h1>
+
+        <div class="admin-form">
+
+            <h2>Crear producto</h2>
+
+            <form id="form-producto">
+
+                <input type="text" id="nombre" placeholder="Nombre del producto" required>
+
+                <input type="text" id="descripcion" placeholder="Descripción" required>
+
+                <input type="number" id="precio" placeholder="Precio" required>
+
+                <input type="text" id="categoria" placeholder="Categoría" required>
+
+                <input type="text" id="imagen" placeholder="Nombre imagen (ej: collar.webp)" required>
+
+                <input type="number" id="stock" placeholder="Stock" required>
+
+                <button type="submit">Crear Producto</button>
+
+            </form>
+
+        </div>
+
+        <div class="admin-productos">
+
+            <h2>Productos registrados</h2>
+
+            <div id="lista-productos"></div>
+
+        </div>
+
+    </section>
+
+    <script src="./js/admin.js"></script>
+
+</body>
+
+</html>
