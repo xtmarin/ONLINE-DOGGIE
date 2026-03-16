@@ -1,5 +1,84 @@
 const token = localStorage.getItem("token");
 
+const inputImagen = document.getElementById("imagen");
+const preview = document.getElementById("preview");
+const formProducto = document.getElementById("form-producto");
+const uploadBox = document.getElementById("upload-box");
+
+let productoEditando = null;
+
+
+/* ============================= */
+/* CLICK EN EL CUADRO PARA ABRIR INPUT */
+/* ============================= */
+
+uploadBox.addEventListener("click", () => {
+    inputImagen.click();
+});
+
+
+/* ============================= */
+/* DRAG & DROP */
+/* ============================= */
+
+uploadBox.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadBox.classList.add("dragover");
+});
+
+uploadBox.addEventListener("dragleave", () => {
+    uploadBox.classList.remove("dragover");
+});
+
+uploadBox.addEventListener("drop", (e) => {
+
+    e.preventDefault();
+    uploadBox.classList.remove("dragover");
+
+    const archivo = e.dataTransfer.files[0];
+
+    if (archivo) {
+        inputImagen.files = e.dataTransfer.files;
+        mostrarPreview(archivo);
+    }
+
+});
+
+
+/* ============================= */
+/* PREVIEW DE IMAGEN */
+/* ============================= */
+
+inputImagen.addEventListener("change", function () {
+
+    const archivo = this.files[0];
+
+    if (archivo) {
+        mostrarPreview(archivo);
+    }
+
+});
+
+function mostrarPreview(archivo) {
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        preview.src = e.target.result;
+        preview.style.display = "block";
+
+    };
+
+    reader.readAsDataURL(archivo);
+
+}
+
+
+/* ============================= */
+/* CARGAR PRODUCTOS */
+/* ============================= */
+
 async function cargarProductos() {
 
     const respuesta = await fetch("http://localhost:3000/api/productos");
@@ -42,72 +121,76 @@ async function cargarProductos() {
         </div>
 
         `;
+
     });
 
 }
 
 
-document.getElementById("form-producto").addEventListener("submit", async (e) => {
+/* ============================= */
+/* CREAR O EDITAR PRODUCTO */
+/* ============================= */
+
+formProducto.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const idEditando = e.target.dataset.editando;
+    const formData = new FormData();
 
-    const producto = {
+    formData.append("nombre", document.getElementById("nombre").value);
+    formData.append("descripcion", document.getElementById("descripcion").value);
+    formData.append("precio", document.getElementById("precio").value);
+    formData.append("categoria", document.getElementById("categoria").value);
+    formData.append("stock", document.getElementById("stock").value);
 
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        precio: document.getElementById("precio").value,
-        categoria: document.getElementById("categoria").value,
-        imagen: document.getElementById("imagen").value,
-        stock: document.getElementById("stock").value
+    const imagenInput = document.getElementById("imagen");
 
-    };
-
-    if (idEditando) {
-
-        await fetch(`http://localhost:3000/api/productos/${idEditando}`, {
-
-            method: "PUT",
-
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-
-            body: JSON.stringify(producto)
-
-        });
-
-        delete e.target.dataset.editando;
-
-        document.querySelector("#form-producto button").innerText = "Crear Producto";
-
-    } else {
-
-        await fetch("http://localhost:3000/api/productos", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-
-            body: JSON.stringify(producto)
-
-        });
-
+    if (imagenInput.files.length > 0) {
+        formData.append("imagen", imagenInput.files[0]);
     }
 
-    e.target.reset();
+    let url = "http://localhost:3000/api/productos";
+    let metodo = "POST";
+
+    if (productoEditando) {
+        url = `http://localhost:3000/api/productos/${productoEditando}`;
+        metodo = "PUT";
+    }
+
+    await fetch(url, {
+
+        method: metodo,
+
+        headers: {
+            "Authorization": "Bearer " + token
+        },
+
+        body: formData
+
+    });
+
+    productoEditando = null;
+
+    formProducto.reset();
+    preview.src = "";
+    preview.style.display = "none";
+
+    document.querySelector("#form-producto button").innerText = "Crear Producto";
 
     cargarProductos();
 
 });
 
 
+/* ============================= */
+/* ELIMINAR PRODUCTO */
+/* ============================= */
+
 async function eliminarProducto(id) {
+
+    const confirmar = confirm("¿Seguro que deseas eliminar este producto?");
+
+    if (!confirmar) return;
 
     await fetch(`http://localhost:3000/api/productos/${id}`, {
 
@@ -124,20 +207,27 @@ async function eliminarProducto(id) {
 }
 
 
+/* ============================= */
+/* EDITAR PRODUCTO */
+/* ============================= */
+
 function editarProducto(id, nombre, descripcion, precio, categoria, imagen, stock) {
+
+    productoEditando = id;
 
     document.getElementById("nombre").value = nombre;
     document.getElementById("descripcion").value = descripcion;
     document.getElementById("precio").value = precio;
     document.getElementById("categoria").value = categoria;
-    document.getElementById("imagen").value = imagen;
     document.getElementById("stock").value = stock;
-
-    document.getElementById("form-producto").dataset.editando = id;
 
     document.querySelector("#form-producto button").innerText = "Actualizar Producto";
 
 }
 
+
+/* ============================= */
+/* INICIAR */
+/* ============================= */
 
 cargarProductos();

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../config/upload");
 
 const productosController = require("../controllers/productos.controller");
 const { verificarToken, verificarAdmin } = require("../middleware/auth.middleware");
@@ -8,7 +9,13 @@ const { verificarToken, verificarAdmin } = require("../middleware/auth.middlewar
 router.get("/", productosController.obtenerProductos);
 
 // crear producto
-router.post("/", verificarToken, verificarAdmin, productosController.crearProducto);
+router.post(
+    "/",
+    verificarToken,
+    verificarAdmin,
+    upload.single("imagen"),
+    productosController.crearProducto
+);
 
 // eliminar producto
 router.delete("/:id", verificarToken, verificarAdmin, productosController.eliminarProducto);

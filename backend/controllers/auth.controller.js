@@ -1,11 +1,14 @@
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+/* REGISTRO */
 
 exports.registrar = async (req, res) => {
     try {
+
         const { nombre, email, password } = req.body;
 
-        // Verificar si el usuario ya existe
         const [usuarioExistente] = await db.query(
             "SELECT * FROM usuarios WHERE email = ?",
             [email]
@@ -15,11 +18,9 @@ exports.registrar = async (req, res) => {
             return res.status(400).json({ mensaje: "El usuario ya existe" });
         }
 
-        // Encriptar contraseña
         const salt = await bcrypt.genSalt(10);
         const passwordEncriptada = await bcrypt.hash(password, salt);
 
-        // Insertar usuario
         await db.query(
             "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)",
             [nombre, email, passwordEncriptada]
@@ -33,10 +34,12 @@ exports.registrar = async (req, res) => {
     }
 };
 
-const jwt = require("jsonwebtoken");
+
+/* LOGIN */
 
 exports.login = async (req, res) => {
     try {
+
         const { email, password } = req.body;
 
         const [usuario] = await db.query(
@@ -77,6 +80,29 @@ exports.login = async (req, res) => {
                 rol: usuarioData.rol
             }
         });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: "Error en el servidor" });
+    }
+};
+
+
+/* PERFIL */
+
+exports.perfil = async (req, res) => {
+    try {
+
+        const [usuario] = await db.query(
+            "SELECT id, nombre, email, rol FROM usuarios WHERE id = ?",
+            [req.usuario.id]
+        );
+
+        if (usuario.length === 0) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        res.json(usuario[0]);
 
     } catch (error) {
         console.error(error);

@@ -2,12 +2,25 @@ const db = require("../config/db");
 
 // obtener productos
 exports.obtenerProductos = async (req, res) => {
+
     try {
-        const [productos] = await db.query("SELECT * FROM productos");
+
+        const [productos] = await db.query(
+            "SELECT * FROM productos WHERE activo = TRUE"
+        );
+
         res.json(productos);
+
     } catch (error) {
-        res.status(500).json({ mensaje: "Error obteniendo productos" });
+
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error obteniendo productos"
+        });
+
     }
+
 };
 
 // crear producto
@@ -15,20 +28,31 @@ exports.crearProducto = async (req, res) => {
 
     try {
 
-        const { nombre, descripcion, precio, categoria, imagen, stock } = req.body;
+        const { nombre, descripcion, precio, categoria, stock } = req.body;
+
+        const imagen = req.file ? req.file.filename : null;
 
         await db.query(
-            "INSERT INTO productos (nombre, descripcion, precio, categoria, imagen, stock) VALUES (?, ?, ?, ?, ?, ?)",
+            `INSERT INTO productos 
+            (nombre, descripcion, precio, categoria, imagen, stock)
+            VALUES (?, ?, ?, ?, ?, ?)`,
             [nombre, descripcion, precio, categoria, imagen, stock]
         );
 
-        res.json({ mensaje: "Producto creado correctamente" });
+        res.json({
+            mensaje: "Producto creado correctamente"
+        });
 
     } catch (error) {
 
-        res.status(500).json({ mensaje: "Error creando producto" });
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error creando producto"
+        });
 
     }
+
 };
 
 // eliminar producto
@@ -38,17 +62,28 @@ exports.eliminarProducto = async (req, res) => {
 
         const { id } = req.params;
 
-        await db.query("DELETE FROM productos WHERE id = ?", [id]);
+        await db.query(
+            "UPDATE productos SET activo = FALSE WHERE id = ?",
+            [id]
+        );
 
-        res.json({ mensaje: "Producto eliminado" });
+        res.json({
+            mensaje: "Producto eliminado"
+        });
 
     } catch (error) {
 
-        res.status(500).json({ mensaje: "Error eliminando producto" });
+        console.error(error);
+
+        res.status(500).json({
+            mensaje: "Error eliminando producto"
+        });
 
     }
+
 };
 
+// actualizar producto
 exports.actualizarProducto = async (req, res) => {
 
     try {
@@ -64,13 +99,17 @@ exports.actualizarProducto = async (req, res) => {
             [nombre, descripcion, precio, categoria, imagen, stock, id]
         );
 
-        res.json({ mensaje: "Producto actualizado correctamente" });
+        res.json({
+            mensaje: "Producto actualizado correctamente"
+        });
 
     } catch (error) {
 
         console.error(error);
 
-        res.status(500).json({ mensaje: "Error actualizando producto" });
+        res.status(500).json({
+            mensaje: "Error actualizando producto"
+        });
 
     }
 

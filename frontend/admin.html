@@ -4,12 +4,37 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>Panel Administrador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrador - Online Doggie</title>
+
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="shortcut icon" href="assets/img/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
 
 </head>
 
 <body>
+
+    <!-- HEADER CON LOGO -->
+
+    <header class="header">
+
+        <div class="logo">
+            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <h1>Online Doggie</h1>
+        </div>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Ir a la tienda</a></li>
+                <li><a href="productos.html">Ver productos</a></li>
+                <li><a href="perfil.html">Mi perfil</a></li>
+            </ul>
+        </nav>
+
+    </header>
+
+
+    <!-- PANEL ADMIN -->
 
     <section class="admin-panel">
 
@@ -29,9 +54,20 @@
 
                 <input type="text" id="categoria" placeholder="Categoría" required>
 
-                <input type="text" id="imagen" placeholder="Nombre imagen (ej: collar.webp)" required>
-
                 <input type="number" id="stock" placeholder="Stock" required>
+
+                <div class="upload-box" id="upload-box">
+
+                    <input type="file" id="imagen" accept="image/*" hidden>
+
+                    <div class="upload-content">
+                        <p>📷 Subir imagen del producto</p>
+                        <span>Haz clic o arrastra una imagen aquí</span>
+                    </div>
+
+                    <img id="preview" class="preview-img">
+
+                </div>
 
                 <button type="submit">Crear Producto</button>
 
@@ -48,6 +84,16 @@
         </div>
 
     </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
 
     <script src="./js/admin.js"></script>
 

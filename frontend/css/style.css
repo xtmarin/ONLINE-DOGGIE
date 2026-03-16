@@ -569,3 +569,50 @@ transition:0.3s;
 .admin-item button:hover{
 background:var(--azul-hover);
 }
+
+/* ========================= */
+/* SUBIR IMAGEN ADMIN */
+/* ========================= */
+
+.upload-box{
+
+    border:2px dashed var(--azul-primario);
+    border-radius:12px;
+    padding:25px;
+    text-align:center;
+    cursor:pointer;
+    transition:0.3s;
+    background:var(--azul-fondo);
+
+}
+
+.upload-box:hover{
+
+    background:rgba(30,60,255,0.05);
+    border-color:var(--azul-secundario);
+
+}
+
+.upload-content p{
+
+    font-weight:bold;
+    color:var(--azul-primario);
+    margin-bottom:5px;
+
+}
+
+.upload-content span{
+
+    font-size:14px;
+    color:#666;
+
+}
+
+.preview-img{
+
+    width:120px;
+    margin-top:15px;
+    display:none;
+    border-radius:8px;
+
+}
