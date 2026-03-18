@@ -26,8 +26,24 @@
 }
 
 body {
+
     background-color: var(--azul-fondo);
     color: var(--gris-texto);
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* ========================= */
+/* CONTENIDO PRINCIPAL */
+/* ========================= */
+
+.main-content {
+
+    flex: 1;
+
 }
 
 /* ========================= */
@@ -81,7 +97,7 @@ nav ul li ul {
     left: 0;
     background: var(--blanco);
     padding: 10px 0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     min-width: 160px;
     border-radius: 8px;
 }
@@ -141,7 +157,7 @@ nav ul li ul li a:hover {
     background: var(--blanco);
     padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     text-align: center;
     transition: 0.3s;
 }
@@ -299,7 +315,7 @@ nav ul li ul li a:hover {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     z-index: 1000;
     transition: transform 0.2s ease;
 }
@@ -328,11 +344,14 @@ nav ul li ul li a:hover {
 /* ========================= */
 
 .footer {
+
     background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
     color: white;
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
+
+    margin-top: auto;
+
 }
 
 /* ========================= */
@@ -463,156 +482,367 @@ nav ul li ul li a:hover {
 /* PANEL ADMIN */
 /* ========================= */
 
-.admin-panel{
-max-width:900px;
-margin:50px auto;
-padding:20px;
+.admin-panel {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
 }
 
-.admin-panel h1{
-text-align:center;
-margin-bottom:30px;
+.admin-panel h1 {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 /* FORMULARIO */
 
-.admin-form{
-background:var(--blanco);
-padding:25px;
-border-radius:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
-margin-bottom:40px;
+.admin-form {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
 }
 
-.admin-form form{
-display:flex;
-flex-direction:column;
-gap:15px;
+.admin-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.admin-form input{
-padding:12px;
-border:1px solid var(--gris-borde);
-border-radius:8px;
-font-size:14px;
+.admin-form input {
+    padding: 12px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    font-size: 14px;
 }
 
-.admin-form button{
-padding:12px;
-border:none;
-border-radius:8px;
-background:linear-gradient(135deg,var(--azul-primario),var(--azul-secundario));
-color:white;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
+.admin-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.admin-form button:hover{
-background:var(--azul-hover);
+.admin-form button:hover {
+    background: var(--azul-hover);
 }
 
 /* LISTA PRODUCTOS */
 
-.admin-productos{
-background:var(--blanco);
-padding:25px;
-border-radius:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.08);
+.admin-productos {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-.admin-productos h2{
-margin-bottom:20px;
+.admin-productos h2 {
+    margin-bottom: 20px;
 }
 
 /* PRODUCTO INDIVIDUAL */
 
-.admin-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-margin-bottom:12px;
-border-radius:10px;
-border:1px solid var(--gris-borde);
-background:var(--azul-fondo);
+.admin-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--gris-borde);
+    background: var(--azul-fondo);
 }
 
-.admin-info{
-display:flex;
-flex-direction:column;
+.admin-info {
+    display: flex;
+    flex-direction: column;
 }
 
-.admin-info h3{
-font-size:16px;
-margin-bottom:5px;
+.admin-info h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
 }
 
-.admin-precio{
-font-weight:bold;
-color:var(--azul-primario);
+.admin-precio {
+    font-weight: bold;
+    color: var(--azul-primario);
 }
 
 /* BOTON ELIMINAR */
 
-.admin-item button{
-padding:8px 14px;
-border:none;
-border-radius:8px;
-background:linear-gradient(135deg,var(--azul-primario),var(--azul-secundario));
-color:white;
-cursor:pointer;
-transition:0.3s;
+.admin-item button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.admin-item button:hover{
-background:var(--azul-hover);
+.admin-item button:hover {
+    background: var(--azul-hover);
 }
 
 /* ========================= */
 /* SUBIR IMAGEN ADMIN */
 /* ========================= */
 
-.upload-box{
+.upload-box {
 
-    border:2px dashed var(--azul-primario);
-    border-radius:12px;
-    padding:25px;
-    text-align:center;
-    cursor:pointer;
-    transition:0.3s;
-    background:var(--azul-fondo);
-
-}
-
-.upload-box:hover{
-
-    background:rgba(30,60,255,0.05);
-    border-color:var(--azul-secundario);
+    border: 2px dashed var(--azul-primario);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: var(--azul-fondo);
 
 }
 
-.upload-content p{
+.upload-box:hover {
 
-    font-weight:bold;
-    color:var(--azul-primario);
-    margin-bottom:5px;
-
-}
-
-.upload-content span{
-
-    font-size:14px;
-    color:#666;
+    background: rgba(30, 60, 255, 0.05);
+    border-color: var(--azul-secundario);
 
 }
 
-.preview-img{
+.upload-content p {
 
-    width:120px;
-    margin-top:15px;
-    display:none;
-    border-radius:8px;
+    font-weight: bold;
+    color: var(--azul-primario);
+    margin-bottom: 5px;
+
+}
+
+.upload-content span {
+
+    font-size: 14px;
+    color: #666;
+
+}
+
+.preview-img {
+
+    width: 120px;
+    margin-top: 15px;
+    display: none;
+    border-radius: 8px;
+
+}
+
+/* ========================= */
+/* MEJORAS VISUALES GENERALES */
+/* ========================= */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo h1 {
+    font-size: 22px;
+}
+
+/* ========================= */
+/* NAVBAR PROFESIONAL */
+/* ========================= */
+
+.navbar ul li a {
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.navbar ul li a.active {
+    background: rgba(30, 60, 255, 0.08);
+    color: var(--azul-primario);
+}
+
+/* ========================= */
+/* BOTONES GENERALES */
+/* ========================= */
+
+.btn {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: var(--azul-hover);
+    transform: translateY(-2px);
+}
+
+/* ========================= */
+/* PRODUCTOS MÁS PROFESIONALES */
+/* ========================= */
+
+.producto {
+    position: relative;
+    overflow: hidden;
+}
+
+.producto .descripcion {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+    min-height: 40px;
+}
+
+.producto .stock {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.producto .stock::before {
+    content: "📦 ";
+}
+
+/* efecto hover producto */
+
+.producto:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================= */
+/* BOTÓN AGREGAR MEJORADO */
+/* ========================= */
+
+.btn-agregar {
+    width: 100%;
+    font-weight: bold;
+}
+
+.btn-agregar:hover {
+    transform: scale(1.03);
+}
+
+/* ========================= */
+/* MINI CARRITO MEJORADO */
+/* ========================= */
+
+.mini-item {
+    background: var(--azul-fondo);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.mini-info h4 {
+    font-size: 14px;
+}
+
+.mini-footer {
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 15px;
+}
+
+.btn-ver-carrito {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* ========================= */
+/* PERFIL MÁS BONITO */
+/* ========================= */
+
+.perfil-container {
+    max-width: 500px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.perfil-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.perfil-card p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+#logout-btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    cursor: pointer;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media(max-width:768px) {
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav ul {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .lista-productos {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+}
+
+/* ========================= */
+/* BANNER PRODUCTOS */
+/* ========================= */
+
+.banner-productos {
+
+    text-align: center;
+    padding: 40px 20px 10px 20px;
+
+}
+
+.banner-productos h2 {
+
+    font-size: 32px;
+    margin-bottom: 10px;
+
+}
+
+.banner-productos p {
+
+    font-size: 16px;
+    color: #666;
+
+}
+
+.rating {
+
+    color: #FFD700;
+    font-size: 14px;
+    margin: 5px 0;
 
 }

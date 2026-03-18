@@ -147,15 +147,21 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
     const productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
+
         productoExistente.cantidad++;
+
     } else {
+
         carrito.push({
+
             id,
             nombre,
             precio,
             imagen: "./assets/img/" + imagen,
             cantidad: 1
+
         });
+
     }
 
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -163,7 +169,56 @@ function agregarAlCarrito(id, nombre, precio, imagen) {
     actualizarContador();
     actualizarMiniCarrito();
 
-    alert("Producto agregado al carrito 🛒");
+    /* ========================= */
+    /* ANIMACIÓN VUELO AL CARRITO */
+    /* ========================= */
+
+    const productoCard = event.target.closest(".producto");
+    const img = productoCard.querySelector("img");
+
+    const carritoIcon = document.querySelector(".carrito-flotante");
+
+    const imgRect = img.getBoundingClientRect();
+    const carritoRect = carritoIcon.getBoundingClientRect();
+
+    const flyingImg = img.cloneNode(true);
+
+    flyingImg.style.position = "fixed";
+    flyingImg.style.left = imgRect.left + "px";
+    flyingImg.style.top = imgRect.top + "px";
+    flyingImg.style.width = imgRect.width + "px";
+    flyingImg.style.height = imgRect.height + "px";
+
+    flyingImg.style.transition = "all 0.8s ease";
+    flyingImg.style.zIndex = "1000";
+    flyingImg.style.borderRadius = "12px";
+
+    document.body.appendChild(flyingImg);
+
+    setTimeout(() => {
+
+        flyingImg.style.left = carritoRect.left + "px";
+        flyingImg.style.top = carritoRect.top + "px";
+        flyingImg.style.width = "30px";
+        flyingImg.style.height = "30px";
+        flyingImg.style.opacity = "0.5";
+
+    }, 10);
+
+    setTimeout(() => {
+
+        flyingImg.remove();
+
+        carritoIcon.style.transform = "scale(1.2)";
+
+        setTimeout(() => {
+
+            carritoIcon.style.transform = "scale(1)";
+
+        }, 200);
+
+    }, 800);
+
 }
 
 async function finalizarCompra() {

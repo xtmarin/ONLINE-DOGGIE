@@ -3,15 +3,19 @@ const router = express.Router();
 const db = require("../config/db");
 const { verificarToken } = require("../middleware/auth.middleware");
 
-// Crear pedido
 router.post("/", verificarToken, async (req, res) => {
+
+    console.log("Datos recibidos:", req.body);
 
     const usuario_id = req.usuario.id;
     const { carrito, total } = req.body;
 
+    if (!carrito || carrito.length === 0) {
+        return res.status(400).json({ mensaje: "Carrito vacío" });
+    }
+
     try {
 
-        // 1️⃣ Crear pedido
         const [pedido] = await db.query(
             "INSERT INTO pedidos (usuario_id, total) VALUES (?, ?)",
             [usuario_id, total]
@@ -19,7 +23,6 @@ router.post("/", verificarToken, async (req, res) => {
 
         const pedidoId = pedido.insertId;
 
-        // 2️⃣ Insertar productos del carrito
         for (let producto of carrito) {
 
             await db.query(
