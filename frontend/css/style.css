@@ -846,3 +846,13 @@ nav ul li ul li a:hover {
     margin: 5px 0;
 
 }
+
+/* ========================= */
+/* LOGO LOGIN / REGISTRO */
+/* ========================= */
+
+.registro .logo{
+
+display:block;
+margin:0 auto 20px auto;
+}
