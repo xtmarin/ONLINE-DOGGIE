@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.routes.pedidos_routes import router as pedidos_router
 
 from routes.auth_routes import router as authRoutes
 from routes.productos_routes import router as productosRoutes
 
 app = FastAPI()
+app.include_router(pedidos_router)
 
 # middlewares
 app.add_middleware(
