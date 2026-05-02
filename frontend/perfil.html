@@ -2,67 +2,97 @@
 <html lang="es">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Mi Perfil - Online Doggie</title>
-
-<link rel="stylesheet" href="./css/style.css">
-<link rel="shortcut icon" href="assets/img/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Online Doggie</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="shortcut icon" href="assets/img/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
 </head>
 
 <body>
 
-<header class="header">
+    <header class="header">
+        <div class="logo">
+            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <h1>Online Doggie</h1>
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
+                <li class="active"><a href="perfil.html">Mi Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="logo">
-<img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
-<h1>Online Doggie</h1>
-</div>
+    <main class="main-content">
+        <section class="perfil-container">
 
-<nav class="navbar">
-<ul>
+            <div class="perfil-seccion">
+                <h3>Historial de compras</h3>
+                <div id="historial-compras">
+                    <p>Cargando historial...</p>
+                </div>
+            </div>
 
-<li><a href="index.html">Inicio</a></li>
-<li><a href="productos.html">Productos</a></li>
-<li><a href="perfil.html" class="active">Mi Perfil</a></li>
+            <h2>Mi Perfil</h2>
 
-</ul>
-</nav>
+            <!-- RF19 - Ver datos -->
+            <div class="perfil-card">
+                <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
+                <p><strong>Email:</strong> <span id="perfil-email"></span></p>
+                <p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
+                <button id="logout-btn">Cerrar sesión</button>
+            </div>
 
-</header>
+            <!-- RF19 - Editar perfil -->
+            <div class="perfil-seccion">
+                <h3>Editar perfil</h3>
+                <form id="form-editar-perfil">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="edit-nombre" placeholder="Nuevo nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input type="email" id="edit-email" placeholder="Nuevo correo" required>
+                    </div>
+                    <button type="submit">Guardar cambios</button>
+                </form>
+            </div>
 
+            <!-- RF20 - Cambiar contraseña -->
+            <div class="perfil-seccion">
+                <h3>Cambiar contraseña</h3>
+                <form id="form-cambiar-password">
+                    <div class="form-group">
+                        <label>Contraseña actual</label>
+                        <input type="password" id="password-actual" placeholder="Contraseña actual" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nueva contraseña</label>
+                        <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar nueva contraseña</label>
+                        <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña"
+                            required>
+                    </div>
+                    <button type="submit">Cambiar contraseña</button>
+                </form>
+            </div>
 
-<main class="main-content">
+        </section>
+    </main>
 
-<section class="perfil-container">
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
-<h2>Mi Perfil</h2>
-
-<div class="perfil-card">
-
-<p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
-
-<p><strong>Email:</strong> <span id="perfil-email"></span></p>
-
-<p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
-
-<button id="logout-btn">Cerrar sesión</button>
-
-</div>
-
-</section>
-
-</main>
-
-
-<footer class="footer">
-<div class="footer-content">
-<p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>
-</div>
-</footer>
-
-<script src="./js/perfil.js"></script>
+    <script src="./js/perfil.js"></script>
 
 </body>
+
 </html>

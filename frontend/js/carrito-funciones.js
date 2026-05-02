@@ -8,11 +8,8 @@ function agregarAlCarrito(id, nombre, precio, boton) {
     let productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
-
         productoExistente.cantidad++;
-
     } else {
-
         carrito.push({
             id: id,
             nombre: nombre,
@@ -20,7 +17,6 @@ function agregarAlCarrito(id, nombre, precio, boton) {
             imagen: imagen,
             cantidad: 1
         });
-
     }
 
     localStorage.setItem("carrito", JSON.stringify(carrito));

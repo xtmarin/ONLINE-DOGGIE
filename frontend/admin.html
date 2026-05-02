@@ -14,15 +14,12 @@
 
 <body>
 
-    <!-- HEADER CON LOGO -->
-
+    <!-- HEADER -->
     <header class="header">
-
         <div class="logo">
             <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
-
         <nav class="navbar">
             <ul>
                 <li><a href="index.html">Ir a la tienda</a></li>
@@ -30,16 +27,22 @@
                 <li><a href="perfil.html">Mi perfil</a></li>
             </ul>
         </nav>
-
     </header>
 
-
     <!-- PANEL ADMIN -->
-
     <section class="admin-panel">
 
         <h1>Panel de Administración</h1>
 
+        <!-- RF02 - ALERTAS DE STOCK BAJO -->
+        <div class="admin-alertas" id="admin-alertas">
+            <h2>⚠️ Alertas de stock bajo</h2>
+            <div id="lista-alertas">
+                <p class="sin-alertas">Cargando alertas...</p>
+            </div>
+        </div>
+
+        <!-- RF04 / RF06 - CREAR / EDITAR PRODUCTO -->
         <div class="admin-form">
 
             <h2>Crear producto</h2>
@@ -47,26 +50,18 @@
             <form id="form-producto">
 
                 <input type="text" id="nombre" placeholder="Nombre del producto" required>
-
                 <input type="text" id="descripcion" placeholder="Descripción" required>
-
                 <input type="number" id="precio" placeholder="Precio" required>
-
                 <input type="text" id="categoria" placeholder="Categoría" required>
-
                 <input type="number" id="stock" placeholder="Stock" required>
 
                 <div class="upload-box" id="upload-box">
-
                     <input type="file" id="imagen" accept="image/*" hidden>
-
                     <div class="upload-content">
                         <p>📷 Subir imagen del producto</p>
                         <span>Haz clic o arrastra una imagen aquí</span>
                     </div>
-
                     <img id="preview" class="preview-img">
-
                 </div>
 
                 <button type="submit">Crear Producto</button>
@@ -75,6 +70,16 @@
 
         </div>
 
+        <!-- RF26 / RF27 - GESTIÓN DE STOCK -->
+        <div class="admin-stock">
+
+            <h2>Gestión de Stock</h2>
+
+            <div id="lista-stock"></div>
+
+        </div>
+
+        <!-- LISTA DE PRODUCTOS -->
         <div class="admin-productos">
 
             <h2>Productos registrados</h2>
@@ -85,15 +90,12 @@
 
     </section>
 
-
     <!-- FOOTER -->
-
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>
         </div>
     </footer>
-
 
     <script src="./js/admin.js"></script>
 
