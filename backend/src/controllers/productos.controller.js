@@ -25,12 +25,25 @@ exports.upload = multer({ storage });
 
 exports.obtenerProductos = async (req, res) => {
     try {
-        const result = await pool.query(
-            "SELECT * FROM productos WHERE activo = TRUE"
-        );
+
+        const result = await pool.query(`
+            SELECT 
+                productos.*,
+                categorias.nombre AS categoria
+            FROM productos
+            JOIN categorias
+                ON productos.categoria_id = categorias.id
+            WHERE productos.activo = TRUE
+        `);
+
         res.json(result.rows);
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({
+            error: error.message
+        });
+
     }
 };
 
