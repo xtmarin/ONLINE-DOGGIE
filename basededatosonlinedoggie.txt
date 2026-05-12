@@ -1,0 +1,215 @@
+CREATE TYPE tipo_rol AS ENUM (
+    'usuario',
+    'admin'
+);
+
+CREATE TYPE estado_pedido AS ENUM (
+    'pendiente',
+    'pagado',
+    'enviado',
+    'entregado',
+    'cancelado'
+);
+
+CREATE TABLE usuarios (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+
+    email VARCHAR(150) UNIQUE NOT NULL,
+
+    password VARCHAR(255) NOT NULL,
+
+    direccion TEXT,
+
+    rol tipo_rol DEFAULT 'usuario',
+
+    activo BOOLEAN DEFAULT TRUE,
+
+    creado_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT email_valido CHECK (
+        email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    )
+);
+
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE productos (
+    id BIGSERIAL PRIMARY KEY,
+
+    categoria_id INT NOT NULL,
+
+    nombre VARCHAR(150) NOT NULL,
+
+    descripcion TEXT,
+
+    precio NUMERIC(10,2) NOT NULL CHECK (precio >= 0),
+
+    imagen VARCHAR(255),
+
+    stock INT DEFAULT 0 CHECK (stock >= 0),
+
+    activo BOOLEAN DEFAULT TRUE,
+
+    creado_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_producto_categoria
+        FOREIGN KEY (categoria_id)
+        REFERENCES categorias(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE pedidos (
+    id BIGSERIAL PRIMARY KEY,
+
+    usuario_id BIGINT NOT NULL,
+
+    total NUMERIC(10,2) DEFAULT 0 CHECK (total >= 0),
+
+    estado estado_pedido DEFAULT 'pendiente',
+
+    fecha TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_pedido_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE detalle_pedido (
+    id BIGSERIAL PRIMARY KEY,
+
+    pedido_id BIGINT NOT NULL,
+
+    producto_id BIGINT NOT NULL,
+
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+
+    precio_unitario NUMERIC(10,2) NOT NULL CHECK (precio_unitario >= 0),
+
+    CONSTRAINT fk_detalle_pedido
+        FOREIGN KEY (pedido_id)
+        REFERENCES pedidos(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_detalle_producto
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE valoraciones (
+    id BIGSERIAL PRIMARY KEY,
+
+    producto_id BIGINT NOT NULL,
+
+    usuario_id BIGINT NOT NULL,
+
+    valoracion INT NOT NULL CHECK (valoracion BETWEEN 1 AND 5),
+
+    comentario TEXT,
+
+    fecha TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_valoracion_producto
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_valoracion_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE contactos (
+    id BIGSERIAL PRIMARY KEY,
+
+    usuario_id BIGINT NOT NULL,
+
+    mensaje TEXT NOT NULL,
+
+    leido BOOLEAN DEFAULT FALSE,
+
+    fecha TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_contacto_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_productos_categoria
+ON productos(categoria_id);
+
+CREATE INDEX idx_pedidos_usuario
+ON pedidos(usuario_id);
+
+CREATE INDEX idx_detalle_pedido
+ON detalle_pedido(pedido_id);
+
+CREATE INDEX idx_detalle_producto
+ON detalle_pedido(producto_id);
+
+CREATE INDEX idx_valoraciones_producto
+ON valoraciones(producto_id);
+
+CREATE INDEX idx_contactos_usuario
+ON contactos(usuario_id);
+
+INSERT INTO categorias (nombre)
+VALUES
+('perros'),
+('gatos'),
+('accesorios');
+
+INSERT INTO productos (
+    categoria_id,
+    nombre,
+    descripcion,
+    precio,
+    imagen,
+    stock,
+    activo,
+    creado_at
+)
+VALUES
+(1, 'Collar para perro', 'Ideal para perros medianos y grandes', 25000.00, 'collar para perros.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Juguete para gato pelota de tela', 'Ideal para tu mascota', 20000.00, 'juguete para gato pelota de tela.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Correa resistente para perro', 'Ideal para perros medianos y grandes', 40000.00, 'Correa resistente para perro.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Arnés ajustable', 'Arnés acolchado con ajuste regulable para mayor control y comodidad.', 55000.00, 'Arnés ajustable.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Collar con placa', 'Collar resistente con placa metálica para identificación segura.', 25000.00, 'collar con placa.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(3, 'Comedero antideslizante', 'Plato con base antideslizante que evita derrames al comer.', 30000.00, 'Comedero antideslizante.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(3, 'Cama acolchada', 'Cama suave y cómoda para el descanso perfecto de tu mascota.', 120000.00, 'Cama acolchada.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(3, 'Shampoo antipulgas', 'Limpieza profunda que protege contra pulgas y malos olores.', 35000.00, 'Shampoo antipulgas.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Juguete mordedor', 'Mordedor resistente que fortalece los dientes y reduce el estrés.', 28000.00, 'Juguete mordedor.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Pelota resistente', 'Pelota duradera ideal para juegos al aire libre.', 20000.00, 'Pelota resistente.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Hueso de goma', 'Juguete flexible y seguro para entretener a tu perro.', 18000.00, 'Hueso de goma.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Alimento premium (10kg)', 'Nutrición balanceada para una vida sana y activa.', 180000.00, 'Alimento premium (10kg).webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(1, 'Snacks naturales', 'Premios saludables ideales para entrenamiento.', 22000.00, 'Snacks naturales.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(3, 'Transportadora', 'Transportadora segura y cómoda para viajes.', 150000.00, 'Transportadora.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Arena para gato (5kg)', 'Arena absorbente que controla olores y facilita la limpieza.', 32000.00, 'Arena para gato (5kg).jpg', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Arenero cerrado', 'Arenero con tapa que brinda mayor higiene y privacidad.', 85000.00, 'Arenero cerrado.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Rascador', 'Rascador resistente que protege tus muebles y entretiene a tu gato.', 95000.00, 'Rascador.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Juguete pluma', 'Juguete interactivo que estimula el instinto natural de caza.', 15000.00, 'Juguete pluma.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Collar con cascabel', 'Collar ligero con cascabel para mayor seguridad.', 18000.00, 'Collar con cascabel.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Cama tipo cueva', 'Espacio cómodo y cálido para el descanso de tu gato.', 90000.00, 'Cama tipo cueva.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(3, 'Fuente de agua automática', 'Fuente con flujo constante que mantiene el agua fresca.', 140000.00, 'Fuente de agua automática.webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Comida para gato adulto (7kg)', 'Alimento balanceado para mantener su salud y energía.', 160000.00, 'Comida para gato adulto (7kg).webp', 10, TRUE, '2026-05-02 13:19:44.31902'),
+(2, 'Comida para gatito (3kg)', 'Fórmula especial para un crecimiento fuerte y saludable.', 85000.00, 'Comida para gatito (3kg).webp', 10, TRUE, '2026-05-02 13:19:44.31902');
+
+INSERT INTO usuarios (
+    nombre,
+    email,
+    password,
+    rol,
+    activo,
+    creado_at
+)
+VALUES
+('Emmanuel', 'Emma@gmail.com', '$2b$10$BaYEUXw/OpYGKBaQR7d5ruxydx9KyXL30MObVBdryqIbh29lGsGcG', 'usuario', TRUE, '2026-05-02 13:19:44.31902'),
+
+('Admin', 'Admin@gmail.com', '$2b$10$8FeSpr7WRoVobVhAe0UKCe2EObJqWScFSHZrahiRkWHiFsAXyo.1u', 'admin', TRUE, '2026-05-02 13:19:44.31902');
