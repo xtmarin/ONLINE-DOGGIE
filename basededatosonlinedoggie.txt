@@ -142,12 +142,7 @@ CREATE TABLE contactos (
         ON DELETE CASCADE
 );
 
-CREATE TABLE actividad (
-    id SERIAL PRIMARY KEY,
-    usuario_id INT REFERENCES usuarios(id),
-    accion VARCHAR(255) NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+
 
 CREATE INDEX idx_productos_categoria
 ON productos(categoria_id);
