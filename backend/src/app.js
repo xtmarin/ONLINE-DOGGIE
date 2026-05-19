@@ -1,3 +1,4 @@
+const adminRoutes = require('./routes/admin.routes');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -16,6 +17,7 @@ app.use('/assets/img', express.static(path.join(__dirname, '../../frontend/asset
 app.use('/api/auth', authRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/pedidos', pedidosRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
     res.send('API ONLINE DOGGIE funcionando 🐶');

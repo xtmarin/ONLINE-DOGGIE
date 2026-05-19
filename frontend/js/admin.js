@@ -227,11 +227,11 @@ formProducto.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const nombre      = document.getElementById("nombre").value.trim();
+    const nombre = document.getElementById("nombre").value.trim();
     const descripcion = document.getElementById("descripcion").value.trim();
-    const precio      = document.getElementById("precio").value.trim();
-    const categoria   = document.getElementById("categoria").value.trim();
-    const stock       = document.getElementById("stock").value.trim();
+    const precio = document.getElementById("precio").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
+    const stock = document.getElementById("stock").value.trim();
 
     if (!nombre || !descripcion || !precio || !categoria || !stock) {
         alert("Todos los campos son obligatorios");
@@ -250,11 +250,11 @@ formProducto.addEventListener("submit", async (e) => {
         formData.append("imagen", imagenInput.files[0]);
     }
 
-    let url    = "http://localhost:3000/api/productos";
+    let url = "http://localhost:3000/api/productos";
     let metodo = "POST";
 
     if (productoEditando) {
-        url    = `http://localhost:3000/api/productos/${productoEditando}`;
+        url = `http://localhost:3000/api/productos/${productoEditando}`;
         metodo = "PUT";
     }
 
@@ -314,14 +314,14 @@ function editarProducto(id, nombre, descripcion, precio, categoria, imagen, stoc
 
     productoEditando = id;
 
-    document.getElementById("nombre").value      = nombre;
+    document.getElementById("nombre").value = nombre;
     document.getElementById("descripcion").value = descripcion;
-    document.getElementById("precio").value      = precio;
-    document.getElementById("categoria").value   = categoria;
-    document.getElementById("stock").value       = stock;
+    document.getElementById("precio").value = precio;
+    document.getElementById("categoria").value = categoria;
+    document.getElementById("stock").value = stock;
 
     if (imagen) {
-        preview.src           = `http://localhost:3000/assets/img/${imagen}`;
+        preview.src = `http://localhost:3000/assets/img/${imagen}`;
         preview.style.display = "block";
     }
 
@@ -331,10 +331,89 @@ function editarProducto(id, nombre, descripcion, precio, categoria, imagen, stoc
 }
 
 
-/* ============================= */
-/* INICIAR                       */
-/* ============================= */
+async function cargarMetricas() {
+    try {
+        const respuesta = await fetch("http://localhost:3000/api/admin/metricas", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            document.getElementById('met-productos').textContent = data.totalProductos;
+            document.getElementById('met-usuarios').textContent = data.totalUsuarios;
+            document.getElementById('met-ventas').textContent = `$${data.totalVentas.toLocaleString()}`;
+        }
+    } catch (error) {
+        console.error("Error cargando métricas:", error);
+    }
+}
+
+
+
+async function cargarActividad() {
+    try {
+        const respuesta = await fetch("http://localhost:3000/api/admin/actividad", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+        const actividades = await respuesta.json();
+
+        const tablaActividad = document.getElementById('lista-actividad');
+        if (respuesta.ok && tablaActividad) {
+            tablaActividad.innerHTML = actividades.map(act => `
+                <tr>
+                    <td>${act.nombre} <br><small>${act.email}</small></td>
+                    <td>${act.accion}</td>
+                    <td>${new Date(act.fecha).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        console.error("Error cargando actividad:", error);
+    }
+}
+
+
+
+const formNuevoAdmin = document.getElementById('form-nuevo-admin');
+
+if (formNuevoAdmin) {
+    formNuevoAdmin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('admin-email').value.trim();
+
+        try {
+            const respuesta = await fetch("http://localhost:3000/api/admin/nuevo-admin", {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email }) // Solo enviamos el email ahora
+            });
+
+            const data = await respuesta.json();
+
+            if (respuesta.ok) {
+                alert(data.mensaje);
+                formNuevoAdmin.reset();
+                cargarActividad(); // Refresca la tabla de actividad automáticamente
+            } else {
+                alert("Error: " + data.mensaje);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+}
+
+
+
+//iniciar
+
 
 cargarAlertas();
 cargarStock();
 cargarProductos();
+cargarMetricas();
+cargarActividad(); 
