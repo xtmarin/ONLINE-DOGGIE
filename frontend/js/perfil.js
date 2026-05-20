@@ -35,6 +35,10 @@ async function cargarPerfil() {
         document.getElementById("edit-nombre").value = usuario.nombre;
         document.getElementById("edit-email").value  = usuario.email;
 
+        if (usuario.direccion) {
+            document.getElementById("input-direccion").value = usuario.direccion;
+        }
+
     } catch (error) {
         console.error("Error cargando perfil:", error);
     }
@@ -192,5 +196,88 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     window.location.href = "Login.html";
 });
 
+/* RF21 - GUARDAR DIRECCIÓN */
+async function guardarDireccion() {
+    const direccion = document.getElementById("input-direccion").value.trim();
+    const msgEl = document.getElementById("mensaje-direccion");
+
+    if (!direccion) {
+        msgEl.textContent = "Escribe una dirección primero";
+        msgEl.style.color = "red";
+        return;
+    }
+
+    const nombre = document.getElementById("edit-nombre").value.trim();
+    const email  = document.getElementById("edit-email").value.trim();
+
+    try {
+        const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nombre, email, direccion })
+        });
+
+        if (respuesta.ok) {
+            msgEl.textContent = "✅ Dirección guardada correctamente.";
+            msgEl.style.color = "green";
+        } else {
+            const data = await respuesta.json();
+            msgEl.textContent = data.mensaje || "Error al guardar";
+            msgEl.style.color = "red";
+        }
+    } catch (error) {
+        msgEl.textContent = "Error conectando con el servidor";
+        msgEl.style.color = "red";
+    }
+}
+
+/* RF39 - ESTADO ÚLTIMO PEDIDO */
+async function mostrarEstadoUltimoPedido() {
+    const estadoEl = document.getElementById("estado-pedido");
+    if (!estadoEl) return;
+
+    try {
+        const respuesta = await fetch("http://localhost:3000/api/pedidos/historial", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!respuesta.ok) { estadoEl.textContent = "No disponible"; return; }
+
+        const pedidos = await respuesta.json();
+
+        if (pedidos.length === 0) {
+            estadoEl.textContent = "Sin pedidos aún";
+            return;
+        }
+
+        const ultimo = pedidos[0];
+        estadoEl.textContent = `Pedido #${ultimo.pedido_id}: ${ultimo.estado}`;
+
+        const colores = {
+            pendiente: { bg: "#fff3cd", color: "#856404" },
+            pagado:    { bg: "#d1ecf1", color: "#0c5460" },
+            enviado:   { bg: "#cce5ff", color: "#004085" },
+            entregado: { bg: "#d4edda", color: "#155724" },
+            cancelado: { bg: "#f8d7da", color: "#721c24" }
+        };
+
+        const estilo = colores[ultimo.estado] || { bg: "#e0e0e0", color: "#333" };
+        estadoEl.style.background   = estilo.bg;
+        estadoEl.style.color        = estilo.color;
+        estadoEl.style.padding      = "8px 16px";
+        estadoEl.style.borderRadius = "8px";
+        estadoEl.style.fontWeight   = "bold";
+        estadoEl.style.display      = "inline-block";
+
+    } catch (error) {
+        estadoEl.textContent = "Error cargando estado";
+    }
+}
+
 
 cargarPerfil();
+cargarHistorial();
+mostrarEstadoUltimoPedido();

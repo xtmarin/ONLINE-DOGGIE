@@ -407,6 +407,84 @@ if (formNuevoAdmin) {
     });
 }
 
+/* ============================= */
+/* RF40 - GESTIÓN DE PEDIDOS     */
+/* ============================= */
+
+async function cargarPedidosAdmin() {
+    try {
+        const respuesta = await fetch("http://localhost:3000/api/admin/pedidos", {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!respuesta.ok) return;
+
+        const pedidos = await respuesta.json();
+        const contenedor = document.getElementById("lista-pedidos-admin");
+        if (!contenedor) return;
+
+        if (!pedidos.length) {
+            contenedor.innerHTML = "<p>No hay pedidos registrados.</p>";
+            return;
+        }
+
+        contenedor.innerHTML = pedidos.map(pedido => `
+            <div class="pedido-card">
+                <p><strong>Pedido #${pedido.id}</strong> — ${pedido.usuario_nombre}</p>
+                <p>Total: $${Number(pedido.total).toLocaleString("es-CO")}</p>
+                <p>Fecha: ${new Date(pedido.fecha).toLocaleDateString("es-CO")}</p>
+                <p>Estado: <strong>${pedido.estado}</strong></p>
+                <button onclick="cambiarEstadoSimulado(${pedido.id})">
+                    🚚 Cambiar estado
+                </button>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error("Error cargando pedidos:", error);
+    }
+}
+
+/* RF40 y RF41 - SIMULACIÓN ENVÍO */
+async function cambiarEstadoSimulado(pedidoId) {
+    const estados = ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'];
+    const nuevoEstado = prompt(
+        "Estado del pedido #" + pedidoId + "\n\n" +
+        "Opciones: pendiente / pagado / enviado / entregado / cancelado"
+    );
+
+    if (!nuevoEstado) return;
+
+    if (!estados.includes(nuevoEstado.toLowerCase())) {
+        alert("Estado no válido.");
+        return;
+    }
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${pedidoId}/estado`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nuevoEstado: nuevoEstado.toLowerCase() })
+        });
+
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            alert("✅ RF41: " + data.notificacion);
+            cargarPedidosAdmin();
+        } else {
+            alert("Error: " + data.error);
+        }
+    } catch (error) {
+        alert("Error conectando con el servidor");
+    }
+}
+
+
+
 
 
 //iniciar
@@ -417,3 +495,4 @@ cargarStock();
 cargarProductos();
 cargarMetricas();
 cargarActividad(); 
+cargarPedidosAdmin();
