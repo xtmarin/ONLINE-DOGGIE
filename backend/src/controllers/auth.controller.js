@@ -248,7 +248,7 @@ exports.recuperarPassword = async (req, res) => {
 exports.obtenerPerfil = async (req, res) => {
     try {
         const result = await pool.query(
-            "SELECT id, nombre, email, rol FROM usuarios WHERE id = $1",
+            "SELECT id, nombre, email, rol, direccion FROM usuarios WHERE id = $1",
             [req.usuario.id]
         );
 
@@ -264,16 +264,17 @@ exports.obtenerPerfil = async (req, res) => {
 };
 
 
+
 /* ============================= */
 /* RF19 - EDITAR PERFIL          */
 /* ============================= */
 
 exports.editarPerfil = async (req, res) => {
     try {
-        const { nombre, email } = req.body;
+        const { nombre, email, direccion } = req.body;
 
         if (!nombre || !email) {
-            return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
+            return res.status(400).json({ mensaje: "Nombre y correo son obligatorios" });
         }
 
         const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -282,8 +283,8 @@ exports.editarPerfil = async (req, res) => {
         }
 
         await pool.query(
-            "UPDATE usuarios SET nombre = $1, email = $2 WHERE id = $3",
-            [nombre, email, req.usuario.id]
+            "UPDATE usuarios SET nombre = $1, email = $2, direccion = $3 WHERE id = $4",
+            [nombre, email, direccion || null, req.usuario.id]
         );
 
         res.json({ mensaje: "Perfil actualizado correctamente" });

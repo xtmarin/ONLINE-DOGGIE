@@ -50,7 +50,7 @@ exports.crearPedido = async (req, res) => {
         for (let { producto, item } of productosDB) {
 
             await client.query(`
-                INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio)
+                INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_unitario)
                 VALUES ($1, $2, $3, $4)
             `, [pedido_id, producto.id, item.cantidad, producto.precio]);
 
@@ -89,10 +89,11 @@ exports.obtenerHistorial = async (req, res) => {
                 p.id AS pedido_id,
                 p.total,
                 p.fecha,
+                p.estado,
                 d.producto_id,
                 pr.nombre,
                 d.cantidad,
-                d.precio
+                d.precio_unitario AS precio
             FROM pedidos p
             JOIN detalle_pedido d ON p.id = d.pedido_id
             JOIN productos pr ON pr.id = d.producto_id
@@ -108,6 +109,7 @@ exports.obtenerHistorial = async (req, res) => {
                     pedido_id: row.pedido_id,
                     total: row.total,
                     fecha: row.fecha,
+                    estado: row.estado,
                     productos: []
                 };
             }
@@ -121,6 +123,33 @@ exports.obtenerHistorial = async (req, res) => {
         });
 
         res.json(Object.values(pedidos));
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/* RF40 y RF41 - SIMULACIÓN ENVÍO */
+
+exports.simularEstadoEnvio = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nuevoEstado } = req.body;
+
+        const estadosValidos = ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'];
+        if (!estadosValidos.includes(nuevoEstado.toLowerCase())) {
+            return res.status(400).json({ error: "Estado no válido" });
+        }
+
+        await pool.query(
+            "UPDATE pedidos SET estado = $1 WHERE id = $2",
+            [nuevoEstado.toLowerCase(), id]
+        );
+
+        res.json({
+            mensaje: "Estado actualizado con éxito",
+            notificacion: `El pedido #${id} ahora está: ${nuevoEstado}`
+        });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
