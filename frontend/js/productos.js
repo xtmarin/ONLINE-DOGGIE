@@ -10,7 +10,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         for (const producto of productos) {
 
-            /* RF23 - Obtener valoración promedio */
+            /* Registrar en historial de navegación */
+            registrarNavegacion({
+                id:     producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                imagen: producto.imagen
+            });
+
+            /* Obtener valoración promedio */
             let promedio = 0;
             let total = 0;
 
@@ -70,13 +78,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         }
 
+        /* Mostrar historial actualizado */
+        mostrarHistorialNav();
+
     } catch (error) {
         console.error("Error cargando productos:", error);
     }
 
 });
-
-
 
 
 function generarEstrellas(promedio) {
@@ -103,9 +112,7 @@ function seleccionarEstrella(productoId, valor) {
 }
 
 
-/* ============================= */
-/* ENVIAR VALORACIÓN      */
-/* ============================= */
+/* ENVIAR VALORACIÓN */
 
 async function enviarValoracion(productoId) {
 
