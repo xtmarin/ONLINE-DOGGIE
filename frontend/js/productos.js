@@ -10,14 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         for (const producto of productos) {
 
-            /* Registrar en historial de navegación */
-            registrarNavegacion({
-                id:     producto.id,
-                nombre: producto.nombre,
-                precio: producto.precio,
-                imagen: producto.imagen
-            });
-
             /* Obtener valoración promedio */
             let promedio = 0;
             let total = 0;
@@ -77,9 +69,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             contenedor.appendChild(div);
 
         }
-
-        /* Mostrar historial actualizado */
-        mostrarHistorialNav();
 
     } catch (error) {
         console.error("Error cargando productos:", error);
