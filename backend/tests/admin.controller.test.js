@@ -1,24 +1,9 @@
-// tests/auth.controller.test.js
-
-const authController = require('../src/controllers/auth.controller');
+const adminController = require('../src/controllers/admin.controller');
 const pool = require('../src/config/db');
-const jwt = require('jsonwebtoken');
 
 jest.mock('../src/config/db');
 
-jest.mock('../src/utils/security', () => ({
-    hashPassword: jest.fn(() => Promise.resolve('hashedPassword')),
-    verifyPassword: jest.fn(),
-    createToken: jest.fn(() => 'token_generado')
-}));
-
-const {
-    hashPassword,
-    verifyPassword,
-    createToken
-} = require('../src/utils/security');
-
-describe('Auth Controller', () => {
+describe('Admin Controller', () => {
 
     let req;
     let res;
@@ -26,10 +11,7 @@ describe('Auth Controller', () => {
     beforeEach(() => {
 
         req = {
-            body: {},
-            usuario: {
-                id: 1
-            }
+            body: {}
         };
 
         res = {
@@ -37,435 +19,174 @@ describe('Auth Controller', () => {
             json: jest.fn()
         };
 
-        process.env.JWT_SECRET = 'testsecret';
-        process.env.NODE_ENV = 'test';
-
-        jest.spyOn(console, 'error').mockImplementation(() => {});
-
         jest.clearAllMocks();
     });
 
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
+    describe('obtenerMetricas', () => {
 
-    describe('registro', () => {
-
-        it('debería retornar 400 si faltan campos', async () => {
-
-            req.body = {};
-
-            await authController.registro(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'Todos los campos son obligatorios'
-            });
-        });
-
-        it('debería retornar 400 si el email es inválido', async () => {
-
-            req.body = {
-                nombre: 'Emmanuel',
-                email: 'correo_malo',
-                password: '12345678',
-                direccion: 'test'
-            };
-
-            await authController.registro(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'Formato de correo inválido'
-            });
-        });
-
-        it('debería retornar 400 si password es corta', async () => {
-
-            req.body = {
-                nombre: 'Emmanuel',
-                email: 'test@test.com',
-                password: '123',
-                direccion: 'test'
-            };
-
-            await authController.registro(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 400 si usuario ya existe', async () => {
-
-            req.body = {
-                nombre: 'Emmanuel',
-                email: 'test@test.com',
-                password: '12345678',
-                direccion: 'test'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{ id: 1 }]
-            });
-
-            await authController.registro(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'El usuario ya existe'
-            });
-        });
-
-        it('debería registrar usuario correctamente', async () => {
-
-            req.body = {
-                nombre: 'Emmanuel',
-                email: 'test@test.com',
-                password: '12345678',
-                direccion: 'test'
-            };
-
-            pool.query
-                .mockResolvedValueOnce({ rows: [] })
-                .mockResolvedValueOnce({});
-
-            await authController.registro(req, res);
-
-            expect(hashPassword).toHaveBeenCalled();
-
-            expect(res.json).toHaveBeenCalled();
-
-        });
-
-    });
-
-    describe('verificarCuenta', () => {
-
-        it('debería retornar 400 si faltan datos', async () => {
-
-            req.body = {};
-
-            await authController.verificarCuenta(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 404 si usuario no existe', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                codigo: '123456'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: []
-            });
-
-            await authController.verificarCuenta(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(404);
-        });
-
-        it('debería retornar 400 si cuenta ya verificada', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                codigo: '123456'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{
-                    cuenta_verificada: true
-                }]
-            });
-
-            await authController.verificarCuenta(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 401 si código incorrecto', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                codigo: '111111'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{
-                    cuenta_verificada: false,
-                    codigo_verificacion: '999999'
-                }]
-            });
-
-            await authController.verificarCuenta(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(401);
-        });
-
-        it('debería verificar cuenta correctamente', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                codigo: '123456'
-            };
+        it('debería obtener métricas correctamente', async () => {
 
             pool.query
                 .mockResolvedValueOnce({
-                    rows: [{
-                        id: 1,
-                        cuenta_verificada: false,
-                        codigo_verificacion: '123456',
-                        verificacion_expira: new Date(Date.now() + 50000)
-                    }]
+                    rows: [{ count: '10' }]
                 })
-                .mockResolvedValueOnce({});
+                .mockResolvedValueOnce({
+                    rows: [{ count: '5' }]
+                })
+                .mockResolvedValueOnce({
+                    rows: [{ sum: '25000' }]
+                });
 
-            await authController.verificarCuenta(req, res);
-
-            expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'Cuenta verificada exitosamente. ¡Ya puedes iniciar sesión!'
-            });
-        });
-
-    });
-
-    describe('login', () => {
-
-        it('debería retornar 400 si faltan campos', async () => {
-
-            req.body = {};
-
-            await authController.login(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 404 si usuario no existe', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                password: '12345678'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: []
-            });
-
-            await authController.login(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(404);
-        });
-
-        it('debería retornar 403 si cuenta no verificada', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                password: '12345678'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{
-                    cuenta_verificada: false
-                }]
-            });
-
-            await authController.login(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(403);
-        });
-
-        it('debería retornar 401 si password incorrecta', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                password: '12345678'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{
-                    cuenta_verificada: true,
-                    password: 'hash'
-                }]
-            });
-
-            verifyPassword.mockResolvedValue(false);
-
-            await authController.login(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(401);
-        });
-
-        it('debería hacer login correctamente', async () => {
-
-            req.body = {
-                email: 'test@test.com',
-                password: '12345678'
-            };
-
-            pool.query.mockResolvedValue({
-                rows: [{
-                    id: 1,
-                    nombre: 'Emmanuel',
-                    rol: 'cliente',
-                    cuenta_verificada: true,
-                    dos_fa_activa: false,
-                    password: 'hash'
-                }]
-            });
-
-            verifyPassword.mockResolvedValue(true);
-
-            await authController.login(req, res);
-
-            expect(createToken).toHaveBeenCalled();
+            await adminController.obtenerMetricas(req, res);
 
             expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'Login exitoso',
-                token: 'token_generado',
-                usuario: {
-                    id: 1,
-                    nombre: 'Emmanuel',
-                    rol: 'cliente'
-                }
+                totalProductos: '10',
+                totalUsuarios: '5',
+                totalVentas: '25000'
+            });
+        });
+
+        it('debería manejar errores al obtener métricas', async () => {
+
+            pool.query.mockRejectedValue(new Error('DB Error'));
+
+            await adminController.obtenerMetricas(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+
+            expect(res.json).toHaveBeenCalledWith({
+                mensaje: 'Error al obtener métricas'
             });
         });
 
     });
 
-    describe('verificar2FA', () => {
+    describe('obtenerActividad', () => {
 
-        it('debería retornar 400 si faltan datos', async () => {
+        it('debería obtener actividad correctamente', async () => {
 
-            req.body = {};
+            const actividadMock = [
+                { accion: 'Usuario creado' }
+            ];
 
-            await authController.verificar2FA(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 401 si token temporal inválido', async () => {
-
-            req.body = {
-                codigo: '123456',
-                tokenTemporal: 'token_fake'
-            };
-
-            jest.spyOn(jwt, 'verify').mockImplementation(() => {
-                throw new Error('Token inválido');
+            pool.query.mockResolvedValue({
+                rows: actividadMock
             });
 
-            await authController.verificar2FA(req, res);
+            await adminController.obtenerActividad(req, res);
 
-            expect(res.status).toHaveBeenCalledWith(401);
+            expect(res.json).toHaveBeenCalledWith(actividadMock);
+        });
+
+        it('debería manejar errores al obtener actividad', async () => {
+
+            pool.query.mockRejectedValue(new Error('DB Error'));
+
+            await adminController.obtenerActividad(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+
+            expect(res.json).toHaveBeenCalledWith({
+                mensaje: 'Error al obtener actividad'
+            });
         });
 
     });
 
-    describe('recuperarPassword', () => {
+    describe('promoverUsuario', () => {
 
-        it('debería retornar 400 si falta email', async () => {
-
-            req.body = {};
-
-            await authController.recuperarPassword(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 404 si usuario no existe', async () => {
+        it('debería promover usuario correctamente', async () => {
 
             req.body = {
                 email: 'test@test.com'
             };
 
-            pool.query.mockResolvedValue({
-                rows: []
+            pool.query
+                .mockResolvedValueOnce({
+                    rowCount: 1,
+                    rows: [{
+                        nombre: 'Emmanuel'
+                    }]
+                })
+                .mockResolvedValueOnce({});
+
+            await adminController.promoverUsuario(req, res);
+
+            expect(res.json).toHaveBeenCalledWith({
+                mensaje: '¡Emmanuel ahora es Administrador!'
             });
-
-            await authController.recuperarPassword(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(404);
         });
-
-    });
-
-    describe('obtenerPerfil', () => {
 
         it('debería retornar 404 si usuario no existe', async () => {
 
+            req.body = {
+                email: 'fake@test.com'
+            };
+
             pool.query.mockResolvedValue({
+                rowCount: 0,
                 rows: []
             });
 
-            await authController.obtenerPerfil(req, res);
+            await adminController.promoverUsuario(req, res);
 
             expect(res.status).toHaveBeenCalledWith(404);
-        });
-
-    });
-
-    describe('editarPerfil', () => {
-
-        it('debería retornar 400 si faltan datos', async () => {
-
-            req.body = {};
-
-            await authController.editarPerfil(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería actualizar perfil correctamente', async () => {
-
-            req.body = {
-                nombre: 'Nuevo',
-                email: 'nuevo@test.com',
-                direccion: 'direccion'
-            };
-
-            pool.query.mockResolvedValue({});
-
-            await authController.editarPerfil(req, res);
 
             expect(res.json).toHaveBeenCalledWith({
-                mensaje: 'Perfil actualizado correctamente'
+                mensaje: 'Usuario no encontrado'
+            });
+        });
+
+        it('debería manejar errores al promover usuario', async () => {
+
+            req.body = {
+                email: 'test@test.com'
+            };
+
+            pool.query.mockRejectedValue(new Error('DB Error'));
+
+            await adminController.promoverUsuario(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+
+            expect(res.json).toHaveBeenCalledWith({
+                mensaje: 'Error al actualizar el rol'
             });
         });
 
     });
 
-    describe('cambiarPassword', () => {
+    describe('obtenerTodosPedidos', () => {
 
-        it('debería retornar 400 si faltan datos', async () => {
+        it('debería obtener todos los pedidos', async () => {
 
-            req.body = {};
-
-            await authController.cambiarPassword(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(400);
-        });
-
-        it('debería retornar 401 si password actual incorrecta', async () => {
-
-            req.body = {
-                passwordActual: '12345678',
-                passwordNueva: '87654321'
-            };
+            const pedidosMock = [
+                {
+                    id: 1,
+                    total: 5000
+                }
+            ];
 
             pool.query.mockResolvedValue({
-                rows: [{
-                    password: 'hash'
-                }]
+                rows: pedidosMock
             });
 
-            verifyPassword.mockResolvedValue(false);
+            await adminController.obtenerTodosPedidos(req, res);
 
-            await authController.cambiarPassword(req, res);
+            expect(res.json).toHaveBeenCalledWith(pedidosMock);
+        });
 
-            expect(res.status).toHaveBeenCalledWith(401);
+        it('debería manejar errores al obtener pedidos', async () => {
+
+            pool.query.mockRejectedValue(new Error('DB Error'));
+
+            await adminController.obtenerTodosPedidos(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+
+            expect(res.json).toHaveBeenCalledWith({
+                mensaje: 'Error al obtener pedidos'
+            });
         });
 
     });

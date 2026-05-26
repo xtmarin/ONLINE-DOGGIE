@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../src/app');
 const pool = require('../src/config/db');
+const jwt = require('jsonwebtoken');
 
 describe('Pruebas Avanzadas de Autenticación - ONLINE-DOGGIE', () => {
 
@@ -336,5 +337,100 @@ describe('Pruebas Avanzadas de Autenticación - ONLINE-DOGGIE', () => {
             });
 
         expect(res.statusCode).toEqual(500);
+    });
+
+    // --- NUEVAS PRUEBAS PARA CERRAR BRECHAS ---
+
+    it('Debería fallar el registro si el formato del email es inválido', async () => {
+        const res = await request(app)
+            .post('/api/auth/registro')
+            .send({
+                nombre: 'Doggie',
+                email: 'email-invalido',
+                password: 'password123',
+                direccion: 'Calle Falsa 123'
+            });
+        expect(res.statusCode).toEqual(400);
+    });
+
+    it('Debería fallar la verificación si la cuenta ya está verificada', async () => {
+        // Asumiendo que ya está verificada por el test anterior, lo intentamos otra vez
+        const res = await request(app)
+            .post('/api/auth/verificarCuenta')
+            .send({
+                email: 'test_doggie@gmail.com',
+                codigo: codigoVerificacion // Re-usar el código aunque sea viejo, el sistema debe detectar que ya está verificada
+            });
+        // Si tu código tiene un if (usuario.cuenta_verificada), esto lo cubrirá
+        expect(res.statusCode).toBe(400);
+    });
+
+    it('Debería fallar el login si el usuario no ha verificado su cuenta', async () => {
+        // 1. Registramos un usuario nuevo (sin verificar)
+        await request(app).post('/api/auth/registro').send({
+            nombre: 'No Verificado',
+            email: 'no_verificado@gmail.com',
+            password: 'password123',
+            direccion: 'Calle'
+        });
+
+        // 2. Intentamos login
+        const res = await request(app).post('/api/auth/login').send({
+            email: 'no_verificado@gmail.com',
+            password: 'password123'
+        });
+        expect(res.statusCode).toEqual(403);
+    });
+
+    it('Debería fallar la verificación si el código expiró', async () => {
+        // Necesitas un usuario con fecha de expiración en el pasado
+        // Para esto, puedes hacer un UPDATE manual en la BD usando pool.query
+        await pool.query(
+            "UPDATE usuarios SET verificacion_expira = $1 WHERE email = $2",
+            [new Date(Date.now() - 60000), 'no_verificado@gmail.com'] // Pasado
+        );
+
+        const res = await request(app).post('/api/auth/verificarCuenta').send({
+            email: 'no_verificado@gmail.com',
+            codigo: '123456' // El código no importa, debería fallar por fecha primero
+        });
+        expect(res.statusCode).toEqual(401);
+    });
+
+    it('Debería fallar al editar perfil si el formato de email es inválido', async () => {
+        const res = await request(app)
+            .put('/api/auth/perfil')
+            .set('Authorization', `Bearer ${tokenUsuario}`)
+            .send({
+                nombre: 'Nuevo Nombre',
+                email: 'email-malo'
+            });
+        expect(res.statusCode).toEqual(400);
+    });
+
+    // --- CORRECCIÓN DE PRUEBAS VERIFICAR2FA ---
+
+    it('Debería fallar verificar2FA si faltan datos', async () => {
+        const res = await request(app).post('/api/auth/verificar-2fa').send({});
+        // Si el endpoint existe, debería ser 400. Si es 404, la ruta está mal escrita.
+        expect(res.statusCode).toBe(400); 
+    });
+
+    it('Debería fallar verificar2FA si el token es inválido o no está presente', async () => {
+        const res = await request(app).post('/api/auth/verificar-2fa').send({
+            codigo: '123456',
+            tokenTemporal: 'token-invalido-123'
+        });
+        expect(res.statusCode).toBe(401);
+    });
+
+    it('Debería fallar verificar2FA si el usuario asociado al token no existe', async () => {
+        const tokenInexistente = jwt.sign({ id: 99999 }, process.env.JWT_SECRET);
+        
+        const res = await request(app).post('/api/auth/verificar-2fa').send({
+            codigo: '123456',
+            tokenTemporal: tokenInexistente
+        });
+        expect(res.statusCode).toBe(404);
     });
 });
