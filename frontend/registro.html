@@ -16,32 +16,51 @@
 
             <img src="./assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo de la tienda" class="logo">
 
-            <h2>Crear una cuenta</h2>
+            <div id="seccion-registro">
+                <h2>Crear una cuenta</h2>
+                <form id="form-registro">
+                    <div class="form-group">
+                        <label>🐶 Nombre completo</label>
+                        <input type="text" id="nombre" placeholder="Ej. Juan Pérez" required>
+                    </div>
 
-            <form id="form-registro">
+                    <div class="form-group">
+                        <label>🐱 Correo electrónico</label>
+                        <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>🐶 Nombre completo</label>
-                    <input type="text" id="nombre" placeholder="Ej. Juan Pérez" required>
-                </div>
+                    <div class="form-group">
+                        <label>🦴 Contraseña</label>
+                        <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>🐱 Correo electrónico</label>
-                    <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required>
-                </div>
+                    <div class="form-group">
+                        <label>📍 Dirección de envío</label>
+                        <input type="text" id="direccion" placeholder="Ej. Calle 10 #25-45" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>🦴 Contraseña</label>
-                    <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
-                </div>
+                    <button type="submit">Registrarse</button>
 
-                <button type="submit">Registrarse</button>
+                    <p class="login-link">
+                        ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a>
+                    </p>
+                </form>
+            </div>
 
-                <p class="login-link">
-                    ¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a>
+            <div id="seccion-verificacion" style="display: none;">
+                <h2>Verifica tu cuenta</h2>
+                <p style="font-size: 14px; color: #666; margin-bottom: 20px; text-align: center;">
+                    Te hemos enviado un código de 6 dígitos a tu correo electrónico. Por favor, ingrésalo a continuación:
                 </p>
+                <form id="form-verificacion">
+                    <div class="form-group">
+                        <label>📩 Código de Verificación</label>
+                        <input type="text" id="codigo" placeholder="Ej. 123456" maxlength="6" required style="text-align: center; font-size: 18px; letter-spacing: 2px;">
+                    </div>
 
-            </form>
+                   <button type="submit" style="background-color: #0056b3; color: white; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#004085'" onmouseout="this.style.backgroundColor='#0056b3'">Confirmar Código</button>
+                </form>
+            </div>
 
         </section>
 

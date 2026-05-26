@@ -2,30 +2,25 @@ const pool = require('../config/db');
 const multer = require('multer');
 const path = require('path');
 
-/* ============================= */
-/* CONFIGURACIÓN MULTER          */
-/* ============================= */
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../frontend/assets/img'));
-    },
-    filename: function (req, file, cb) {
-        const nombreUnico = Date.now() + '-' + file.originalname;
-        cb(null, nombreUnico);
-    }
-});
+/* CONFIGURACIÓN MULTER */
+const storage = process.env.NODE_ENV === 'test' 
+    ? multer.memoryStorage() 
+    : multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, path.join(__dirname, '../../frontend/assets/img'));
+        },
+        filename: function (req, file, cb) {
+            const nombreUnico = Date.now() + '-' + file.originalname;
+            cb(null, nombreUnico);
+        }
+    });
 
 exports.upload = multer({ storage });
 
 
-/* ============================= */
-/* OBTENER PRODUCTOS             */
-/* ============================= */
-
+/* OBTENER PRODUCTOS */
 exports.obtenerProductos = async (req, res) => {
     try {
-
         const result = await pool.query(`
             SELECT 
                 productos.*,
@@ -37,21 +32,13 @@ exports.obtenerProductos = async (req, res) => {
         `);
 
         res.json(result.rows);
-
     } catch (error) {
-
-        res.status(500).json({
-            error: error.message
-        });
-
+        res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* CREAR PRODUCTO                */
-/* ============================= */
-
+/* CREAR PRODUCTO */
 exports.crearProducto = async (req, res) => {
     try {
         const { nombre, descripcion, precio, categoria, stock } = req.body;
@@ -60,25 +47,21 @@ exports.crearProducto = async (req, res) => {
             return res.status(400).json({ error: "Todos los campos son obligatorios" });
         }
 
-        const imagen = req.file ? req.file.filename : null;
+        const imagen = req.file ? (req.file.filename || req.file.originalname) : null;
 
         await pool.query(`
-            INSERT INTO productos (nombre, descripcion, precio, categoria, stock, imagen)
+            INSERT INTO productos (nombre, descripcion, precio, categoria_id, stock, imagen)
             VALUES ($1, $2, $3, $4, $5, $6)
-        `, [nombre, descripcion, precio, categoria, stock, imagen]);
+        `, [nombre, descripcion, precio, parseInt(categoria), stock, imagen]);
 
         res.json({ mensaje: "Producto creado" });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* ACTUALIZAR PRODUCTO           */
-/* ============================= */
-
+/* ACTUALIZAR PRODUCTO */
 exports.actualizarProducto = async (req, res) => {
     try {
         const { id } = req.params;
@@ -88,55 +71,58 @@ exports.actualizarProducto = async (req, res) => {
             return res.status(400).json({ error: "No se permiten campos vacíos" });
         }
 
-        const imagen = req.file ? req.file.filename : null;
+        const imagen = req.file ? (req.file.filename || req.file.originalname) : null;
+        let result;
 
         if (imagen) {
-            await pool.query(`
+            result = await pool.query(`
                 UPDATE productos 
-                SET nombre=$1, descripcion=$2, precio=$3, categoria=$4, stock=$5, imagen=$6
+                SET nombre=$1, descripcion=$2, precio=$3, categoria_id=$4, stock=$5, imagen=$6
                 WHERE id=$7
-            `, [nombre, descripcion, precio, categoria, stock, imagen, id]);
+            `, [nombre, descripcion, precio, parseInt(categoria), stock, imagen, id]);
         } else {
-            await pool.query(`
+            result = await pool.query(`
                 UPDATE productos 
-                SET nombre=$1, descripcion=$2, precio=$3, categoria=$4, stock=$5
+                SET nombre=$1, descripcion=$2, precio=$3, categoria_id=$4, stock=$5
                 WHERE id=$6
-            `, [nombre, descripcion, precio, categoria, stock, id]);
+            `, [nombre, descripcion, precio, parseInt(categoria), stock, id]);
+        }
+
+        // VALIDACIÓN QA: Si no afectó filas, el producto no existe
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
         }
 
         res.json({ mensaje: "Producto actualizado correctamente" });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* ELIMINAR PRODUCTO             */
-/* ============================= */
-
+/* ELIMINAR PRODUCTO */
 exports.eliminarProducto = async (req, res) => {
     try {
         const { id } = req.params;
 
-        await pool.query(
+        const result = await pool.query(
             "UPDATE productos SET activo = FALSE WHERE id = $1",
             [id]
         );
 
-        res.json({ mensaje: "Producto eliminado" });
+        // VALIDACIÓN QA: Si no afectó filas, el producto no existe
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
+        }
 
+        res.json({ mensaje: "Producto eliminado" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* STOCK BAJO (RF02)             */
-/* ============================= */
-
+/* STOCK BAJO */
 exports.stockBajo = async (req, res) => {
     try {
         const result = await pool.query(
@@ -149,10 +135,7 @@ exports.stockBajo = async (req, res) => {
 };
 
 
-/* ============================= */
-/* ACTUALIZAR STOCK (RF26+RF27)  */
-/* ============================= */
-
+/* ACTUALIZAR STOCK */
 exports.actualizarStock = async (req, res) => {
     try {
         const { id } = req.params;
@@ -164,28 +147,29 @@ exports.actualizarStock = async (req, res) => {
 
         const nuevoActivo = stock > 5;
 
-        await pool.query(`
+        const result = await pool.query(`
             UPDATE productos 
             SET stock=$1, activo=$2
             WHERE id=$3
         `, [stock, nuevoActivo, id]);
+
+        // VALIDACIÓN QA: Si no afectó filas, el producto no existe
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
+        }
 
         res.json({ 
             mensaje: nuevoActivo 
                 ? "Stock actualizado correctamente" 
                 : "Stock actualizado. Producto desactivado por stock bajo."
         });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* VALORAR PRODUCTO (RF23)       */
-/* ============================= */
-
+/* VALORAR PRODUCTO */
 exports.valorarProducto = async (req, res) => {
     try {
         const { id } = req.params;
@@ -194,6 +178,12 @@ exports.valorarProducto = async (req, res) => {
 
         if (!valoracion || valoracion < 1 || valoracion > 5) {
             return res.status(400).json({ error: "La valoración debe ser entre 1 y 5" });
+        }
+
+       
+        const existeProducto = await pool.query("SELECT id FROM productos WHERE id = $1", [id]);
+        if (existeProducto.rows.length === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
         }
 
         const yaValoro = await pool.query(
@@ -211,20 +201,22 @@ exports.valorarProducto = async (req, res) => {
         `, [id, usuario_id, valoracion]);
 
         res.json({ mensaje: "Valoración registrada" });
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 
-/* ============================= */
-/* OBTENER VALORACIÓN PROMEDIO   */
-/* ============================= */
-
+/* OBTENER VALORACIÓN PROMEDIO */
 exports.obtenerValoracion = async (req, res) => {
     try {
         const { id } = req.params;
+
+        
+        const existeProducto = await pool.query("SELECT id FROM productos WHERE id = $1", [id]);
+        if (existeProducto.rows.length === 0) {
+            return res.status(404).json({ error: "Producto no encontrado" });
+        }
 
         const result = await pool.query(
             "SELECT ROUND(AVG(valoracion), 1) as promedio, COUNT(*) as total FROM valoraciones WHERE producto_id=$1",
@@ -232,7 +224,6 @@ exports.obtenerValoracion = async (req, res) => {
         );
 
         res.json(result.rows[0]);
-
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
