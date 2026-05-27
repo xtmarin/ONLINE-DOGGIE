@@ -3,11 +3,19 @@ const multer = require('multer');
 const path = require('path');
 
 /* CONFIGURACIÓN MULTER */
+const fs = require('fs'); // Asegúrate de importar fs arriba
+
+const uploadDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
 const storage = process.env.NODE_ENV === 'test' 
     ? multer.memoryStorage() 
     : multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, '../../frontend/assets/img'));
+            // APUNTAR A LA CARPETA uploads EN EL BACKEND
+            cb(null, uploadDir); 
         },
         filename: function (req, file, cb) {
             const nombreUnico = Date.now() + '-' + file.originalname;
@@ -43,19 +51,31 @@ exports.crearProducto = async (req, res) => {
     try {
         const { nombre, descripcion, precio, categoria, stock } = req.body;
 
+        // 1. Validar presencia
         if (!nombre || !descripcion || !precio || !categoria || !stock) {
             return res.status(400).json({ error: "Todos los campos son obligatorios" });
         }
 
-        const imagen = req.file ? (req.file.filename || req.file.originalname) : null;
+        // 2. FORZAR CONVERSIÓN A NÚMERO AQUÍ TAMBIÉN
+        const precioNum = parseInt(precio, 10);
+        const stockNum = parseInt(stock, 10);
+        const catNum = parseInt(categoria, 10);
+
+        // 3. Validar que la conversión fue exitosa
+        if (isNaN(precioNum) || isNaN(stockNum) || isNaN(catNum)) {
+            return res.status(400).json({ error: "El precio, stock y categoría deben ser números válidos" });
+        }
+
+        const imagen = req.file ? req.file.filename : null;
 
         await pool.query(`
             INSERT INTO productos (nombre, descripcion, precio, categoria_id, stock, imagen)
             VALUES ($1, $2, $3, $4, $5, $6)
-        `, [nombre, descripcion, precio, parseInt(categoria), stock, imagen]);
+        `, [nombre, descripcion, precioNum, catNum, stockNum, imagen]);
 
         res.json({ mensaje: "Producto creado" });
     } catch (error) {
+        console.error("Error en crearProducto:", error); // Esto te dirá qué está fallando
         res.status(500).json({ error: error.message });
     }
 };

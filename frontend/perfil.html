@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - Online Doggie</title>
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="shortcut icon" href="assets/img/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
 </head>
 
 <body>
 
     <header class="header">
         <div class="logo">
-            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -28,7 +28,6 @@
     <main class="main-content">
         <section class="perfil-container">
 
-            <!-- SEGUIMIENTO DEL ÚLTIMO PEDIDO -->
             <div class="perfil-seccion seguimiento-simulado">
                 <h3>📦 Estado de mi último pedido</h3>
                 <p id="estado-pedido" class="badge-estado">Cargando...</p>
@@ -43,7 +42,6 @@
 
             <h2>Mi Perfil</h2>
 
-            <!-- Ver datos -->
             <div class="perfil-card">
                 <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
                 <p><strong>Email:</strong> <span id="perfil-email"></span></p>
@@ -51,7 +49,6 @@
                 <button id="logout-btn">Cerrar sesión</button>
             </div>
 
-            <!-- DIRECCIÓN DE ENVÍO -->
             <div class="perfil-seccion direccion-envio">
                 <h3>📍 Dirección de entrega</h3>
                 <div class="form-group">
@@ -62,7 +59,6 @@
                 <p id="mensaje-direccion"></p>
             </div>
 
-            <!--Editar perfil -->
             <div class="perfil-seccion">
                 <h3>Editar perfil</h3>
                 <form id="form-editar-perfil">
@@ -78,7 +74,6 @@
                 </form>
             </div>
 
-            <!-- Cambiar contraseña -->
             <div class="perfil-seccion">
                 <h3>Cambiar contraseña</h3>
                 <form id="form-cambiar-password">
@@ -101,15 +96,12 @@
         </section>
     </main>
 
-    <!-- PIE DE PÁGINA COMPLETO -->
     <footer class="footer">
         <div class="footer-content">
-
             <div class="footer-col">
                 <h4>Online Doggie</h4>
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
             </div>
-
             <div class="footer-col">
                 <h4>Enlaces</h4>
                 <ul>
@@ -119,13 +111,11 @@
                     <li><a href="Login.html">Login</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Contacto</h4>
                 <p>📞 +57 300 123 4567</p>
                 <p>📧 contacto@onlinedoggie.com</p>
             </div>
-
             <div class="footer-col">
                 <h4>Redes sociales</h4>
                 <ul>
@@ -133,7 +123,6 @@
                     <li><a href="https://facebook.com/onlinedoggie" target="_blank">📘 Facebook</a></li>
                 </ul>
             </div>
-
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
@@ -143,5 +132,4 @@
     <script src="./js/perfil.js"></script>
 
 </body>
-
 </html>

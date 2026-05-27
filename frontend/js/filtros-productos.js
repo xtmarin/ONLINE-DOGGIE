@@ -1,20 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const buscador = document.getElementById("buscador");
-    const filtroCategoria = document.getElementById("filtro-categoria");
+    const filtroCategoria = document.getElementById("categoria");
 
     function filtrarProductos() {
 
         const texto = buscador.value.toLowerCase();
         const categoria = filtroCategoria.value;
 
-        const productos = document.querySelectorAll(".producto");
+       const productos = document.querySelectorAll(".producto");
         let hayResultados = false;
 
         productos.forEach(producto => {
 
-            const nombre = producto.dataset.nombre;
-            const categoriaProducto = producto.dataset.categoria;
+           const nombre = producto.dataset.nombre.toLowerCase();
+            const categoriaProducto = producto.dataset.categoria.toLowerCase();
 
             const coincideTexto = nombre.includes(texto);
             const coincideCategoria =

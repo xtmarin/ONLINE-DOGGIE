@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito - Online Doggie</title>
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="assets/img/ONLINE-DOGGIE ICO.ico">
+    <link rel="icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico">
 </head>
 
 <body>
 
     <header class="header">
         <div class="logo">
-            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -31,7 +31,6 @@
 
         <h1>🛒 Tu Carrito</h1>
 
-        <!-- Productos en carrito -->
         <table border="1" width="100%">
             <thead>
                 <tr>
@@ -47,7 +46,6 @@
 
         <h2 id="total">Total: $0</h2>
 
-        <!-- Cupón de descuento -->
         <div class="cupon-box">
             <h3>¿Tienes un cupón?</h3>
             <div class="cupon-form">
@@ -63,12 +61,10 @@
 
         <br><br>
 
-        <!-- Confirmar pedido -->
         <button onclick="finalizarCompra()" class="btn-agregar">
             Finalizar compra
         </button>
 
-        <!-- CALIFICACIÓN DEL SERVICIO (aparece tras finalizar compra) -->
         <section class="calificacion-section" id="seccion-calificacion" style="display:none; margin-top:30px;">
             <h2>🎉 ¡Gracias por tu compra!</h2>
             <p>¿Cómo fue tu experiencia con nosotros?</p>
@@ -87,15 +83,12 @@
 
     </main>
 
-    <!-- PIE DE PÁGINA COMPLETO -->
     <footer class="footer">
         <div class="footer-content">
-
             <div class="footer-col">
                 <h4>Online Doggie</h4>
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
             </div>
-
             <div class="footer-col">
                 <h4>Enlaces</h4>
                 <ul>
@@ -105,13 +98,11 @@
                     <li><a href="Login.html">Login</a></li>
                 </ul>
             </div>
-
             <div class="footer-col">
                 <h4>Contacto</h4>
                 <p>📞 +57 300 123 4567</p>
                 <p>📧 contacto@onlinedoggie.com</p>
             </div>
-
             <div class="footer-col">
                 <h4>Redes sociales</h4>
                 <ul>
@@ -119,7 +110,6 @@
                     <li><a href="https://facebook.com/onlinedoggie" target="_blank">📘 Facebook</a></li>
                 </ul>
             </div>
-
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
@@ -128,7 +118,6 @@
 
     <script src="./js/carrito.js"></script>
 
-    <!-- Lógica calificación post-compra -->
     <script>
         let calificacionSeleccionada = 0;
 
@@ -159,5 +148,4 @@
     </script>
 
 </body>
-
 </html>

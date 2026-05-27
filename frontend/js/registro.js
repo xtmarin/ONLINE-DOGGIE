@@ -10,23 +10,19 @@ document.getElementById("form-registro").addEventListener("submit", async (e) =>
     const direccion = document.getElementById("direccion").value.trim();
 
     if (!nombre || !email || !password || !direccion) {
-        alert("Todos los campos son obligatorios");
-        return;
+        return alert("Todos los campos son obligatorios");
     }
 
-    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailValido) {
-        alert("El formato del correo no es válido");
-        return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return alert("El formato del correo no es válido");
     }
 
     if (password.length < 8) {
-        alert("La contraseña debe tener mínimo 8 caracteres");
-        return;
+        return alert("La contraseña debe tener mínimo 8 caracteres");
     }
 
     try {
-        const respuesta = await fetch("http://127.0.0.1:3000/api/auth/registro", {
+        const respuesta = await fetch("http://localhost:3000/api/auth/registro", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ nombre, email, password, direccion })
@@ -43,10 +39,9 @@ document.getElementById("form-registro").addEventListener("submit", async (e) =>
         } else {
             alert(data.mensaje || "Error en el registro");
         }
-
     } catch (error) {
         console.error(error);
-        alert("Error registrando usuario");
+        alert("Error registrando usuario: verifica que el servidor esté encendido.");
     }
 });
 
@@ -57,13 +52,11 @@ document.getElementById("form-verificacion").addEventListener("submit", async (e
     const codigo = document.getElementById("codigo").value.trim();
 
     if (!codigo || codigo.length !== 6) {
-        alert("Por favor, introduce un código válido de 6 dígitos");
-        return;
+        return alert("Por favor, introduce un código válido de 6 dígitos");
     }
 
     try {
-        // CORRECCIÓN: Cambiado de 'verificar-cuenta' a 'verificarCuenta' para que coincida con tus rutas
-        const respuesta = await fetch("http://127.0.0.1:3000/api/auth/verificarCuenta", {
+        const respuesta = await fetch("http://localhost:3000/api/auth/verificarCuenta", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
@@ -75,12 +68,11 @@ document.getElementById("form-verificacion").addEventListener("submit", async (e
         const data = await respuesta.json();
 
         if (respuesta.ok) {
-            alert(data.mensaje);
+            alert("✅ Cuenta verificada con éxito");
             window.location.href = "login.html"; 
         } else {
             alert(data.mensaje || "Código incorrecto o expirado");
         }
-
     } catch (error) {
         console.error(error);
         alert("Error al verificar la cuenta");

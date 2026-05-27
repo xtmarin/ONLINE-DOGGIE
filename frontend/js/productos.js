@@ -29,19 +29,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             div.setAttribute("data-categoria", producto.categoria.toLowerCase());
 
             div.innerHTML = `
-                <img src="http://localhost:3000/assets/img/${producto.imagen}" alt="${producto.nombre}">
+                <img src="http://localhost:3000/uploads/${producto.imagen}" alt="${producto.nombre}">
 
                 <h3>${producto.nombre}</h3>
 
                 <p class="descripcion">${producto.descripcion}</p>
 
-                <!-- RF23 - Valoración -->
                 <div class="rating" id="rating-${producto.id}">
                     <div class="estrellas-display">${estrellas}</div>
                     <span class="rating-info">${promedio > 0 ? promedio + ' / 5 (' + total + ' valoraciones)' : 'Sin valoraciones'}</span>
                 </div>
 
-                <!-- RF23 - Formulario de valoración -->
                 <div class="valorar-box" id="valorar-${producto.id}">
                     <p class="valorar-titulo">¿Ya lo compraste? Valóralo:</p>
                     <div class="estrellas-input">
