@@ -34,7 +34,9 @@ function mostrarHistorialNav() {
     });
 }
 
-mostrarHistorialNav();
+document.addEventListener("DOMContentLoaded", () => {
+    mostrarHistorialNav();
+});
 
 
 /* CALIFICACIÓN SERVICIO */

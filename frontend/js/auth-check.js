@@ -2,6 +2,8 @@ const token = localStorage.getItem("token");
 
 if (!token) {
     window.location.href = "login.html";
+}else{
+    verificarSesion();
 }
 
 async function verificarSesion() {
@@ -23,6 +25,7 @@ async function verificarSesion() {
 
     } catch (error) {
 
+        localStorage.removeItem("token");
         console.error("Error verificando sesión");
         window.location.href = "login.html";
 

@@ -1,20 +1,24 @@
 function agregarAlCarrito(id, nombre, precio, boton) {
 
-    let productoDiv = boton.closest(".producto");
-    let imagen = productoDiv.querySelector("img").src;
+    const productoDiv = boton.closest(".producto");
+
+    if (!productoDiv) return;
+
+    const imagenElement = productoDiv.querySelector("img");
+    const imagen = imagenElement ? imagenElement.src : "";
 
     let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-    let productoExistente = carrito.find(p => p.id === id);
+    const productoExistente = carrito.find(p => p.id === id);
 
     if (productoExistente) {
         productoExistente.cantidad++;
     } else {
         carrito.push({
-            id: id,
-            nombre: nombre,
-            precio: precio,
-            imagen: imagen,
+            id,
+            nombre,
+            precio,
+            imagen,
             cantidad: 1
         });
     }
@@ -22,6 +26,8 @@ function agregarAlCarrito(id, nombre, precio, boton) {
     localStorage.setItem("carrito", JSON.stringify(carrito));
 
     actualizarContador();
-    abrirMiniCarrito();
 
+    if (typeof abrirMiniCarrito === "function") {
+        abrirMiniCarrito();
+    }
 }

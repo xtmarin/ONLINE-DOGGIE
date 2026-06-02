@@ -36,7 +36,6 @@ exports.obtenerProductos = async (req, res) => {
             FROM productos
             JOIN categorias
                 ON productos.categoria_id = categorias.id
-            WHERE productos.activo = TRUE
         `);
 
         res.json(result.rows);
@@ -126,27 +125,32 @@ exports.eliminarProducto = async (req, res) => {
         const { id } = req.params;
 
         const result = await pool.query(
-            "UPDATE productos SET activo = FALSE WHERE id = $1",
+            "DELETE FROM productos WHERE id = $1",
             [id]
         );
 
-        // VALIDACIÓN QA: Si no afectó filas, el producto no existe
         if (result.rowCount === 0) {
-            return res.status(404).json({ error: "Producto no encontrado" });
+            return res.status(404).json({
+                error: "Producto no encontrado"
+            });
         }
 
-        res.json({ mensaje: "Producto eliminado" });
+        res.json({
+            mensaje: "Producto eliminado correctamente"
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
-
 
 /* STOCK BAJO */
 exports.stockBajo = async (req, res) => {
     try {
         const result = await pool.query(
-            "SELECT id, nombre, stock FROM productos WHERE stock <= 5 AND activo = TRUE"
+            "SELECT id, nombre, stock FROM productos WHERE stock <= 5"
         );
         res.json(result.rows);
     } catch (error) {
@@ -165,13 +169,11 @@ exports.actualizarStock = async (req, res) => {
             return res.status(400).json({ error: "El stock es obligatorio" });
         }
 
-        const nuevoActivo = stock > 5;
-
         const result = await pool.query(`
             UPDATE productos 
-            SET stock=$1, activo=$2
-            WHERE id=$3
-        `, [stock, nuevoActivo, id]);
+            SET stock=$1
+            WHERE id=$2
+        `, [stock, id]);
 
         // VALIDACIÓN QA: Si no afectó filas, el producto no existe
         if (result.rowCount === 0) {
@@ -179,9 +181,7 @@ exports.actualizarStock = async (req, res) => {
         }
 
         res.json({ 
-            mensaje: nuevoActivo 
-                ? "Stock actualizado correctamente" 
-                : "Stock actualizado. Producto desactivado por stock bajo."
+            mensaje: "Stock actualizado correctamente",
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -1,80 +1,205 @@
-let emailUsuarioTemporal = "";
-
 // REGISTRO DE USUARIO
-document.getElementById("form-registro").addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const nombre    = document.getElementById("nombre").value.trim();
-    const email     = document.getElementById("email").value.trim();
-    const password  = document.getElementById("password").value.trim();
-    const direccion = document.getElementById("direccion").value.trim();
+const formRegistro = document.getElementById("form-registro");
 
-    if (!nombre || !email || !password || !direccion) {
-        return alert("Todos los campos son obligatorios");
-    }
+if (formRegistro) {
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return alert("El formato del correo no es válido");
-    }
+    formRegistro.addEventListener("submit", async (e) => {
 
-    if (password.length < 8) {
-        return alert("La contraseña debe tener mínimo 8 caracteres");
-    }
+        e.preventDefault();
 
-    try {
-        const respuesta = await fetch("http://localhost:3000/api/auth/registro", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre, email, password, direccion })
-        });
+        const boton = e.target.querySelector('button[type="submit"]');
 
-        const data = await respuesta.json();
+        const nombre = document.getElementById("nombre").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const direccion = document.getElementById("direccion").value.trim();
 
-        if (respuesta.ok) {
-            alert(data.mensaje);
-            emailUsuarioTemporal = email; 
-
-            document.getElementById("seccion-registro").style.display = "none";
-            document.getElementById("seccion-verificacion").style.display = "block";
-        } else {
-            alert(data.mensaje || "Error en el registro");
+        if (!nombre || !email || !password || !direccion) {
+            alert("Todos los campos son obligatorios");
+            return;
         }
-    } catch (error) {
-        console.error(error);
-        alert("Error registrando usuario: verifica que el servidor esté encendido.");
-    }
-});
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert("El formato del correo no es válido");
+            return;
+        }
+
+        if (password.length < 8) {
+            alert("La contraseña debe tener mínimo 8 caracteres");
+            return;
+        }
+
+        try {
+
+            if (boton) boton.disabled = true;
+
+            const respuesta = await fetch(
+                "http://localhost:3000/api/auth/registro",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        nombre,
+                        email,
+                        password,
+                        direccion
+                    })
+                }
+            );
+
+            const data = await respuesta.json();
+
+            if (respuesta.ok) {
+
+                localStorage.setItem(
+                    "emailVerificacion",
+                    email
+                );
+
+                alert(data.mensaje);
+
+                document.getElementById(
+                    "seccion-registro"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "seccion-verificacion"
+                ).style.display = "block";
+
+            } else {
+
+                alert(
+                    data.mensaje ||
+                    "Error en el registro"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Error registrando usuario: verifica que el servidor esté encendido."
+            );
+
+        } finally {
+
+            if (boton) boton.disabled = false;
+
+        }
+
+    });
+
+}
+
 
 // VERIFICACIÓN DE CÓDIGO
-document.getElementById("form-verificacion").addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const codigo = document.getElementById("codigo").value.trim();
+const formVerificacion =
+    document.getElementById("form-verificacion");
 
-    if (!codigo || codigo.length !== 6) {
-        return alert("Por favor, introduce un código válido de 6 dígitos");
-    }
+if (formVerificacion) {
 
-    try {
-        const respuesta = await fetch("http://localhost:3000/api/auth/verificarCuenta", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                email: emailUsuarioTemporal, 
-                codigo: codigo 
-            })
-        });
+    formVerificacion.addEventListener(
+        "submit",
+        async (e) => {
 
-        const data = await respuesta.json();
+            e.preventDefault();
 
-        if (respuesta.ok) {
-            alert("✅ Cuenta verificada con éxito");
-            window.location.href = "login.html"; 
-        } else {
-            alert(data.mensaje || "Código incorrecto o expirado");
+            const boton =
+                e.target.querySelector(
+                    'button[type="submit"]'
+                );
+
+            const codigo =
+                document.getElementById("codigo")
+                .value
+                .trim();
+
+            if (!/^\d{6}$/.test(codigo)) {
+
+                alert(
+                    "El código debe contener exactamente 6 dígitos"
+                );
+
+                return;
+            }
+
+            const email =
+                localStorage.getItem(
+                    "emailVerificacion"
+                );
+
+            if (!email) {
+
+                alert(
+                    "No se encontró el correo para verificar. Regístrate nuevamente."
+                );
+
+                return;
+            }
+
+            try {
+
+                if (boton) boton.disabled = true;
+
+                const respuesta = await fetch(
+                    "http://localhost:3000/api/auth/verificarCuenta",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email,
+                            codigo
+                        })
+                    }
+                );
+
+                const data = await respuesta.json();
+
+                if (respuesta.ok) {
+
+                    localStorage.removeItem(
+                        "emailVerificacion"
+                    );
+
+                    alert(
+                        "✅ Cuenta verificada con éxito"
+                    );
+
+                    window.location.href =
+                        "login.html";
+
+                } else {
+
+                    alert(
+                        data.mensaje ||
+                        "Código incorrecto o expirado"
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Error al verificar la cuenta"
+                );
+
+            } finally {
+
+                if (boton) boton.disabled = false;
+
+            }
+
         }
-    } catch (error) {
-        console.error(error);
-        alert("Error al verificar la cuenta");
-    }
-});
+    );
+
+}

@@ -6,7 +6,7 @@ const formProducto = document.getElementById("form-producto");
 const uploadBox = document.getElementById("upload-box");
 
 let productoEditando = null;
-
+let productosCache = [];
 
 
 uploadBox.addEventListener("click", () => {
@@ -111,25 +111,52 @@ async function actualizarStock(id) {
 
 /* ... Cargar Productos  ... */
 async function cargarProductos() {
-    const respuesta = await fetch("http://localhost:3000/api/productos");
-    const productos = await respuesta.json();
-    const contenedor = document.getElementById("lista-productos");
-    contenedor.innerHTML = "";
-    productos.forEach(producto => {
-        contenedor.innerHTML += `
-        <div class="admin-item">
-            <div class="admin-info">
-                <h3>${producto.nombre}</h3>
-                <p class="admin-precio">$${Number(producto.precio).toLocaleString()}</p>
-                <p class="admin-stock ${producto.stock <= 5 ? 'stock-bajo' : ''}">Stock: ${producto.stock}</p>
-            </div>
-            <div class="admin-botones">
-                <button onclick="editarProducto(${producto.id},'${producto.nombre}','${producto.descripcion}',${producto.precio},'${producto.categoria}','${producto.imagen}',${producto.stock})">Editar</button>
-                <button onclick="eliminarProducto(${producto.id})">Eliminar</button>
-            </div>
-        </div>
-        `;
-    });
+    try {
+
+        const respuesta = await fetch("http://localhost:3000/api/productos");
+        const productos = await respuesta.json();
+
+        productosCache = productos;
+
+        const contenedor = document.getElementById("lista-productos");
+
+        if (!contenedor) return;
+
+        contenedor.innerHTML = "";
+
+        productos.forEach(producto => {
+
+            contenedor.innerHTML += `
+                <div class="admin-item">
+                    <div class="admin-info">
+                        <h3>${producto.nombre}</h3>
+
+                        <p class="admin-precio">
+                            $${Number(producto.precio).toLocaleString()}
+                        </p>
+
+                        <p class="admin-stock ${producto.stock <= 5 ? 'stock-bajo' : ''}">
+                            Stock: ${producto.stock}
+                        </p>
+                    </div>
+
+                    <div class="admin-botones">
+                        <button onclick="editarProducto(${producto.id})">
+                            Editar
+                        </button>
+
+                        <button onclick="eliminarProducto(${producto.id})">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+        console.error("Error cargando productos:", error);
+    }
 }
 
 /* ... (Formulario de crear/editar) ... */
@@ -203,34 +230,94 @@ formProducto.addEventListener("submit", async (e) => {
 });
 
 
-function editarProducto(id, nombre, descripcion, precio, categoria_id, imagen, stock) {
-    productoEditando = id;
-    document.getElementById("nombre").value = nombre;
-    document.getElementById("descripcion").value = descripcion;
-    document.getElementById("precio").value = precio;
-    
-    // Selecciona el valor correcto en el select
-    document.getElementById("categoria").value = categoria_id; 
-    
-    document.getElementById("stock").value = stock;
+function editarProducto(id) {
 
-    if (imagen) {
-        preview.src = `http://localhost:3000/uploads/${imagen}`;
+    const producto = productosCache.find(
+        p => Number(p.id) === Number(id)
+    );
+
+    if (!producto) {
+        alert("Producto no encontrado");
+        return;
+    }
+
+    productoEditando = producto.id;
+
+    document.getElementById("nombre").value =
+        producto.nombre;
+
+    document.getElementById("descripcion").value =
+        producto.descripcion;
+
+    document.getElementById("precio").value =
+        producto.precio;
+
+    document.getElementById("categoria").value =
+        producto.categoria_id;
+
+    document.getElementById("stock").value =
+        producto.stock;
+
+    if (producto.imagen) {
+        preview.src =
+            `http://localhost:3000/uploads/${producto.imagen}`;
+
         preview.style.display = "block";
     }
-    document.querySelector("#form-producto button").innerText = "Actualizar Producto";
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    document.querySelector(
+        "#form-producto button"
+    ).innerText = "Actualizar Producto";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 
 async function eliminarProducto(id) {
-    const confirmar = confirm("¿Seguro que deseas eliminar este producto?");
+
+    const confirmar = confirm(
+        "¿Seguro que deseas eliminar este producto?"
+    );
+
     if (!confirmar) return;
-    await fetch(`http://localhost:3000/api/productos/${id}`, {
-        method: "DELETE",
-        headers: { "Authorization": "Bearer " + token }
-    });
-    cargarProductos(); cargarStock(); cargarAlertas();
+
+    try {
+
+        const respuesta = await fetch(
+            `http://localhost:3000/api/productos/${id}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }
+        );
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+            alert(data.error || "Error al eliminar producto");
+            return;
+        }
+
+        alert(data.mensaje);
+
+        cargarProductos();
+        cargarStock();
+        cargarAlertas();
+
+    } catch (error) {
+
+        console.error("Error eliminando producto:", error);
+
+        alert(
+            "Error al conectar con el servidor"
+        );
+
+    }
 }
 
 async function cargarMetricas() {
