@@ -10,12 +10,12 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
 
-const storage = process.env.NODE_ENV === 'test' 
-    ? multer.memoryStorage() 
+const storage = process.env.NODE_ENV === 'test'
+    ? multer.memoryStorage()
     : multer.diskStorage({
         destination: function (req, file, cb) {
             // APUNTAR A LA CARPETA uploads EN EL BACKEND
-            cb(null, uploadDir); 
+            cb(null, uploadDir);
         },
         filename: function (req, file, cb) {
             const nombreUnico = Date.now() + '-' + file.originalname;
@@ -74,8 +74,14 @@ exports.crearProducto = async (req, res) => {
 
         res.json({ mensaje: "Producto creado" });
     } catch (error) {
-        console.error("Error en crearProducto:", error); // Esto te dirá qué está fallando
-        res.status(500).json({ error: error.message });
+
+        if (process.env.NODE_ENV !== 'test') {
+            console.error("Error en crearProducto:", error);
+        }
+
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
 
@@ -180,7 +186,7 @@ exports.actualizarStock = async (req, res) => {
             return res.status(404).json({ error: "Producto no encontrado" });
         }
 
-        res.json({ 
+        res.json({
             mensaje: "Stock actualizado correctamente",
         });
     } catch (error) {
@@ -200,7 +206,7 @@ exports.valorarProducto = async (req, res) => {
             return res.status(400).json({ error: "La valoración debe ser entre 1 y 5" });
         }
 
-       
+
         const existeProducto = await pool.query("SELECT id FROM productos WHERE id = $1", [id]);
         if (existeProducto.rows.length === 0) {
             return res.status(404).json({ error: "Producto no encontrado" });
@@ -232,7 +238,7 @@ exports.obtenerValoracion = async (req, res) => {
     try {
         const { id } = req.params;
 
-        
+
         const existeProducto = await pool.query("SELECT id FROM productos WHERE id = $1", [id]);
         if (existeProducto.rows.length === 0) {
             return res.status(404).json({ error: "Producto no encontrado" });

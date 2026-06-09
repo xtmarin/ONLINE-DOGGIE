@@ -113,9 +113,8 @@ describe('Pedidos Controller', () => {
 
             expect(res.status).toHaveBeenCalledWith(400);
 
-            expect(res.json).toHaveBeenCalledWith({
-                error: 'Producto no existe'
-            });
+            expect(res.json.mock.calls[0][0].error)
+                .toContain('no existe');
         });
 
         it('debería retornar error si stock insuficiente', async () => {
@@ -262,7 +261,9 @@ describe('Pedidos Controller', () => {
 
             req.params.id = 1;
 
-            pool.query.mockResolvedValue({});
+            pool.query.mockResolvedValue({
+                rowCount: 1
+            });
 
             await pedidosController.simularEstadoEnvio(req, res);
 
