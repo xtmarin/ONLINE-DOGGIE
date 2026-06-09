@@ -28,75 +28,78 @@
     <main class="main-content">
         <section class="perfil-container">
 
-            <!-- RF39 - SEGUIMIENTO DEL ÚLTIMO PEDIDO -->
-            <div class="perfil-seccion seguimiento-simulado">
-                <h3>📦 Estado de mi último pedido</h3>
-                <p id="estado-pedido" class="badge-estado">Cargando...</p>
-            </div>
-
-            <div class="perfil-seccion">
-                <h3>Historial de compras</h3>
-                <div id="historial-compras">
-                    <p>Cargando historial...</p>
+            <div class="perfil-col-izquierda">
+                
+                <div class="perfil-seccion seguimiento-simulado">
+                    <h3>📦 Estado de mi último pedido</h3>
+                    <p id="estado-pedido" class="badge-estado">Cargando...</p>
                 </div>
-            </div>
 
-            <h2>Mi Perfil</h2>
-
-            <!-- RF19 - Ver datos -->
-            <div class="perfil-card">
-                <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
-                <p><strong>Email:</strong> <span id="perfil-email"></span></p>
-                <p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
-                <button id="logout-btn">Cerrar sesión</button>
-            </div>
-
-            <!-- RF21 - DIRECCIÓN DE ENVÍO -->
-            <div class="perfil-seccion direccion-envio">
-                <h3>📍 Dirección de entrega</h3>
-                <div class="form-group">
-                    <label>Dirección</label>
-                    <input type="text" id="input-direccion" placeholder="Calle 123 #45-67, Ciudad...">
+                <div class="perfil-seccion">
+                    <h3>Historial de compras</h3>
+                    <div id="historial-compras">
+                        <p>Cargando historial...</p>
+                    </div>
                 </div>
-                <button onclick="guardarDireccion()">Actualizar dirección</button>
-                <p id="mensaje-direccion"></p>
+
+                <div class="perfil-seccion perfil-card-datos">
+                    <h3>👤 Mi Perfil</h3>
+                    <div class="perfil-card">
+                        <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
+                        <p><strong>Email:</strong> <span id="perfil-email"></span></p>
+                        <p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
+                        <button id="logout-btn" class="btn-danger">Cerrar sesión</button>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- RF19 - Editar perfil -->
-            <div class="perfil-seccion">
-                <h3>Editar perfil</h3>
-                <form id="form-editar-perfil">
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" id="edit-nombre" placeholder="Nuevo nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Correo electrónico</label>
-                        <input type="email" id="edit-email" placeholder="Nuevo correo" required>
-                    </div>
-                    <button type="submit">Guardar cambios</button>
-                </form>
-            </div>
+            <div class="perfil-col-derecha">
 
-            <!-- RF20 - Cambiar contraseña -->
-            <div class="perfil-seccion">
-                <h3>Cambiar contraseña</h3>
-                <form id="form-cambiar-password">
+                <div class="perfil-seccion direccion-envio">
+                    <h3>📍 Dirección de entrega</h3>
                     <div class="form-group">
-                        <label>Contraseña actual</label>
-                        <input type="password" id="password-actual" placeholder="Contraseña actual" required>
+                        <label>Dirección</label>
+                        <input type="text" id="input-direccion" placeholder="Calle 123 #45-67, Ciudad...">
                     </div>
-                    <div class="form-group">
-                        <label>Nueva contraseña</label>
-                        <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Confirmar nueva contraseña</label>
-                        <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña"
-                            required>
-                    </div>
-                    <button type="submit">Cambiar contraseña</button>
-                </form>
+                    <button onclick="guardarDireccion()" class="btn-submit">Actualizar dirección</button>
+                    <p id="mensaje-direccion"></p>
+                </div>
+
+                <div class="perfil-seccion">
+                    <h3>Editar perfil</h3>
+                    <form id="form-editar-perfil">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="edit-nombre" placeholder="Nuevo nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" id="edit-email" placeholder="Nuevo correo" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Guardar cambios</button>
+                    </form>
+                </div>
+
+                <div class="perfil-seccion">
+                    <h3>Cambiar contraseña</h3>
+                    <form id="form-cambiar-password">
+                        <div class="form-group">
+                            <label>Contraseña actual</label>
+                            <input type="password" id="password-actual" placeholder="Contraseña actual" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nueva contraseña</label>
+                            <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirmar nueva contraseña</label>
+                            <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña" required>
+                        </div>
+                        <button type="submit" class="btn-submit">Cambiar contraseña</button>
+                    </form>
+                </div>
+
             </div>
 
         </section>
