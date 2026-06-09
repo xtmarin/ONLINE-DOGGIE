@@ -2,22 +2,19 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Administrador - Online Doggie</title>
 
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="shortcut icon" href="assets/img/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
-
+    <link rel="shortcut icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
 </head>
 
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="logo">
-            <img src="assets/img/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -29,12 +26,10 @@
         </nav>
     </header>
 
-    <!-- PANEL ADMIN -->
     <section class="admin-panel">
 
         <h1>Panel de Administración</h1>
 
-        <!-- RF02 - ALERTAS DE STOCK BAJO -->
         <div class="admin-alertas" id="admin-alertas">
             <h2>⚠️ Alertas de stock bajo</h2>
             <div id="lista-alertas">
@@ -42,7 +37,6 @@
             </div>
         </div>
 
-        <!-- RF04 / RF06 - CREAR / EDITAR PRODUCTO -->
         <div class="admin-form">
 
             <h2>Crear producto</h2>
@@ -52,7 +46,11 @@
                 <input type="text" id="nombre" placeholder="Nombre del producto" required>
                 <input type="text" id="descripcion" placeholder="Descripción" required>
                 <input type="number" id="precio" placeholder="Precio" required>
-                <input type="text" id="categoria" placeholder="Categoría" required>
+                <select id="categoria" required>
+                    <option value="">
+                        Selecciona una categoría
+                    </option>
+                </select>
                 <input type="number" id="stock" placeholder="Stock" required>
 
                 <div class="upload-box" id="upload-box">
@@ -70,7 +68,6 @@
 
         </div>
 
-        <!-- RF26 / RF27 - GESTIÓN DE STOCK -->
         <div class="admin-stock">
 
             <h2>Gestión de Stock</h2>
@@ -79,7 +76,6 @@
 
         </div>
 
-        <!-- LISTA DE PRODUCTOS -->
         <div class="admin-productos">
 
             <h2>Productos registrados</h2>
@@ -89,12 +85,12 @@
         </div>
 
         <div class="admin-pedidos">
-    <h2>🚚 Gestión de Pedidos y Envíos</h2>
-    <p>Cambia el estado de cada pedido para que el cliente lo vea en su perfil.</p>
-    <div id="lista-pedidos-admin">
-        <p>Cargando pedidos...</p>
-    </div>
-</div>
+            <h2>🚚 Gestión de Pedidos y Envíos</h2>
+            <p>Cambia el estado de cada pedido para que el cliente lo vea en su perfil.</p>
+            <div id="lista-pedidos-admin">
+                <p>Cargando pedidos...</p>
+            </div>
+        </div>
 
 
         <div class="admin-metricas">
@@ -115,7 +111,7 @@
             </div>
         </div>
 
-    
+
         <div class="admin-form">
             <h2>Registrar Nuevo Administrador</h2>
             <form id="form-nuevo-admin">
@@ -127,12 +123,9 @@
             </form>
         </div>
 
-     
-      
-
     </section>
 
-  
+
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2025 Online Doggie. Todos los derechos reservados.</p>

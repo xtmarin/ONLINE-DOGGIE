@@ -12,16 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let descuentoAplicado = 0;
 
+/* FUNCIONES AUXILIARES */
 
-/* ========================= */
-/* RF07 - CARRITO PRINCIPAL  */
-/* ========================= */
+function obtenerCarrito() {
+    return JSON.parse(localStorage.getItem("carrito")) || [];
+}
+
+function guardarCarrito(carrito) {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+/* CARRITO PRINCIPAL */
 
 function mostrarCarrito() {
-
-    let carrito  = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
     let carritoBody = document.getElementById("carrito-body");
-    let total    = 0;
+    let total = 0;
 
     if (!carritoBody) return;
 
@@ -44,7 +50,7 @@ function mostrarCarrito() {
         carritoBody.innerHTML += `
             <tr>
                 <td>${producto.nombre}</td>
-                <td>$${producto.precio.toLocaleString()}</td>
+                <td>$${Number(producto.precio).toLocaleString()}</td>
                 <td>${producto.cantidad}</td>
                 <td>$${subtotal.toLocaleString()}</td>
                 <td><button onclick="eliminarProducto(${index})">❌</button></td>
@@ -55,18 +61,21 @@ function mostrarCarrito() {
     const totalConDescuento = total - (total * descuentoAplicado / 100);
 
     const totalElemento = document.getElementById("total");
+
     if (totalElemento) {
         totalElemento.innerText = descuentoAplicado > 0
             ? `Total: $${totalConDescuento.toLocaleString()} (${descuentoAplicado}% de descuento aplicado)`
             : `Total: $${total.toLocaleString()}`;
     }
-
 }
 
 function eliminarProducto(index) {
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
+
     carrito.splice(index, 1);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    guardarCarrito(carrito);
+
     mostrarCarrito();
     actualizarMiniCarrito();
     actualizarContador();
@@ -74,16 +83,15 @@ function eliminarProducto(index) {
 
 function vaciarCarrito() {
     localStorage.removeItem("carrito");
+
     descuentoAplicado = 0;
+
     mostrarCarrito();
     actualizarMiniCarrito();
     actualizarContador();
 }
 
-
-/* ========================= */
-/* RF30 - CUPÓN DE DESCUENTO */
-/* ========================= */
+/* CUPÓN DE DESCUENTO */
 
 const cupones = {
     "DOGGIE10": 10,
@@ -92,8 +100,7 @@ const cupones = {
 };
 
 function aplicarCupon() {
-
-    const codigo  = document.getElementById("input-cupon").value.trim().toUpperCase();
+    const codigo = document.getElementById("input-cupon").value.trim().toUpperCase();
     const mensaje = document.getElementById("mensaje-cupon");
 
     if (!codigo) {
@@ -104,25 +111,25 @@ function aplicarCupon() {
 
     if (cupones[codigo]) {
         descuentoAplicado = cupones[codigo];
+
         mensaje.textContent = `✅ Cupón aplicado: ${descuentoAplicado}% de descuento`;
         mensaje.style.color = "green";
+
         mostrarCarrito();
     } else {
         descuentoAplicado = 0;
+
         mensaje.textContent = "❌ Código inválido";
         mensaje.style.color = "red";
     }
-
 }
 
-
-/* ========================= */
-/* MINI CARRITO              */
-/* ========================= */
+/* MINI CARRITO */
 
 function abrirMiniCarrito() {
     document.getElementById("mini-carrito")?.classList.add("activo");
     document.getElementById("overlay-mini")?.classList.add("activo");
+
     actualizarMiniCarrito();
 }
 
@@ -132,10 +139,9 @@ function cerrarMiniCarrito() {
 }
 
 function actualizarMiniCarrito() {
-
-    let carrito   = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
     let contenedor = document.getElementById("mini-carrito-body");
-    let total     = 0;
+    let total = 0;
 
     if (!contenedor) return;
 
@@ -145,9 +151,14 @@ function actualizarMiniCarrito() {
         let subtotal = producto.precio * producto.cantidad;
         total += subtotal;
 
+        const rutaImagen =
+            (producto.imagen && producto.imagen.startsWith("http"))
+                ? producto.imagen
+                : `http://localhost:3000/uploads/${producto.imagen}`;
+
         contenedor.innerHTML += `
             <div class="mini-item">
-                <img src="${producto.imagen}" class="mini-img">
+                <img src="${rutaImagen}" class="mini-img" alt="${producto.nombre}">
                 <div class="mini-info">
                     <h4>${producto.nombre}</h4>
                     <p>Cantidad: ${producto.cantidad}</p>
@@ -159,39 +170,43 @@ function actualizarMiniCarrito() {
     });
 
     const totalMini = document.getElementById("mini-total");
-    if (totalMini) totalMini.innerText = "Total: $" + total.toLocaleString();
 
+    if (totalMini) {
+        totalMini.innerText = "Total: $" + total.toLocaleString();
+    }
 }
 
 function eliminarDesdeMini(index) {
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
+
     carrito.splice(index, 1);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+
+    guardarCarrito(carrito);
+
     actualizarMiniCarrito();
     actualizarContador();
     mostrarCarrito();
 }
 
-
-/* ========================= */
-/* CONTADOR FLOTANTE         */
-/* ========================= */
-
 function actualizarContador() {
-    let carrito      = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
+
     let totalCantidad = 0;
-    carrito.forEach(producto => { totalCantidad += producto.cantidad; });
+
+    carrito.forEach(producto => {
+        totalCantidad += producto.cantidad;
+    });
+
     const contador = document.getElementById("contador-carrito");
-    if (contador) contador.innerText = totalCantidad;
+
+    if (contador) {
+        contador.innerText = totalCantidad;
+    }
 }
 
-
-/* ========================= */
-/*  FINALIZAR COMPRA   */
-/* ========================= */
+/* FINALIZAR COMPRA */
 
 async function finalizarCompra() {
-
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -200,45 +215,41 @@ async function finalizarCompra() {
         return;
     }
 
-    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let carrito = obtenerCarrito();
 
     if (carrito.length === 0) {
         alert("Tu carrito está vacío");
         return;
     }
 
-    let total = 0;
-    carrito.forEach(producto => { total += producto.precio * producto.cantidad; });
-
-    const totalConDescuento = total - (total * descuentoAplicado / 100);
-
     try {
-
         const respuesta = await fetch("http://localhost:3000/api/pedidos", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({ carrito, total: totalConDescuento })
+            body: JSON.stringify({ carrito })
         });
 
         const data = await respuesta.json();
 
         if (respuesta.ok) {
             alert("✅ Pedido confirmado 🐶");
+
             localStorage.removeItem("carrito");
+
             descuentoAplicado = 0;
+
             mostrarCarrito();
             actualizarContador();
             actualizarMiniCarrito();
         } else {
-            alert(data.error || data.mensaje || "Error al procesar la compra");
+            alert(data.error || "Error al procesar la compra");
         }
 
     } catch (error) {
         console.error(error);
-        alert("Error al procesar compra");
+        alert("Error al conectar con el servidor");
     }
-
 }

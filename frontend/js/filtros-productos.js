@@ -1,7 +1,9 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     const buscador = document.getElementById("buscador");
-    const filtroCategoria = document.getElementById("filtro-categoria");
+    const filtroCategoria = document.getElementById("categoria");
+
+    if (!buscador || !filtroCategoria) return;
 
     function filtrarProductos() {
 
@@ -9,16 +11,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const categoria = filtroCategoria.value;
 
         const productos = document.querySelectorAll(".producto");
+
         let hayResultados = false;
 
         productos.forEach(producto => {
 
-            const nombre = producto.dataset.nombre;
-            const categoriaProducto = producto.dataset.categoria;
+            const nombre = (producto.dataset.nombre || "").toLowerCase();
+            const categoriaProducto = (producto.dataset.categoria || "").toLowerCase();
 
             const coincideTexto = nombre.includes(texto);
+
             const coincideCategoria =
-                categoria === "todos" || categoriaProducto === categoria;
+                categoria === "todos" ||
+                categoriaProducto === categoria;
 
             if (coincideTexto && coincideCategoria) {
                 producto.style.display = "block";
@@ -26,33 +31,39 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 producto.style.display = "none";
             }
-
         });
 
-        // Mensaje cuando no hay resultados
         let mensaje = document.getElementById("mensaje-sin-resultados");
 
         if (!mensaje) {
+
             mensaje = document.createElement("p");
+
             mensaje.id = "mensaje-sin-resultados";
             mensaje.style.textAlign = "center";
             mensaje.style.color = "var(--color-text-secondary, #888)";
             mensaje.style.padding = "2rem";
             mensaje.style.width = "100%";
-            document.getElementById("lista-productos").appendChild(mensaje);
+
+            document
+                .getElementById("lista-productos")
+                ?.appendChild(mensaje);
         }
 
         if (!hayResultados) {
-            if (categoria !== "todos" && texto === "") {
-                mensaje.textContent = `No hay productos en la categoría seleccionada.`;
-            } else {
-                mensaje.textContent = `No se encontraron productos para "${buscador.value}".`;
-            }
-            mensaje.style.display = "block";
-        } else {
-            mensaje.style.display = "none";
-        }
 
+            mensaje.textContent =
+                categoria !== "todos" && texto === ""
+                    ? "No hay productos en la categoría seleccionada."
+                    : `No se encontraron productos para "${buscador.value}".`;
+
+            mensaje.style.display = "block";
+
+        } else {
+
+            mensaje.style.display = "none";
+
+        }
     }
 
     buscador.addEventListener("input", filtrarProductos);

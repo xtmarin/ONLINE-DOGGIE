@@ -18,9 +18,8 @@ const obtenerMetricas = async (req, res) => {
 
 const obtenerActividad = async (req, res) => {
     try {
-        const resultado = await pool.query(
-            'SELECT * FROM actividad ORDER BY fecha DESC LIMIT 10'
-        ).catch(() => ({ rows: [] }));
+        // Quitamos el catch interno para que el error real se maneje en el catch principal
+        const resultado = await pool.query('SELECT * FROM actividad ORDER BY fecha DESC LIMIT 10');
         res.json(resultado.rows);
     } catch (error) {
         res.status(500).json({ mensaje: "Error al obtener actividad" });
@@ -41,14 +40,11 @@ const promoverUsuario = async (req, res) => {
 
         const nombreUsuario = resultado.rows[0].nombre;
 
-        try {
-            await pool.query(
-                "INSERT INTO actividad (accion) VALUES ($1)",
-                [`El usuario ${nombreUsuario} (${email}) fue promovido a Admin`]
-            );
-        } catch (e) {
-            console.error("Error actividad:", e);
-        }
+        // Intentamos registrar actividad; si falla, el catch principal lo captura
+        await pool.query(
+            "INSERT INTO actividad (accion) VALUES ($1)",
+            [`El usuario ${nombreUsuario} (${email}) fue promovido a Admin`]
+        );
 
         return res.json({ mensaje: `¡${nombreUsuario} ahora es Administrador!` });
 
@@ -57,7 +53,6 @@ const promoverUsuario = async (req, res) => {
     }
 };
 
-/* RF40 - Obtener todos los pedidos */
 const obtenerTodosPedidos = async (req, res) => {
     try {
         const resultado = await pool.query(`

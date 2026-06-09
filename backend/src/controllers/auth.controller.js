@@ -4,10 +4,6 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-/* ============================= */
-/* CONFIGURACIÓN NODEMAILER      */
-/* ============================= */
-
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -16,16 +12,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
-/* ============================= */
-/* RF11 - REGISTRO               */
-/* ============================= */
-
 exports.registro = async (req, res) => {
     try {
-        const { nombre, email, password } = req.body;
+        const { nombre, email, password, direccion } = req.body;
 
-        if (!nombre || !email || !password) {
+        if (!nombre || !email || !password || !direccion) {
             return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
         }
 
@@ -48,22 +39,89 @@ exports.registro = async (req, res) => {
 
         const passwordHash = await hashPassword(password);
 
+        const codigoRegistro = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiraRegistro = new Date(Date.now() + 15 * 60 * 1000); 
+
         await pool.query(
-            "INSERT INTO usuarios (nombre, email, password) VALUES ($1, $2, $3)",
-            [nombre, email, passwordHash]
+            `INSERT INTO usuarios (nombre, email, password, direccion, codigo_verificacion, verificacion_expira, cuenta_verificada) 
+             VALUES ($1, $2, $3, $4, $5, $6, FALSE)`,
+            [nombre, email, passwordHash, direccion, codigoRegistro, expiraRegistro]
         );
 
-        res.json({ mensaje: "Usuario registrado correctamente" });
+        if (process.env.NODE_ENV !== 'test') {
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Verifica tu cuenta - Online Doggie 🐶',
+                html: `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
+                        <p>Gracias por registrarte. Para completar la creación de tu cuenta y empezar a comprar para tu peludito, por favor ingresa el siguiente código de verificación en la aplicación:</p>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <span style="background-color: #f7f7f7; border: 2px dashed #0056b3; padding: 10px 20px; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #333; border-radius: 5px;">
+                                ${codigoRegistro}
+                            </span>
+                        </div>
+                        <p style="color: #666; font-size: 14px; text-align: center;">Este código es válido por 15 minutos.</p>
+                    </div>
+                `
+            });
+        }
+
+        res.json({ 
+            mensaje: "Usuario registrado correctamente. Revisa tu correo para verificar la cuenta.",
+            codigoSimulado: process.env.NODE_ENV === 'test' ? codigoRegistro : undefined
+        });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+exports.verificarCuenta = async (req, res) => {
+    try {
+        const { email, codigo } = req.body;
 
-/* ============================= */
-/* RF05 - LOGIN                  */
-/* ============================= */
+        if (!email || !codigo) {
+            return res.status(400).json({ mensaje: "El correo y el código son obligatorios" });
+        }
+
+        const result = await pool.query(
+            "SELECT * FROM usuarios WHERE email = $1", [email]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        const usuario = result.rows[0];
+
+        if (usuario.cuenta_verificada) {
+            return res.status(400).json({ mensaje: "Esta cuenta ya se encuentra verificada" });
+        }
+
+        // CORRECCIÓN AQUÍ: Forzamos string y quitamos espacios fantasmas en la comparación
+        if (!usuario.codigo_verificacion || usuario.codigo_verificacion.toString().trim() !== codigo.toString().trim()) {
+            return res.status(401).json({ mensaje: "El código de verificación es incorrecto" });
+        }
+
+        if (new Date() > new Date(usuario.verificacion_expira)) {
+            return res.status(401).json({ mensaje: "El código de verificación ha expirado" });
+        }
+
+        await pool.query(
+            `UPDATE usuarios 
+             SET codigo_verificacion = NULL, verificacion_expira = NULL, cuenta_verificada = TRUE 
+             WHERE id = $1`,
+            [usuario.id]
+        );
+
+        res.json({ mensaje: "Cuenta verificada exitosamente. ¡Ya puedes iniciar sesión!" });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 exports.login = async (req, res) => {
     try {
@@ -83,29 +141,33 @@ exports.login = async (req, res) => {
 
         const usuario = result.rows[0];
 
+        if (!usuario.cuenta_verificada) {
+            return res.status(403).json({ mensaje: "Por favor, verifica tu cuenta primero en tu correo" });
+        }
+
         const valid = await verifyPassword(password, usuario.password);
         if (!valid) {
             return res.status(401).json({ mensaje: "Contraseña incorrecta" });
         }
 
-        /* RF34 - Si tiene 2FA activo */
-        if (usuario.dos_fa_activo) {
-
+        if (usuario.dos_fa_activa) {
             const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-            const expira = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+            const expira = new Date(Date.now() + 10 * 60 * 1000);
 
             await pool.query(
                 "UPDATE usuarios SET codigo_2fa = $1, codigo_2fa_expira = $2 WHERE id = $3",
                 [codigo, expira, usuario.id]
             );
 
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: usuario.email,
-                subject: 'Código de verificación - Online Doggie',
-                html: `<p>Tu código de verificación es: <strong>${codigo}</strong></p>
-                       <p>Expira en 10 minutos.</p>`
-            });
+            if (process.env.NODE_ENV !== 'test') {
+                await transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: usuario.email,
+                    subject: 'Código de verificación - Online Doggie',
+                    html: `<p>Tu código de verificación es: <strong>${codigo}</strong></p>
+                           <p>Expira en 10 minutos.</p>`
+                });
+            }
 
             const tokenTemporal = jwt.sign(
                 { id: usuario.id },
@@ -113,7 +175,7 @@ exports.login = async (req, res) => {
                 { expiresIn: '10m' }
             );
 
-            return res.json({ requiere2FA: true, tokenTemporal });
+            return res.json({ requiere2FA: true, tokenTemporal, codigoSimulado: process.env.NODE_ENV === 'test' ? codigo : undefined });
         }
 
         const token = createToken({ id: usuario.id, rol: usuario.rol });
@@ -132,11 +194,6 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-/* ============================= */
-/* RF34 - VERIFICAR CÓDIGO 2FA   */
-/* ============================= */
 
 exports.verificar2FA = async (req, res) => {
     try {
@@ -193,11 +250,6 @@ exports.verificar2FA = async (req, res) => {
     }
 };
 
-
-/* ============================= */
-/* RF12 - RECUPERAR CONTRASEÑA   */
-/* ============================= */
-
 exports.recuperarPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -222,28 +274,28 @@ exports.recuperarPassword = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Recuperar contraseña - Online Doggie',
-            html: `<p>Hola ${usuario.nombre},</p>
-                   <p>Recibimos una solicitud para recuperar tu contraseña.</p>
-                   <p>Tu token de recuperación es:</p>
-                   <p><strong>${tokenRecuperar}</strong></p>
-                   <p>Este enlace expira en 1 hora.</p>`
-        });
+        if (process.env.NODE_ENV !== 'test') {
+            await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Recuperar contraseña - Online Doggie',
+                html: `<p>Hola ${usuario.nombre},</p>
+                       <p>Recibimos una solicitud para recuperar tu contraseña.</p>
+                       <p>Tu token de recuperación es:</p>
+                       <p><strong>${tokenRecuperar}</strong></p>
+                       <p>Este enlace expira en 1 hora.</p>`
+            });
+        }
 
-        res.json({ mensaje: "Se envió un correo con instrucciones para recuperar tu contraseña" });
+        res.json({ 
+            mensaje: "Se envió un correo con instrucciones para recuperar tu contraseña",
+            tokenSimulado: process.env.NODE_ENV === 'test' ? tokenRecuperar : undefined
+        });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-/* ============================= */
-/* RF19 - VER PERFIL             */
-/* ============================= */
 
 exports.obtenerPerfil = async (req, res) => {
     try {
@@ -262,12 +314,6 @@ exports.obtenerPerfil = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-
-/* ============================= */
-/* RF19 - EDITAR PERFIL          */
-/* ============================= */
 
 exports.editarPerfil = async (req, res) => {
     try {
@@ -293,11 +339,6 @@ exports.editarPerfil = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-/* ============================= */
-/* RF20 - CAMBIAR CONTRASEÑA     */
-/* ============================= */
 
 exports.cambiarPassword = async (req, res) => {
     try {

@@ -2,21 +2,27 @@ const pool = require('../config/db');
 
 exports.crearPedido = async (req, res) => {
     const client = await pool.connect();
+    let transaccionIniciada = false;
 
     try {
+
         const { carrito } = req.body;
         const current_user = req.usuario;
 
         if (!carrito || carrito.length === 0) {
-            return res.status(400).json({ mensaje: "Carrito vacío" });
+            return res.status(400).json({
+                mensaje: "Carrito vacío"
+            });
         }
 
         await client.query('BEGIN');
+        transaccionIniciada = true;
 
         let total = 0;
-        let productosDB = [];
+        const productosDB = [];
 
-        for (let item of carrito) {
+        // Validar productos y stock
+        for (const item of carrito) {
 
             const result = await client.query(
                 "SELECT * FROM productos WHERE id = $1",
@@ -24,44 +30,71 @@ exports.crearPedido = async (req, res) => {
             );
 
             if (result.rows.length === 0) {
-                throw new Error("Producto no existe");
+                throw new Error(`El producto con ID ${item.id} no existe`);
             }
 
             const producto = result.rows[0];
 
             if (producto.stock < item.cantidad) {
-                throw new Error(`Stock insuficiente para ${producto.nombre}`);
+                throw new Error(
+                    `Stock insuficiente para ${producto.nombre}`
+                );
             }
 
-            const subtotal = producto.precio * item.cantidad;
+            const subtotal =
+                Number(producto.precio) * Number(item.cantidad);
+
             total += subtotal;
 
-            productosDB.push({ producto, item });
+            productosDB.push({
+                producto,
+                item
+            });
         }
 
-        const pedidoResult = await client.query(`
+        // Crear pedido
+        const pedidoResult = await client.query(
+            `
             INSERT INTO pedidos (usuario_id, total)
             VALUES ($1, $2)
             RETURNING id
-        `, [current_user.id, total]);
+            `,
+            [current_user.id, total]
+        );
 
         const pedido_id = pedidoResult.rows[0].id;
 
-        for (let { producto, item } of productosDB) {
+        // Guardar detalle y actualizar stock
+        for (const { producto, item } of productosDB) {
 
-            await client.query(`
-                INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_unitario)
+            await client.query(
+                `
+                INSERT INTO detalle_pedido
+                (pedido_id, producto_id, cantidad, precio_unitario)
                 VALUES ($1, $2, $3, $4)
-            `, [pedido_id, producto.id, item.cantidad, producto.precio]);
+                `,
+                [
+                    pedido_id,
+                    producto.id,
+                    item.cantidad,
+                    producto.precio
+                ]
+            );
 
-            const nuevo_stock = producto.stock - item.cantidad;
-            const activo = nuevo_stock > 5;
+            const nuevo_stock =
+                producto.stock - item.cantidad;
 
-            await client.query(`
+            await client.query(
+                `
                 UPDATE productos
-                SET stock = $1, activo = $2
-                WHERE id = $3
-            `, [nuevo_stock, activo, producto.id]);
+                SET stock = $1
+                WHERE id = $2
+                `,
+                [
+                    nuevo_stock,
+                    producto.id
+                ]
+            );
         }
 
         await client.query('COMMIT');
@@ -72,20 +105,34 @@ exports.crearPedido = async (req, res) => {
         });
 
     } catch (error) {
-        await client.query('ROLLBACK');
-        console.error(error);
-        res.status(400).json({ error: error.message || "Error en el pedido" });
+
+        if (transaccionIniciada) {
+            await client.query('ROLLBACK');
+        }
+
+        if (process.env.NODE_ENV !== 'test') {
+            console.error(error);
+        }
+
+        res.status(400).json({
+            error: error.message || "Error en el pedido"
+        });
+
     } finally {
+
         client.release();
+
     }
 };
 
 exports.obtenerHistorial = async (req, res) => {
     try {
+
         const userId = req.usuario.id;
 
-        const result = await pool.query(`
-            SELECT 
+        const result = await pool.query(
+            `
+            SELECT
                 p.id AS pedido_id,
                 p.total,
                 p.fecha,
@@ -95,16 +142,22 @@ exports.obtenerHistorial = async (req, res) => {
                 d.cantidad,
                 d.precio_unitario AS precio
             FROM pedidos p
-            JOIN detalle_pedido d ON p.id = d.pedido_id
-            JOIN productos pr ON pr.id = d.producto_id
+            JOIN detalle_pedido d
+                ON p.id = d.pedido_id
+            JOIN productos pr
+                ON pr.id = d.producto_id
             WHERE p.usuario_id = $1
             ORDER BY p.id DESC
-        `, [userId]);
+            `,
+            [userId]
+        );
 
         const pedidos = {};
 
         result.rows.forEach(row => {
+
             if (!pedidos[row.pedido_id]) {
+
                 pedidos[row.pedido_id] = {
                     pedido_id: row.pedido_id,
                     total: row.total,
@@ -112,6 +165,7 @@ exports.obtenerHistorial = async (req, res) => {
                     estado: row.estado,
                     productos: []
                 };
+
             }
 
             pedidos[row.pedido_id].productos.push({
@@ -120,38 +174,80 @@ exports.obtenerHistorial = async (req, res) => {
                 cantidad: row.cantidad,
                 precio: row.precio
             });
+
         });
 
         res.json(Object.values(pedidos));
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({
+            error: error.message
+        });
+
     }
 };
 
-/* RF40 y RF41 - SIMULACIÓN ENVÍO */
+/* SIMULACIÓN ENVÍO */
 
 exports.simularEstadoEnvio = async (req, res) => {
     try {
+
         const { id } = req.params;
         const { nuevoEstado } = req.body;
 
-        const estadosValidos = ['pendiente', 'pagado', 'enviado', 'entregado', 'cancelado'];
-        if (!estadosValidos.includes(nuevoEstado.toLowerCase())) {
-            return res.status(400).json({ error: "Estado no válido" });
+        if (!nuevoEstado) {
+            return res.status(400).json({
+                error: "Estado no válido"
+            });
         }
 
-        await pool.query(
-            "UPDATE pedidos SET estado = $1 WHERE id = $2",
-            [nuevoEstado.toLowerCase(), id]
+        const estadoFormateado =
+            nuevoEstado.toLowerCase();
+
+        const estadosValidos = [
+            'pendiente',
+            'pagado',
+            'enviado',
+            'entregado',
+            'cancelado'
+        ];
+
+        if (!estadosValidos.includes(estadoFormateado)) {
+            return res.status(400).json({
+                error: "Estado no válido"
+            });
+        }
+
+        const result = await pool.query(
+            `
+            UPDATE pedidos
+            SET estado = $1
+            WHERE id = $2
+            `,
+            [
+                estadoFormateado,
+                id
+            ]
         );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                error: "Pedido no encontrado"
+            });
+        }
 
         res.json({
             mensaje: "Estado actualizado con éxito",
-            notificacion: `El pedido #${id} ahora está: ${nuevoEstado}`
+            notificacion:
+                `El pedido #${id} ahora está: ${estadoFormateado}`
         });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+
+        res.status(500).json({
+            error: error.message
+        });
+
     }
 };

@@ -1,6 +1,4 @@
-/* ============================= */
-/*  HISTORIAL NAVEGACIÓN   */
-/* ============================= */
+/* HISTORIAL NAVEGACIÓN */
 
 function registrarNavegacion(producto) {
     let historial = JSON.parse(localStorage.getItem("historial-nav")) || [];
@@ -36,12 +34,12 @@ function mostrarHistorialNav() {
     });
 }
 
-mostrarHistorialNav();
+document.addEventListener("DOMContentLoaded", () => {
+    mostrarHistorialNav();
+});
 
 
-/* ============================= */
-/*  CALIFICACIÓN SERVICIO  */
-/* ============================= */
+/* CALIFICACIÓN SERVICIO */
 
 let calificacionSeleccionada = 0;
 
@@ -71,9 +69,7 @@ function enviarCalificacion() {
 }
 
 
-/* ============================= */
-/*  FORMULARIO CONTACTO    */
-/* ============================= */
+/* FORMULARIO CONTACTO */
 
 document.getElementById("form-contacto").addEventListener("submit", async (e) => {
 
@@ -124,9 +120,7 @@ document.getElementById("form-contacto").addEventListener("submit", async (e) =>
 });
 
 
-/* ============================= */
-/*  BOLETÍN DE NOTICIAS    */
-/* ============================= */
+/* BOLETÍN DE NOTICIAS */
 
 document.getElementById("form-boletin").addEventListener("submit", async (e) => {
 
