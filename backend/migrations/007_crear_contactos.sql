@@ -1,8 +1,13 @@
 CREATE TABLE IF NOT EXISTS contactos (
-    id SERIAL PRIMARY KEY,
-    usuario_id INT REFERENCES usuarios(id) ON DELETE SET NULL,
-    nombre VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+
+    usuario_id BIGINT
+        REFERENCES usuarios(id)
+        ON DELETE SET NULL,
+
     mensaje TEXT NOT NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    leido BOOLEAN DEFAULT FALSE,
+
+    fecha TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

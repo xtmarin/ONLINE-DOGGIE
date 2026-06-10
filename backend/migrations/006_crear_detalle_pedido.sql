@@ -1,7 +1,15 @@
 CREATE TABLE IF NOT EXISTS detalle_pedido (
-    id SERIAL PRIMARY KEY,
-    pedido_id INT REFERENCES pedidos(id) ON DELETE CASCADE,
-    producto_id INT REFERENCES productos(id) ON DELETE CASCADE,
-    cantidad INT NOT NULL CHECK (cantidad > 0),
-    precio_unitario DECIMAL(10, 2) NOT NULL
+    id BIGSERIAL PRIMARY KEY,
+
+    pedido_id BIGINT NOT NULL
+        REFERENCES pedidos(id)
+        ON DELETE CASCADE,
+
+    producto_id BIGINT NOT NULL
+        REFERENCES productos(id)
+        ON DELETE CASCADE,
+
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+
+    precio_unitario NUMERIC(10,2) NOT NULL
 );

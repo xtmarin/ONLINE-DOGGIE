@@ -1,10 +1,21 @@
 CREATE TABLE IF NOT EXISTS productos (
-    id SERIAL PRIMARY KEY,
-    categoria_id INT REFERENCES categorias(id) ON DELETE SET NULL,
-    nombre VARCHAR(150) NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+
+    categoria_id INTEGER
+        REFERENCES categorias(id)
+        ON DELETE SET NULL,
+
+    nombre VARCHAR(255) NOT NULL,
+
     descripcion TEXT,
-    precio DECIMAL(10, 2) NOT NULL,
-    stock INT DEFAULT 0,
-    imagen_url VARCHAR(255),
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    precio NUMERIC(10,2) NOT NULL,
+
+    imagen VARCHAR(255),
+
+    stock INTEGER DEFAULT 0,
+
+    activo BOOLEAN DEFAULT TRUE,
+
+    creado_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

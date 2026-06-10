@@ -1,7 +1,13 @@
 CREATE TABLE IF NOT EXISTS pedidos (
-    id SERIAL PRIMARY KEY,
-    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
-    total DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    id BIGSERIAL PRIMARY KEY,
+
+    usuario_id BIGINT NOT NULL
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+
+    total NUMERIC(10,2) NOT NULL,
+
     estado estado_pedido DEFAULT 'pendiente',
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    fecha_creacion TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
