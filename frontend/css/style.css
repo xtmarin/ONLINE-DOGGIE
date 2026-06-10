@@ -1018,3 +1018,710 @@ button[onclick*="eliminarProducto"]:hover {
     gap: 8px; /* Separa los botones para que no se peguen */
 }
 
+
+
+.vista-seccion {
+    display: none; 
+}
+
+.vista-seccion.activa {
+    display: block; 
+}
+
+
+.admin-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: var(--blanco);
+    font-size: 28px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
+    z-index: 1001; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+}
+
+.admin-fab:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 28px rgba(30, 60, 255, 0.45);
+}
+
+
+.admin-drawer {
+    position: fixed;
+    top: 0;
+    right: -340px;
+    width: 320px;
+    height: 100%;
+    background: var(--blanco);
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1003;
+}
+
+.admin-drawer.abierto {
+    right: 0; 
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--azul-primario);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.drawer-header h3 {
+    font-size: 1.4rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.close-drawer {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.close-drawer:hover {
+    color: #EF4444;
+    transform: scale(1.1);
+}
+
+
+.drawer-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-item {
+    padding: 14px 18px;
+    background: var(--azul-fondo);
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+}
+
+.menu-item:hover {
+    background: rgba(30, 60, 255, 0.08);
+    color: var(--azul-primario);
+    border-left-color: var(--azul-primario);
+    transform: translateX(5px);
+}
+
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px); 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 1002;
+}
+
+.drawer-overlay.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+.toast-success {
+    background: linear-gradient(135deg, #10B981, #059669) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.admin-productos-tabla-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.tabla-admin {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--blanco);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+
+.tabla-admin th {
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.tabla-admin td {
+    padding: 12px;
+    border-bottom: 1px solid var(--gris-borde);
+    vertical-align: middle;
+}
+
+.tabla-admin tbody tr:hover {
+    background-color: var(--azul-fondo);
+}
+
+/* Clases específicas de las celdas */
+.td-id { font-weight: bold; color: #666; }
+.td-img img { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gris-borde); }
+.td-nombre { font-weight: bold; color: var(--gris-texto); }
+.td-desc { color: #555; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-precio { font-weight: bold; color: var(--azul-primario); }
+
+.stock-bajo { background-color: #FEE2E2; color: #EF4444; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+.stock-ok { background-color: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+
+.tabla-botones-container { display: flex; gap: 6px; }
+.btn-tabla-editar { padding: 6px 12px; background: none; border: 1.5px solid var(--azul-primario); color: var(--azul-primario); border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-tabla-eliminar { padding: 6px 12px; background: #EF4444; border: none; color: var(--blanco); border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+/* ========================================================================== */
+/* ESTILOS: PANEL DE MÉTRICAS Y GRÁFICAS                                      */
+/* ========================================================================== */
+.grafica-container {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    max-height: 340px;
+    position: relative;
+}
+
+/* ========================================================================== */
+/* GESTIÓN DE USUARIOS E HISTORIAL DE COMPRAS                                 */
+/* ========================================================================== */
+.botones-usuarios-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-usuario-accion {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--blanco);
+    font-family: inherit;
+    text-transform: uppercase;
+}
+
+#btn-promover { background-color: var(--azul-primario); }
+#btn-degradar { background-color: var(--azul-secundario); }
+#btn-eliminar { background-color: #EF4444; }
+
+.admin-historial-box {
+    margin-top: 30px;
+    background: var(--blanco);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.buscar-historial-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.buscar-historial-form input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+}
+
+.buscar-historial-form button {
+    padding: 12px 24px;
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Tarjetas individuales del historial de compras */
+.historial-item-card {
+    padding: 14px;
+    background: var(--azul-fondo);
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.historial-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.historial-monto { color: var(--azul-primario); }
+.historial-id { color: var(--gris-texto); }
+.historial-item-detalles {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 6px;
+}
+
+.historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
+.historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
+
+/* ========================================================================== */
+/* COMPONENTES DE NAVEGACIÓN DINÁMICA: FAB + DRAWER NAV                       */
+/* ========================================================================== */
+
+/* ========================================================================== */
+/* COMPONENTES DE NAVEGACIÓN DINÁMICA: FAB + DRAWER NAV                       */
+/* ========================================================================== */
+
+.vista-seccion {
+    display: none; 
+    width: 100%;
+}
+
+.vista-seccion.activa {
+    display: block; 
+    width: 100%;
+}
+
+.admin-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: var(--blanco);
+    font-size: 28px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
+    z-index: 1001; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+}
+
+.admin-fab:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 28px rgba(30, 60, 255, 0.45);
+}
+
+.admin-drawer {
+    position: fixed;
+    top: 0;
+    right: -340px;
+    width: 320px;
+    height: 100%;
+    background: var(--blanco);
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
+    padding: 30px 25px;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1003;
+}
+
+.admin-drawer.abierto {
+    right: 0; 
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--azul-primario);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.drawer-header h3 {
+    font-size: 1.4rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.close-drawer {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.close-drawer:hover {
+    color: #EF4444;
+    transform: scale(1.1);
+}
+
+.drawer-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-item {
+    padding: 14px 18px;
+    background: var(--azul-fondo);
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+}
+
+.menu-item:hover {
+    background: rgba(30, 60, 255, 0.08);
+    color: var(--azul-primario);
+    border-left-color: var(--azul-primario);
+    transform: translateX(5px);
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px); 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 1002;
+}
+
+.drawer-overlay.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================================================== */
+/* PERSONALIZACIÓN DE COMPONENTES EXTERNOS (TOASTIFY)                         */
+/* ========================================================================== */
+
+.toast-success {
+    background: linear-gradient(135deg, #10B981, #059669) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ========================================================================== */
+/* SECCIÓN: EDITAR PRODUCTOS (TABLAS COMPLETAS FORZADAS AL 100%)              */
+/* ========================================================================== */
+
+/* Forzar al contenedor del panel de administración a no limitar el ancho */
+.admin-panel {
+    width: 100% !important;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.admin-productos-tabla-wrapper {
+    width: 100% !important;
+    box-sizing: border-box;
+    margin-top: 20px;
+    background: var(--blanco);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 15px;
+}
+
+.tabla-admin {
+    width: 100% !important;
+    border-collapse: collapse;
+    background: var(--blanco);
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.tabla-admin th {
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    padding: 14px 16px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabla-admin td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--gris-borde);
+    vertical-align: middle;
+}
+
+.tabla-admin tbody tr:hover {
+    background-color: var(--azul-fondo);
+}
+
+/* Formatos de columna fijos */
+.td-id { 
+    font-weight: bold; 
+    color: #777; 
+    width: 60px;
+}
+
+.td-img {
+    width: 80px;
+}
+
+.td-img img { 
+    width: 48px; 
+    height: 48px; 
+    object-fit: cover; 
+    border-radius: 6px; 
+    border: 1px solid var(--gris-borde); 
+}
+
+.td-nombre { 
+    font-weight: bold; 
+    color: var(--gris-texto); 
+    font-size: 16px;
+}
+
+.td-desc { 
+    color: #666; 
+    max-width: 280px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.td-precio { 
+    font-weight: bold; 
+    color: var(--azul-primario); 
+    font-size: 16px;
+}
+
+/* Modificadores del stock */
+.stock-bajo { 
+    background-color: #FEE2E2; 
+    color: #EF4444; 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    display: inline-block;
+}
+
+.stock-ok { 
+    background-color: #D1FAE5; 
+    color: #065F46; 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    display: inline-block;
+}
+
+/* Botones de acción alineados */
+.td-acciones {
+    width: 160px;
+}
+
+.tabla-botones-container { 
+    display: flex; 
+    gap: 8px;
+}
+
+.btn-tabla-editar { 
+    padding: 6px 14px; 
+    background-color: transparent; 
+    border: 1.5px solid var(--azul-primario); 
+    color: var(--azul-primario); 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: all 0.2s ease;
+}
+
+.btn-tabla-editar:hover {
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+}
+
+.btn-tabla-eliminar { 
+    padding: 6px 14px; 
+    background-color: #EF4444; 
+    border: none; 
+    color: var(--blanco); 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: background-color 0.2s ease;
+}
+
+.btn-tabla-eliminar:hover {
+    background-color: #DC2626;
+}
+
+/* ========================================================================== */
+/* ESTILOS: PANEL DE MÉTRICAS Y GRÁFICAS                                      */
+/* ========================================================================== */
+.grafica-container {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    max-height: 340px;
+    position: relative;
+}
+
+/* ========================================================================== */
+/* GESTIÓN DE USUARIOS E HISTORIAL DE COMPRAS                                 */
+/* ========================================================================== */
+.botones-usuarios-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-usuario-accion {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--blanco);
+    font-family: inherit;
+    text-transform: uppercase;
+    transition: opacity 0.2s ease;
+}
+
+.btn-usuario-accion:hover {
+    opacity: 0.9;
+}
+
+#btn-promover { background-color: var(--azul-primario); }
+#btn-degradar { background-color: var(--azul-secundario); }
+#btn-eliminar { background-color: #EF4444; }
+
+.admin-historial-box {
+    margin-top: 30px;
+    background: var(--blanco);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.buscar-historial-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.buscar-historial-form input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.buscar-historial-form button {
+    padding: 12px 24px;
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.historial-item-card {
+    padding: 14px;
+    background: var(--azul-fondo);
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.historial-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.historial-monto { color: var(--azul-primario); }
+.historial-id { color: var(--gris-texto); }
+.historial-item-detalles {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 6px;
+}
+
+.historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
+.historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
