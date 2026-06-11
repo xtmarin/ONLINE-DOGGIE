@@ -325,20 +325,6 @@ async function eliminarProducto(id) {
     }
 }
 
-async function cargarMetricas() {
-    try {
-        const respuesta = await fetch("http://localhost:3000/api/admin/metricas", {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const data = await respuesta.json();
-        if (respuesta.ok) {
-            document.getElementById('met-productos').textContent = data.totalProductos;
-            document.getElementById('met-usuarios').textContent = data.totalUsuarios;
-            document.getElementById('met-ventas').textContent = `$${data.totalVentas.toLocaleString()}`;
-        }
-    } catch (error) { console.error("Error cargando métricas:", error); }
-}
-
 // =============================
 // CARGAR CATEGORÍAS
 // =============================
@@ -421,9 +407,7 @@ menuItems.forEach(item => {
 
         document.getElementById(objetivo).classList.add("activa");
 
-        vistas.forEach(v => v.classList.remove('activa'));
-const vistaTarget = document.getElementById(item.dataset.target);
-if (vistaTarget) vistaTarget.classList.add('activa');
+      
 
  
         cerrarMenu();
@@ -690,15 +674,136 @@ async function cargarMetricas() {
     }
 }
 
+async function cargarPedidos() {
+
+    try {
+
+        const respuesta = await fetch(
+            "http://localhost:3000/api/pedidos",
+            {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }
+        );
+
+        const pedidos = await respuesta.json();
+
+        const contenedor =
+            document.getElementById("lista-pedidos-admin");
+
+        contenedor.innerHTML = "";
+
+        pedidos.forEach(pedido => {
+
+            contenedor.innerHTML += `
+                <div class="pedido-admin-card">
+
+                    <h3>Pedido #${pedido.id}</h3>
+
+                    <p>
+                        Cliente:
+                        ${pedido.nombre}
+                    </p>
+
+                    <p>
+                        Correo:
+                        ${pedido.email}
+                    </p>
+
+                    <p>
+                        Total:
+                        $${Number(pedido.total).toLocaleString()}
+                    </p>
+
+                    <p>
+                        Estado:
+                        <strong>${pedido.estado}</strong>
+                    </p>
+
+                    <select id="estado-${pedido.id}">
+                        <option value="pendiente_pago">Pendiente de Pago</option>
+                        <option value="pagado">Pagado</option>
+                        <option value="enviado">Enviado</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+
+                    <button
+                        onclick="actualizarEstadoPedido(${pedido.id})">
+                        Actualizar
+                    </button>
+
+                </div>
+            `;
+
+            document.getElementById(
+                `estado-${pedido.id}`
+            ).value = pedido.estado;
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
+async function actualizarEstadoPedido(id) {
+
+    const nuevoEstado =
+        document.getElementById(
+            `estado-${id}`
+        ).value;
+
+    try {
+
+        const respuesta = await fetch(
+            `http://localhost:3000/api/pedidos/${id}/estado`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token
+                },
+                body: JSON.stringify({
+                    nuevoEstado
+                })
+            }
+        );
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+
+            alert(data.error);
+
+            return;
+        }
+
+        mostrarToast(
+            data.mensaje
+        );
+
+        cargarPedidos();
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+}
+
 // ==========================================================================
 // INICIAR CARGA (DOM Ready con el nuevo llamado integrado al final)
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    cargarCategorias();
+    cargarCategoriasSelect();
     cargarProductos();
     cargarStock();
-    cargarPedidos();
     cargarMetricas();
-    inicializarGestionUsuarios();
-    inicializarHistorialCompras(); // Añadido para arrancar el módulo
+    cargarAlertas();
+
+    cargarPedidos();
 });

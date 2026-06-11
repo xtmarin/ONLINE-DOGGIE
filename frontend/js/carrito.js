@@ -91,6 +91,47 @@ function vaciarCarrito() {
     actualizarContador();
 }
 
+function mostrarToast(mensaje, tipo = 'success') {
+    const toast = document.createElement('div');
+    toast.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            background: ${tipo === 'success' 
+                ? 'linear-gradient(135deg, #1E3CFF, #00B4E6)' 
+                : 'linear-gradient(135deg, #EF4444, #DC2626)'};
+            color: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 320px;
+            animation: slideIn 0.4s ease;
+        ">
+            <span style="font-size: 26px;">${tipo === 'success' ? '📧' : '❌'}</span>
+            <div>
+                <div style="font-size: 17px;">${mensaje}</div>
+                ${tipo === 'success' ? '<div style="font-size: 13px; opacity: 0.85; margin-top: 4px; font-weight: normal;">Revisa tu bandeja de entrada 🐾</div>' : ''}
+            </div>
+        </div>
+        <style>
+            @keyframes slideIn {
+                from { transform: translateX(120%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        </style>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4500);
+}
+
 /* CUPÓN DE DESCUENTO */
 
 const cupones = {
@@ -215,9 +256,9 @@ async function finalizarCompra() {
         return;
     }
 
-    let carrito = obtenerCarrito();
+    const carrito = obtenerCarrito();
 
-    if (carrito.length === 0) {
+    if (!carrito.length) {
         alert("Tu carrito está vacío");
         return;
     }
@@ -227,29 +268,28 @@ async function finalizarCompra() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({ carrito })
         });
 
         const data = await respuesta.json();
 
-        if (respuesta.ok) {
-            alert("✅ Pedido confirmado 🐶");
-
-            localStorage.removeItem("carrito");
-
-            descuentoAplicado = 0;
-
-            mostrarCarrito();
-            actualizarContador();
-            actualizarMiniCarrito();
-        } else {
-            alert(data.error || "Error al procesar la compra");
+        if (!respuesta.ok) {
+            console.error(data);
+            mostrarToast(data.mensaje || data.error || 'Error al procesar pedido', 'error');
+            return;
         }
 
-    } catch (error) {
-        console.error(error);
-        alert("Error al conectar con el servidor");
+        mostrarToast('¡Pedido creado! Verifica tu correo para procesar el pago');
+
+        localStorage.removeItem("carrito");
+        mostrarCarrito();
+        actualizarContador();
+        actualizarMiniCarrito();
+
+    } catch (err) {
+        console.error(err);
+        mostrarToast('Error de servidor', 'error');
     }
 }

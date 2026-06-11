@@ -10,7 +10,7 @@ const verificarToken = (req, res, next) => {
         }
 
         // El .trim() limpia cualquier espacio o salto de línea fantasma del test
-        const token = authHeader.split(' ')[1].trim();
+        const token = authHeader.split(' ')[1]?.trim();
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.usuario = decoded;

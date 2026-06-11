@@ -6,6 +6,7 @@ const { verificarToken, verificarAdmin } = require('../middlewares/auth.middlewa
 
 router.post('/', verificarToken, pedidosController.crearPedido);
 router.get('/historial', verificarToken, pedidosController.obtenerHistorial);
-router.patch('/:id/estado', verificarAdmin, pedidosController.simularEstadoEnvio);
+router.patch('/:id/estado', verificarAdmin, pedidosController.actualizarEstadoPedido);
+router.get('/', verificarAdmin, pedidosController.obtenerTodosPedidos);
 
 module.exports = router;

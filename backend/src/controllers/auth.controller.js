@@ -40,7 +40,7 @@ exports.registro = async (req, res) => {
         const passwordHash = await hashPassword(password);
 
         const codigoRegistro = Math.floor(100000 + Math.random() * 900000).toString();
-        const expiraRegistro = new Date(Date.now() + 15 * 60 * 1000); 
+        const expiraRegistro = new Date(Date.now() + 15 * 60 * 1000);
 
         await pool.query(
             `INSERT INTO usuarios (nombre, email, password, direccion, codigo_verificacion, verificacion_expira, cuenta_verificada) 
@@ -68,7 +68,7 @@ exports.registro = async (req, res) => {
             });
         }
 
-        res.json({ 
+        res.json({
             mensaje: "Usuario registrado correctamente. Revisa tu correo para verificar la cuenta.",
             codigoSimulado: process.env.NODE_ENV === 'test' ? codigoRegistro : undefined
         });
@@ -132,66 +132,42 @@ exports.login = async (req, res) => {
         }
 
         const result = await pool.query(
-            "SELECT * FROM usuarios WHERE email = $1", [email]
+            "SELECT * FROM usuarios WHERE email = $1",
+            [email]
         );
 
-        if (result.rows.length === 0) {
+        if (!result.rows.length) {
             return res.status(404).json({ mensaje: "Usuario no encontrado" });
         }
 
         const usuario = result.rows[0];
 
-        if (!usuario.cuenta_verificada) {
-            return res.status(403).json({ mensaje: "Por favor, verifica tu cuenta primero en tu correo" });
-        }
-
         const valid = await verifyPassword(password, usuario.password);
+
         if (!valid) {
             return res.status(401).json({ mensaje: "Contraseña incorrecta" });
         }
 
-        if (usuario.dos_fa_activa) {
-            const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-            const expira = new Date(Date.now() + 10 * 60 * 1000);
+        const token = createToken({
+            id: usuario.id,
+            email: usuario.email,
+            nombre: usuario.nombre,
+            rol: usuario.rol
+        });
 
-            await pool.query(
-                "UPDATE usuarios SET codigo_2fa = $1, codigo_2fa_expira = $2 WHERE id = $3",
-                [codigo, expira, usuario.id]
-            );
-
-            if (process.env.NODE_ENV !== 'test') {
-                await transporter.sendMail({
-                    from: process.env.EMAIL_USER,
-                    to: usuario.email,
-                    subject: 'Código de verificación - Online Doggie',
-                    html: `<p>Tu código de verificación es: <strong>${codigo}</strong></p>
-                           <p>Expira en 10 minutos.</p>`
-                });
-            }
-
-            const tokenTemporal = jwt.sign(
-                { id: usuario.id },
-                process.env.JWT_SECRET,
-                { expiresIn: '10m' }
-            );
-
-            return res.json({ requiere2FA: true, tokenTemporal, codigoSimulado: process.env.NODE_ENV === 'test' ? codigo : undefined });
-        }
-
-        const token = createToken({ id: usuario.id, rol: usuario.rol });
-
-        res.json({
+        return res.json({
             mensaje: "Login exitoso",
             token,
             usuario: {
                 id: usuario.id,
                 nombre: usuario.nombre,
+                email: usuario.email,
                 rol: usuario.rol
             }
         });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -233,7 +209,12 @@ exports.verificar2FA = async (req, res) => {
             [usuario.id]
         );
 
-        const token = createToken({ id: usuario.id, rol: usuario.rol });
+        const token = createToken({
+            id: usuario.id,
+            email: usuario.email,
+            nombre: usuario.nombre,
+            rol: usuario.rol
+        });
 
         res.json({
             mensaje: "Verificación exitosa",
@@ -241,6 +222,7 @@ exports.verificar2FA = async (req, res) => {
             usuario: {
                 id: usuario.id,
                 nombre: usuario.nombre,
+                email: usuario.email,
                 rol: usuario.rol
             }
         });
@@ -287,7 +269,7 @@ exports.recuperarPassword = async (req, res) => {
             });
         }
 
-        res.json({ 
+        res.json({
             mensaje: "Se envió un correo con instrucciones para recuperar tu contraseña",
             tokenSimulado: process.env.NODE_ENV === 'test' ? tokenRecuperar : undefined
         });

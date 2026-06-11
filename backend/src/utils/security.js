@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const hashPassword = async (password) => {
     return await bcrypt.hash(password, 10);
@@ -11,7 +10,16 @@ const verifyPassword = async (password, hashed) => {
 };
 
 const createToken = (data) => {
-    return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: '1d' });
+    return jwt.sign(
+        {
+            id: data.id,
+            email: data.email,
+            nombre: data.nombre,
+            rol: data.rol
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+    );
 };
 
 module.exports = {

@@ -9,6 +9,7 @@ const productosRoutes = require('./routes/productos.routes');
 const pedidosRoutes = require('./routes/pedidos.routes');
 const categoriasRoutes = require('./routes/categorias.routes');
 
+
 const app = express();
 
 app.use(cors());
@@ -21,6 +22,7 @@ app.use('/api/productos', productosRoutes);
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/pedidos', pedidosRoutes);
 app.use('/api/admin', adminRoutes);
+
 
 app.get('/', (req, res) => {
     res.send('API ONLINE DOGGIE funcionando 🐶');
