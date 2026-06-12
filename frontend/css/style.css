@@ -1491,6 +1491,7 @@ button[onclick*="eliminarProducto"]:hover {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     padding: 15px;
+    overflow-x: auto;
 }
 
 .tabla-admin {
@@ -1725,3 +1726,33 @@ button[onclick*="eliminarProducto"]:hover {
 
 .historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
 .historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
+
+/* ===== MODAL EDITAR PRODUCTO ===== */
+.modal-editar {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%; max-width: 450px;
+    background: var(--blanco);
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 1003;
+    opacity: 0; visibility: hidden;
+    transition: 0.3s ease;
+}
+
+.modal-editar.activo {
+    opacity: 1; visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-editar-content form input,
+.modal-editar-content form select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Iconos de acciones */
+.btn-tabla-editar, .btn-tabla-eliminar {
+    font-size: 16px;
+}

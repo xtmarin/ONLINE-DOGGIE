@@ -91,6 +91,12 @@
         <div id="vista-editar-productos" class="vista-seccion">
             <div class="admin-productos-tabla-wrapper">
                 <h2>📦 Catálogo de Editar Productos</h2>
+                <div class="filtros">
+                    <input type="text" id="filtro-nombre" class="buscador" placeholder="Buscar por nombre...">
+                    <select id="filtro-categoria" class="select-filtro">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                </div>
                 <table class="tabla-admin">
                     <thead>
                         <tr>
@@ -109,12 +115,7 @@
             </div>
         </div>
 
-        <div id="vista-stock" class="vista-seccion">
-            <div class="admin-stock">
-                <h2>Gestión de Stock</h2>
-                <div id="lista-stock"></div>
-            </div>
-        </div>
+        
 
         <div id="vista-pedidos" class="vista-seccion">
             <div class="admin-pedidos">
@@ -176,13 +177,33 @@
             <li class="menu-item" data-target="vista-metricas">📊 Métricas del Sistema</li>
             <li class="menu-item" data-target="vista-productos">📦 Crear Productos</li>
             <li class="menu-item" data-target="vista-editar-productos">📦 Editar Productos</li>
-            <li class="menu-item" data-target="vista-stock">📈 Gestión de Stock</li>
+           
             <li class="menu-item" data-target="vista-pedidos">🚚 Gestión de Pedidos</li>
             <li class="menu-item" data-target="vista-usuarios">👥 Editar Usuarios</li>
             <li class="menu-item" data-target="vista-historial-compras">📜 Historial de Compras</li>
         </ul>
     </div>
     <div id="drawer-overlay" class="drawer-overlay"></div>
+
+    <div id="modal-editar-overlay" class="drawer-overlay"></div>
+    <div id="modal-editar" class="modal-editar">
+        <div class="modal-editar-content">
+            <div class="drawer-header">
+                <h3>Editar producto</h3>
+                <button id="cerrar-modal-editar" class="close-drawer">✕</button>
+            </div>
+            <form id="form-editar-producto">
+                <input type="text" id="edit-nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="edit-descripcion" placeholder="Descripción" required>
+                <input type="number" id="edit-precio" placeholder="Precio" required>
+                <select id="edit-categoria" required>
+                    <option value="">Selecciona una categoría</option>
+                </select>
+                <input type="number" id="edit-stock" placeholder="Stock" required>
+                <button type="submit">Actualizar Producto</button>
+            </form>
+        </div>
+    </div>
 
     <script src="./js/admin.js"></script>
 

@@ -118,7 +118,7 @@ async function actualizarStock(id) {
     });
     const data = await respuesta.json();
     alert(data.mensaje);
-    cargarStock(); cargarAlertas(); cargarProductos();
+    cargarAlertas(); cargarProductos();
 }
 
 /* ... Cargar Productos  ... */
@@ -128,41 +128,61 @@ async function cargarProductos() {
         const productos = await respuesta.json();
         productosCache = productos;
 
-        const tbody = document.getElementById("tabla-productos-body");
-        if (!tbody) return;
-
-        tbody.innerHTML = "";
-
-        productos.forEach(producto => {
-            const imagenUrl = producto.imagen ? `http://localhost:3000/uploads/${producto.imagen}` : 'http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico';
-            
-            tbody.innerHTML += `
-                <tr>
-                    <td class="td-id">#${producto.id}</td>
-                    <td class="td-img">
-                        <img src="${imagenUrl}" alt="${producto.nombre}">
-                    </td>
-                    <td class="td-nombre">${producto.nombre}</td>
-                    <td class="td-desc">${producto.descripcion || 'Sin descripción'}</td>
-                    <td class="td-precio">$${Number(producto.precio).toLocaleString()}</td>
-                    <td class="td-stock">
-                        <span class="${producto.stock <= 5 ? 'stock-bajo' : 'stock-ok'}">
-                            ${producto.stock} uds
-                        </span>
-                    </td>
-                    <td class="td-acciones">
-                        <div class="tabla-botones-container">
-                            <button onclick="editarProducto(${producto.id})" class="btn-tabla-editar">Editar</button>
-                            <button onclick="eliminarProducto(${producto.id})" class="btn-tabla-eliminar">Eliminar</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
+        renderTablaProductos(productosCache);
     } catch (error) {
         console.error("Error cargando productos en tabla:", error);
     }
 }
+
+function renderTablaProductos(productos) {
+    const tbody = document.getElementById("tabla-productos-body");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    productos.forEach(producto => {
+        const imagenUrl = producto.imagen ? `http://localhost:3000/uploads/${producto.imagen}` : 'http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico';
+
+        tbody.innerHTML += `
+            <tr>
+                <td class="td-id">#${producto.id}</td>
+                <td class="td-img">
+                    <img src="${imagenUrl}" alt="${producto.nombre}">
+                </td>
+                <td class="td-nombre">${producto.nombre}</td>
+                <td class="td-desc">${producto.descripcion || 'Sin descripción'}</td>
+                <td class="td-precio">$${Number(producto.precio).toLocaleString()}</td>
+                <td class="td-stock">
+                    <span class="${producto.stock <= 5 ? 'stock-bajo' : 'stock-ok'}">
+                        ${producto.stock} uds
+                    </span>
+                </td>
+                <td class="td-acciones">
+                    <div class="tabla-botones-container">
+                        <button onclick="editarProducto(${producto.id})" class="btn-tabla-editar" title="Editar">✏️</button>
+                        <button onclick="eliminarProducto(${producto.id})" class="btn-tabla-eliminar" title="Eliminar">🗑️</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function aplicarFiltrosTabla() {
+    const nombre = document.getElementById("filtro-nombre").value.trim().toLowerCase();
+    const categoria = document.getElementById("filtro-categoria").value;
+
+    const filtrados = productosCache.filter(p => {
+        const coincideNombre = p.nombre.toLowerCase().includes(nombre);
+        const coincideCategoria = !categoria || Number(p.categoria_id) === Number(categoria);
+        return coincideNombre && coincideCategoria;
+    });
+
+    renderTablaProductos(filtrados);
+}
+
+document.getElementById("filtro-nombre").addEventListener("input", aplicarFiltrosTabla);
+document.getElementById("filtro-categoria").addEventListener("change", aplicarFiltrosTabla);
 
 /* ... (Formulario de crear/editar) ... */
 formProducto.addEventListener("submit", async (e) => {
@@ -223,8 +243,8 @@ formProducto.addEventListener("submit", async (e) => {
             
             // Recargar datos
             cargarProductos(); 
-            cargarStock(); 
             cargarAlertas();
+            cargarMetricas();
         } else {
             alert("Error: " + (data.error || "No se pudo procesar la solicitud"));
         }
@@ -248,37 +268,63 @@ function editarProducto(id) {
 
     productoEditando = producto.id;
 
-    document.getElementById("nombre").value =
-        producto.nombre;
+    document.getElementById("edit-nombre").value = producto.nombre;
+    document.getElementById("edit-descripcion").value = producto.descripcion;
+    document.getElementById("edit-precio").value = producto.precio;
+    document.getElementById("edit-categoria").value = producto.categoria_id;
+    document.getElementById("edit-stock").value = producto.stock;
 
-    document.getElementById("descripcion").value =
-        producto.descripcion;
-
-    document.getElementById("precio").value =
-        producto.precio;
-
-    document.getElementById("categoria").value =
-        producto.categoria_id;
-
-    document.getElementById("stock").value =
-        producto.stock;
-
-    if (producto.imagen) {
-        preview.src =
-            `http://localhost:3000/uploads/${producto.imagen}`;
-
-        preview.style.display = "block";
-    }
-
-    document.querySelector(
-        "#form-producto button"
-    ).innerText = "Actualizar Producto";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.getElementById("modal-editar").classList.add("activo");
+    document.getElementById("modal-editar-overlay").classList.add("activo");
 }
+
+function cerrarModalEditar() {
+    document.getElementById("modal-editar").classList.remove("activo");
+    document.getElementById("modal-editar-overlay").classList.remove("activo");
+    productoEditando = null;
+}
+
+//listeners para cerrar modal editar
+document.getElementById("cerrar-modal-editar").addEventListener("click", cerrarModalEditar);
+document.getElementById("modal-editar-overlay").addEventListener("click", cerrarModalEditar);
+
+document.getElementById("form-editar-producto").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!productoEditando) return;
+
+    const formData = new FormData();
+    formData.append("nombre", document.getElementById("edit-nombre").value.trim());
+    formData.append("descripcion", document.getElementById("edit-descripcion").value.trim());
+    formData.append("precio", document.getElementById("edit-precio").value);
+    formData.append("categoria", document.getElementById("edit-categoria").value);
+    formData.append("stock", document.getElementById("edit-stock").value);
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/productos/${productoEditando}`, {
+            method: "PUT",
+            headers: { "Authorization": "Bearer " + token },
+            body: formData
+        });
+
+        const data = await respuesta.json();
+
+        if (!respuesta.ok) {
+            alert("Error: " + (data.error || "No se pudo actualizar el producto"));
+            return;
+        }
+
+        alert(data.mensaje);
+        cerrarModalEditar();
+        cargarProductos();
+        cargarAlertas();
+        cargarMetricas();
+
+    } catch (error) {
+        console.error("Error actualizando producto:", error);
+        alert("Ocurrió un error al actualizar el producto");
+    }
+});
 
 
 async function eliminarProducto(id) {
@@ -310,9 +356,9 @@ async function eliminarProducto(id) {
 
         alert(data.mensaje);
 
-        cargarProductos();
-        cargarStock();
+       cargarProductos();
         cargarAlertas();
+        cargarMetricas();
 
     } catch (error) {
 
@@ -338,22 +384,19 @@ async function cargarCategoriasSelect() {
         const categorias = await respuesta.json();
 
         const select = document.getElementById("categoria");
+        const selectEdit = document.getElementById("edit-categoria");
+        const selectFiltro = document.getElementById("filtro-categoria");
 
-        select.innerHTML = `
-            <option value="">
-                Selecciona una categoría
-            </option>
-        `;
+        const opcionesHTML = `<option value="">Selecciona una categoría</option>` +
+            categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
 
-        categorias.forEach(categoria => {
+        select.innerHTML = opcionesHTML;
+        selectEdit.innerHTML = opcionesHTML;
 
-            select.innerHTML += `
-                <option value="${categoria.id}">
-                    ${categoria.nombre}
-                </option>
-            `;
-
-        });
+        if (selectFiltro) {
+            selectFiltro.innerHTML = `<option value="">Todas las categorías</option>` +
+                categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
+        }
 
     } catch (error) {
 
@@ -367,7 +410,6 @@ async function cargarCategoriasSelect() {
 
 // Iniciar carga
 cargarAlertas();
-cargarStock();
 cargarProductos();
 cargarMetricas();
 cargarCategoriasSelect(); 
@@ -633,7 +675,7 @@ let miGrafica = null;
 
 async function cargarMetricas() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/metricas", {
+        const respuesta = await fetch("http://localhost:3000/api/admin/metricas", {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -801,7 +843,6 @@ async function actualizarEstadoPedido(id) {
 document.addEventListener("DOMContentLoaded", () => {
     cargarCategoriasSelect();
     cargarProductos();
-    cargarStock();
     cargarMetricas();
     cargarAlertas();
 
