@@ -11,16 +11,16 @@
 
 <body>
 
-    <header class="header">
+    <header>
         <div class="logo">
             <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
-        <nav class="navbar">
+        <nav>
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
-                <li class="active"><a href="perfil.html">Mi Perfil</a></li>
+                <li><a href="perfil.html" class="active">Mi Perfil</a></li>
             </ul>
         </nav>
     </header>
@@ -30,73 +30,64 @@
 
             <div class="perfil-col-izquierda">
                 
-                <div class="perfil-seccion seguimiento-simulado">
-                    <h3>📦 Estado de mi último pedido</h3>
-                    <p id="estado-pedido" class="badge-estado">Cargando...</p>
-                </div>
-
                 <div class="perfil-seccion">
-                    <h3>Historial de compras</h3>
-                    <div id="historial-compras">
-                        <p>Cargando historial...</p>
-                    </div>
-                </div>
-
-                <div class="perfil-seccion perfil-card-datos">
                     <h3>👤 Mi Perfil</h3>
-                    <div class="perfil-card">
-                        <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
-                        <p><strong>Email:</strong> <span id="perfil-email"></span></p>
-                        <p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
-                        <button id="logout-btn" class="btn-danger">Cerrar sesión</button>
+                    <div class="perfil-card" style="margin-top: 15px;">
+                        <p><strong>Nombre:</strong> <span id="perfil-nombre">Cargando...</span></p>
+                        <p><strong>Email:</strong> <span id="perfil-email">Cargando...</span></p>
+                        <p><strong>Rol:</strong> <span id="perfil-rol">Cargando...</span></p>
                     </div>
+                    <button id="logout-btn" style="margin-top: 15px;">Cerrar sesión</button>
                 </div>
 
             </div>
 
             <div class="perfil-col-derecha">
 
-                <div class="perfil-seccion direccion-envio">
-                    <h3>📍 Dirección de entrega</h3>
+                <div class="perfil-seccion">
+                    <h3>📍 Dirección de Entrega</h3>
+                    <p style="font-size: 0.95rem; color: #555; margin-bottom: 12px; margin-top: 5px;">
+                        Configura tu lugar de residencia para agilizar tus compras de Online Doggie.
+                    </p>
                     <div class="form-group">
-                        <label>Dirección</label>
-                        <input type="text" id="input-direccion" placeholder="Calle 123 #45-67, Ciudad...">
+                        <label for="input-direccion">Dirección</label>
+                        <input type="text" id="input-direccion" placeholder="Ej: cr 44 127 sur -83">
                     </div>
-                    <button onclick="guardarDireccion()" class="btn-submit">Actualizar dirección</button>
-                    <p id="mensaje-direccion"></p>
+                    <button onclick="guardarDireccion()" class="btn" style="margin-top: 10px;">Actualizar dirección</button>
+                    <p id="mensaje-direccion" style="margin-top: 8px; font-weight: bold; font-size: 0.95rem;"></p>
                 </div>
 
                 <div class="perfil-seccion">
-                    <h3>Editar perfil</h3>
-                    <form id="form-editar-perfil">
+                    <h3>Editar Perfil</h3>
+                    <form id="form-editar-perfil" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
                         <div class="form-group">
-                            <label>Nombre</label>
-                            <input type="text" id="edit-nombre" placeholder="Nuevo nombre" required>
+                            <label for="edit-nombre">Nombre</label>
+                            <input type="text" id="edit-nombre" required>
                         </div>
                         <div class="form-group">
-                            <label>Correo electrónico</label>
-                            <input type="email" id="edit-email" placeholder="Nuevo correo" required>
+                            <label for="edit-email">Correo electrónico</label>
+                            <input type="email" id="edit-email" required>
                         </div>
-                        <button type="submit" class="btn-submit">Guardar cambios</button>
+                        <button type="submit" class="btn">Guardar cambios</button>
                     </form>
                 </div>
 
                 <div class="perfil-seccion">
-                    <h3>Cambiar contraseña</h3>
-                    <form id="form-cambiar-password">
+                    <h3>Cambiar Contraseña</h3>
+                    <form id="form-cambiar-password" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
                         <div class="form-group">
-                            <label>Contraseña actual</label>
+                            <label for="password-actual">Contraseña actual</label>
                             <input type="password" id="password-actual" placeholder="Contraseña actual" required>
                         </div>
                         <div class="form-group">
-                            <label>Nueva contraseña</label>
-                            <input type="password" id="password-nueva" placeholder="Mínimo 8 caracteres" required>
+                            <label for="password-nueva">Nueva contraseña</label>
+                            <input type="password" id="password-nueva" placeholder="Nueva contraseña" required>
                         </div>
                         <div class="form-group">
-                            <label>Confirmar nueva contraseña</label>
-                            <input type="password" id="password-confirmar" placeholder="Repite la nueva contraseña" required>
+                            <label for="password-confirmar">Confirmar nueva contraseña</label>
+                            <input type="password" id="password-confirmar" placeholder="Confirmar nueva contraseña" required>
                         </div>
-                        <button type="submit" class="btn-submit">Cambiar contraseña</button>
+                        <button type="submit" class="btn">Cambiar Contraseña</button>
                     </form>
                 </div>
 
@@ -117,7 +108,6 @@
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="perfil.html">Mi Perfil</a></li>
-                    <li><a href="Login.html">Login</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -125,20 +115,90 @@
                 <p>📞 +57 300 123 4567</p>
                 <p>📧 contacto@onlinedoggie.com</p>
             </div>
-            <div class="footer-col">
-                <h4>Redes sociales</h4>
-                <ul>
-                    <li><a href="https://instagram.com/onlinedoggie" target="_blank">📸 Instagram</a></li>
-                    <li><a href="https://facebook.com/onlinedoggie" target="_blank">📘 Facebook</a></li>
-                </ul>
-            </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
         </div>
     </footer>
 
+    <div class="fab-container">
+        
+        <div class="fab-menu" id="fab-menu-desplegable">
+            <button class="fab-menu-item" id="btn-abrir-modal-grande">
+                <span class="icon">🛍️</span> Ver Historial de Compras
+            </button>
+        </div>
+
+        <button class="floating-btn" id="main-fab-btn" title="Ver opciones de compras">
+            📦
+        </button>
+
+    </div>
+
+    <div class="modal-full-screen" id="historial-modal-completo">
+        <div class="modal-full-container">
+            
+            <div class="modal-full-header">
+                <h2>🛍️ Historial Completo de Pedidos</h2>
+                <button class="btn-cerrar-modal" id="btn-cerrar-modal-grande">Cerrar Ventana</button>
+            </div>
+
+            <div class="tabla-gigante-container">
+                <table class="tabla-gigante">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio Unitario</th>
+                            <th style="text-align: center;">Cantidad</th>
+                            <th>Estado de Envío</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historial-compras-tabla-body">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #888; padding: 30px;">
+                                Cargando tu historial de compras...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
     <script src="./js/perfil.js"></script>
+
+    <script>
+        const mainFabBtn = document.getElementById('main-fab-btn');
+        const fabMenu = document.getElementById('fab-menu-desplegable');
+        const btnAbrirModal = document.getElementById('btn-abrir-modal-grande');
+        const modalGrande = document.getElementById('historial-modal-completo');
+        const btnCerrarModal = document.getElementById('btn-cerrar-modal-grande');
+
+        // 1. Mostrar/ocultar el mini-menú flotante al dar click en la caja 📦
+        mainFabBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evita que se cierre por el evento del document
+            fabMenu.classList.toggle('open');
+        });
+
+        // 2. Al hacer click en "Ver Historial de Compras", abrir el modal a pantalla completa
+        btnAbrirModal.addEventListener('click', () => {
+            fabMenu.classList.remove('open'); // Esconde el mini menú
+            modalGrande.classList.add('open'); // Muestra el modal gigante de la tabla
+            document.body.style.overflow = 'hidden'; // Bloquea el scroll del perfil de fondo
+        });
+
+        // 3. Cerrar la vista de la tabla gigante
+        btnCerrarModal.addEventListener('click', () => {
+            modalGrande.classList.remove('open');
+            document.body.style.overflow = 'auto'; // Restaura el scroll de la página principal
+        });
+
+        // Cierra el mini-menú contextual si se da un click en cualquier otra zona vacía
+        document.addEventListener('click', () => {
+            fabMenu.classList.remove('open');
+        });
+    </script>
 
 </body>
 </html>

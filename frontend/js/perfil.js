@@ -7,8 +7,9 @@ if (!token) {
 }
 
 
-/* CARGAR PERFIL                 */
-
+/* ==========================================================================
+   1. CARGAR PERFIL
+   ========================================================================== */
 
 async function cargarPerfil() {
     try {
@@ -57,8 +58,9 @@ async function cargarPerfil() {
 }
 
 
-/* HISTORIAL DE COMPRAS          */
-
+/* ==========================================================================
+   2. TABLA HISTORIAL DE COMPRAS (INTEGRADA CON DRAWER Y BADGES)
+   ========================================================================== */
 
 async function cargarHistorial() {
     try {
@@ -73,46 +75,77 @@ async function cargarHistorial() {
         }
 
         const pedidos = await respuesta.json();
-        const contenedor = document.getElementById("historial-compras");
+        const tablaBody = document.getElementById("historial-compras-tabla-body");
 
-        if (!contenedor) return;
+        if (!tablaBody) return;
 
         if (!pedidos.length) {
-            contenedor.innerHTML = "<p>No tienes compras registradas.</p>";
+            tablaBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #666; padding: 25px;">
+                        No tienes compras registradas.
+                    </td>
+                </tr>`;
             return;
         }
 
-        contenedor.innerHTML = pedidos.map(pedido => `
-            <div class="pedido-card">
-                <p><strong>Pedido #${pedido.pedido_id}</strong></p>
-                <p>Total: $${Number(pedido.total).toLocaleString("es-CO")}</p>
-                <p>Fecha: ${new Date(pedido.fecha).toLocaleDateString("es-CO")}</p>
-                <ul>
-                    ${pedido.productos.map(producto => `
-                        <li>
-                            ${producto.nombre} x${producto.cantidad}
-                            — $${Number(producto.precio).toLocaleString("es-CO")}
-                        </li>
-                    `).join("")}
-                </ul>
-            </div>
-        `).join("");
+        // Mapeo dinámico para asociar cada estado de la BD con una clase CSS del badge
+        const clasesEstado = {
+            "pendiente": "badge-pendiente",
+            "pagado": "badge-enviado",
+            "enviado": "badge-enviado",
+            "entregado": "badge-entregado",
+            "cancelado": "badge-pendiente"
+        };
+
+        let filasHtml = "";
+
+        // Recorremos los pedidos y desglosamos sus productos en filas independientes para la tabla
+        pedidos.forEach(pedido => {
+            const estadoTexto = pedido.estado || "pendiente";
+            const claseBadge = clasesEstado[estadoTexto.toLowerCase()] || "badge-enviado";
+
+            pedido.productos.forEach(producto => {
+                filasHtml += `
+                    <tr>
+                        <td style="font-weight: bold;">${producto.nombre}</td>
+                        <td>$${Number(producto.precio).toLocaleString("es-CO")}</td>
+                        <td style="text-align: center;">${producto.cantidad}</td>
+                        <td>
+                            <span class="badge-estado-tabla ${claseBadge}">
+                                ${estadoTexto}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+
+        tablaBody.innerHTML = filasHtml;
 
     } catch (error) {
-        console.error("Error cargando historial:", error);
+        console.error("Error cargando historial en tabla:", error);
+        const tablaBody = document.getElementById("historial-compras-tabla-body");
+        if (tablaBody) {
+            tablaBody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #EF4444; font-weight: bold; padding: 25px;">
+                        Error cargando la información del servidor.
+                    </td>
+                </tr>`;
+        }
     }
 }
 
 
-/* EDITAR PERFIL                 */
-
+/* ==========================================================================
+   3. EDITAR PERFIL
+   ========================================================================== */
 
 const formEditarPerfil = document.getElementById("form-editar-perfil");
 
 if (formEditarPerfil) {
-
     formEditarPerfil.addEventListener("submit", async (e) => {
-
         e.preventDefault();
 
         const nombre = document.getElementById("edit-nombre").value.trim();
@@ -131,7 +164,6 @@ if (formEditarPerfil) {
         }
 
         try {
-
             const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
                 method: "PUT",
                 headers: {
@@ -152,21 +184,18 @@ if (formEditarPerfil) {
         } catch (error) {
             console.error("Error editando perfil:", error);
         }
-
     });
-
 }
 
 
-/* CAMBIAR CONTRASEÑA            */
-
+/* ==========================================================================
+   4. CAMBIAR CONTRASEÑA
+   ========================================================================== */
 
 const formCambiarPassword = document.getElementById("form-cambiar-password");
 
 if (formCambiarPassword) {
-
     formCambiarPassword.addEventListener("submit", async (e) => {
-
         e.preventDefault();
 
         const actual = document.getElementById("password-actual").value.trim();
@@ -189,7 +218,6 @@ if (formCambiarPassword) {
         }
 
         try {
-
             const respuesta = await fetch("http://localhost:3000/api/auth/cambiar-password", {
                 method: "PUT",
                 headers: {
@@ -213,46 +241,38 @@ if (formCambiarPassword) {
         } catch (error) {
             console.error("Error cambiando contraseña:", error);
         }
-
     });
-
 }
 
 
-/* LOGOUT  */
-
+/* ==========================================================================
+   5. CERRAR SESIÓN (LOGOUT)
+   ========================================================================== */
 
 const logoutBtn = document.getElementById("logout-btn");
 
 if (logoutBtn) {
-
     logoutBtn.addEventListener("click", () => {
-
         localStorage.removeItem("token");
         localStorage.removeItem("usuario");
-
         window.location.href = "Login.html";
-
     });
-
 }
 
 
-/* GUARDAR DIRECCIÓN      */
-
+/* ==========================================================================
+   6. GUARDAR DIRECCIÓN DE ENVÍO
+   ========================================================================== */
 
 async function guardarDireccion() {
-
     const direccion = document.getElementById("input-direccion")?.value.trim();
     const msgEl = document.getElementById("mensaje-direccion");
 
     if (!direccion) {
-
         if (msgEl) {
             msgEl.textContent = "Escribe una dirección primero";
             msgEl.style.color = "red";
         }
-
         return;
     }
 
@@ -260,7 +280,6 @@ async function guardarDireccion() {
     const email = document.getElementById("edit-email")?.value.trim();
 
     try {
-
         const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
             method: "PUT",
             headers: {
@@ -275,114 +294,32 @@ async function guardarDireccion() {
         });
 
         if (respuesta.ok) {
-
             if (msgEl) {
                 msgEl.textContent = "✅ Dirección guardada correctamente.";
                 msgEl.style.color = "green";
             }
-
         } else {
-
             const data = await respuesta.json();
-
             if (msgEl) {
                 msgEl.textContent = data.mensaje || "Error al guardar";
                 msgEl.style.color = "red";
             }
-
         }
 
     } catch (error) {
-
         if (msgEl) {
             msgEl.textContent = "Error conectando con el servidor";
             msgEl.style.color = "red";
         }
-
     }
 }
 
 
-/*  ESTADO ÚLTIMO PEDIDO   */
-
-async function mostrarEstadoUltimoPedido() {
-
-    const estadoEl = document.getElementById("estado-pedido");
-
-    if (!estadoEl) return;
-
-    try {
-
-        const respuesta = await fetch("http://localhost:3000/api/pedidos/historial", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        if (!respuesta.ok) {
-            estadoEl.textContent = "No disponible";
-            return;
-        }
-
-        const pedidos = await respuesta.json();
-
-        if (pedidos.length === 0) {
-            estadoEl.textContent = "Sin pedidos aún";
-            return;
-        }
-
-        const ultimo = pedidos[0];
-
-        estadoEl.textContent = `Pedido #${ultimo.pedido_id}: ${ultimo.estado}`;
-
-        const colores = {
-            pendiente: {
-                bg: "#fff3cd",
-                color: "#856404"
-            },
-            pagado: {
-                bg: "#d1ecf1",
-                color: "#0c5460"
-            },
-            enviado: {
-                bg: "#cce5ff",
-                color: "#004085"
-            },
-            entregado: {
-                bg: "#d4edda",
-                color: "#155724"
-            },
-            cancelado: {
-                bg: "#f8d7da",
-                color: "#721c24"
-            }
-        };
-
-        const estilo = colores[ultimo.estado] || {
-            bg: "#e0e0e0",
-            color: "#333"
-        };
-
-        estadoEl.style.background = estilo.bg;
-        estadoEl.style.color = estilo.color;
-        estadoEl.style.padding = "8px 16px";
-        estadoEl.style.borderRadius = "8px";
-        estadoEl.style.fontWeight = "bold";
-        estadoEl.style.display = "inline-block";
-
-    } catch (error) {
-
-        estadoEl.textContent = "Error cargando estado";
-
-    }
-}
-
-
-/* INICIALIZACIÓN                */
-
+/* ==========================================================================
+   7. INICIALIZACIÓN DE FUNCIONES
+   ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarPerfil();
-    cargarHistorial();
-    mostrarEstadoUltimoPedido();
+    cargarHistorial(); // Trae las compras y arma las filas estructuradas de la tabla directamente
 });
