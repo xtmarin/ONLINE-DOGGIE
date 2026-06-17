@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 3000
 
 # Arrancamos el servidor apuntando al puerto 3000
-CMD ["serve", "-l", "3000"]
+CMD ["serve", "-l", "3000", "frontend"]
