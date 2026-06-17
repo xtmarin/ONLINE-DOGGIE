@@ -87,8 +87,6 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
   }
 
   const shortId = String(order.id).slice(0, 8).toUpperCase();
-
-  // Extraer solo los datos base64 sin el prefijo
   const base64Data = qrBase64.replace(/^data:image\/png;base64,/, "");
 
   const content = `
@@ -104,6 +102,13 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
       <img src="cid:qr_pago" style="width:220px;height:220px;" />
     </div>
 
+    <div style="text-align:center;margin:25px 0;">
+      <p style="color:#4a5568;font-size:14px;margin-bottom:12px;">Una vez realices la transferencia, envíanos tu comprobante haciendo clic aquí:</p>
+      <a href="${order.whatsappUrl}" target="_blank" style="display:inline-block;background-color:#25D366;color:#ffffff;text-decoration:none;padding:12px 28px;font-weight:700;border-radius:30px;font-size:14px;box-shadow:0 4px 12px rgba(37,211,102,0.15);">
+        💬 Enviar Comprobante por WhatsApp
+      </a>
+    </div>
+
     ${buildItemsTable(order.items)}
   `;
 
@@ -117,7 +122,7 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
         filename: "qr_pago.png",
         content: base64Data,
         encoding: "base64",
-        cid: "qr_pago"  // ← este ID conecta con src="cid:qr_pago"
+        cid: "qr_pago"
       }
     ]
   });

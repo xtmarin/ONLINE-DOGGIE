@@ -91,7 +91,7 @@
 
         <div id="vista-editar-productos" class="vista-seccion">
             <div class="admin-productos-tabla-wrapper">
-                <h2>📦 Catálogo de Editar Productos</h2>
+                <h2>📦 Gestión del Catálogo</h2>
                 <div class="filtros">
                     <input type="text" id="filtro-nombre" class="buscador" placeholder="Buscar por nombre...">
                     <select id="filtro-categoria" class="select-filtro">
@@ -186,7 +186,7 @@
     </div>
     <div id="drawer-overlay" class="drawer-overlay"></div>
 
-    <div id="modal-editar-overlay" class="drawer-overlay"></div>
+   <div id="modal-editar-overlay" class="drawer-overlay"></div>
     <div id="modal-editar" class="modal-editar">
         <div class="modal-editar-content">
             <div class="drawer-header">
@@ -201,6 +201,16 @@
                     <option value="">Selecciona una categoría</option>
                 </select>
                 <input type="number" id="edit-stock" placeholder="Stock" required>
+                
+                <div class="upload-box" id="edit-upload-box">
+                    <input type="file" id="edit-imagen" accept="image/*" hidden>
+                    <div class="upload-content">
+                        <p>📷 Cambiar imagen del producto</p>
+                        <span>Haz clic o arrastra una nueva imagen aquí</span>
+                    </div>
+                    <img id="edit-preview" class="preview-img">
+                </div>
+
                 <button type="submit">Actualizar Producto</button>
             </form>
         </div>

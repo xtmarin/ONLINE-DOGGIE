@@ -274,58 +274,43 @@ function editarProducto(id) {
     document.getElementById("edit-categoria").value = producto.categoria_id;
     document.getElementById("edit-stock").value = producto.stock;
 
+    const preview = document.getElementById("edit-preview");
+
+    if (producto.imagen) {
+
+        preview.src = `http://localhost:3000/uploads/${producto.imagen}`;
+
+        preview.style.display = "block";
+    } else {
+
+        preview.src = "";
+        preview.style.display = "none";
+    }
+
+
+    document.getElementById("edit-imagen").value = "";
+
+
     document.getElementById("modal-editar").classList.add("activo");
     document.getElementById("modal-editar-overlay").classList.add("activo");
 }
 
+const btnCerrarModal = document.getElementById("cerrar-modal-editar");
+const overlayModal = document.getElementById("modal-editar-overlay");
+
 function cerrarModalEditar() {
     document.getElementById("modal-editar").classList.remove("activo");
     document.getElementById("modal-editar-overlay").classList.remove("activo");
-    productoEditando = null;
 }
 
-//listeners para cerrar modal editar
-document.getElementById("cerrar-modal-editar").addEventListener("click", cerrarModalEditar);
-document.getElementById("modal-editar-overlay").addEventListener("click", cerrarModalEditar);
+if (btnCerrarModal) {
+    btnCerrarModal.addEventListener("click", cerrarModalEditar);
+}
 
-document.getElementById("form-editar-producto").addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    if (!productoEditando) return;
-
-    const formData = new FormData();
-    formData.append("nombre", document.getElementById("edit-nombre").value.trim());
-    formData.append("descripcion", document.getElementById("edit-descripcion").value.trim());
-    formData.append("precio", document.getElementById("edit-precio").value);
-    formData.append("categoria", document.getElementById("edit-categoria").value);
-    formData.append("stock", document.getElementById("edit-stock").value);
-
-    try {
-        const respuesta = await fetch(`http://localhost:3000/api/productos/${productoEditando}`, {
-            method: "PUT",
-            headers: { "Authorization": "Bearer " + token },
-            body: formData
-        });
-
-        const data = await respuesta.json();
-
-        if (!respuesta.ok) {
-            alert("Error: " + (data.error || "No se pudo actualizar el producto"));
-            return;
-        }
-
-        alert(data.mensaje);
-        cerrarModalEditar();
-        cargarProductos();
-        cargarAlertas();
-        cargarMetricas();
-
-    } catch (error) {
-        console.error("Error actualizando producto:", error);
-        alert("Ocurrió un error al actualizar el producto");
-    }
-});
-
+if (overlayModal) {
+    overlayModal.addEventListener("click", cerrarModalEditar);
+}
 
 async function eliminarProducto(id) {
 
@@ -578,7 +563,7 @@ document.getElementById("btn-eliminar")?.addEventListener("click", eliminarUsuar
 document.getElementById("btn-buscar-historial")?.addEventListener("click", consultarHistorialCompras);
 
 // ==========================================================================
-// NUEVO ANEXO: MÓDULO INDEPENDIENTE HISTORIAL DE COMPRAS
+// NUEVO ANEXO: MÓDULO INDEPENDIENTE HISTORIAL DE COMPRAS (CORREGIDO)
 // ==========================================================================
 function inicializarHistorialCompras() {
     const btnBuscarHistorial = document.getElementById('btn-buscar-historial');
@@ -597,37 +582,36 @@ function inicializarHistorialCompras() {
         contenedorHistorial.innerHTML = '<p class="historial-vacio">🔍 Buscando transacciones...</p>';
 
         try {
-            const respuesta = await fetch(`http://localhost:3000/api/usuarios/historial?email=${encodeURIComponent(email)}`, {
+
+            const respuesta = await fetch(`http://localhost:3000/api/pedidos?email=${encodeURIComponent(email)}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${token}`
+                    "Authorization": `Bearer ${token}` 
                 }
             });
 
-            if (respuesta.status === 404) {
-                contenedorHistorial.innerHTML = '<p class="historial-error">❌ El usuario no está registrado en el sistema.</p>';
-                return;
-            }
+            const datos = await respuesta.json();
 
-            const compras = await respuesta.json();
-
+           
             if (!respuesta.ok) {
-                contenedorHistorial.innerHTML = `<p class="historial-error">⚠️ ${compras.error || 'Error en la consulta.'}</p>`;
+                contenedorHistorial.innerHTML = `<p class="historial-error">❌ ${datos.error || 'Error en la consulta.'}</p>`;
                 return;
             }
 
-            if (!compras || compras.length === 0) {
+            if (datos.length === 0) {
                 contenedorHistorial.innerHTML = '<p class="historial-vacio">📦 El usuario no registra órdenes de compra.</p>';
                 return;
             }
 
             contenedorHistorial.innerHTML = "";
-            compras.forEach(compra => {
+
+            datos.forEach(compra => {
+                
                 const fechaFormateada = new Date(compra.fecha).toLocaleDateString('es-ES', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
 
-                // Crear los contenedores usando Vanilla JS estructurado
+               
                 const card = document.createElement('div');
                 card.className = 'historial-item-card';
 
@@ -640,7 +624,7 @@ function inicializarHistorialCompras() {
 
                 const spanMonto = document.createElement('span');
                 spanMonto.className = 'historial-monto';
-                spanMonto.textContent = `$${Number(compra.total).toLocaleString()}`;
+                spanMonto.textContent = `$${Number(compra.total).toLocaleString('es-CO')}`;
 
                 header.appendChild(spanId);
                 header.appendChild(spanMonto);
@@ -652,10 +636,25 @@ function inicializarHistorialCompras() {
                 spanFecha.textContent = `📅 ${fechaFormateada}`;
 
                 const spanEstado = document.createElement('span');
-                spanEstado.innerHTML = `📦 Estado: <strong>${compra.estado.toUpperCase()}</strong>`;
+                spanEstado.innerHTML = `📦 Estado: <strong class="badge-${compra.estado}">${compra.estado.toUpperCase()}</strong>`;
 
                 detalles.appendChild(spanFecha);
                 detalles.appendChild(spanEstado);
+
+                
+                if (compra.productos && compra.productos.length > 0) {
+                    const divProductos = document.createElement('div');
+                    divProductos.className = 'historial-item-productos';
+                    divProductos.style.marginTop = '8px';
+                    divProductos.style.fontSize = '0.85rem';
+                    divProductos.style.color = '#555';
+
+                    let textoProductos = "<strong>Artículos:</strong> ";
+                    textoProductos += compra.productos.map(p => `${p.nombre} (x${p.cantidad})`).join(', ');
+                    divProductos.innerHTML = textoProductos;
+
+                    detalles.appendChild(divProductos);
+                }
 
                 card.appendChild(header);
                 card.appendChild(detalles);
@@ -722,125 +721,183 @@ async function cargarMetricas() {
 }
 
 async function cargarPedidos() {
-
     try {
-
-        const respuesta = await fetch(
-            "http://localhost:3000/api/pedidos",
-            {
-                headers: {
-                    Authorization: "Bearer " + token
-                }
+        const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+            headers: {
+                Authorization: "Bearer " + token
             }
-        );
-
-        const pedidos = await respuesta.json();
-
-        const contenedor =
-            document.getElementById("lista-pedidos-admin");
-
-        contenedor.innerHTML = "";
-
-        pedidos.forEach(pedido => {
-
-            contenedor.innerHTML += `
-                <div class="pedido-admin-card">
-
-                    <h3>Pedido #${pedido.id}</h3>
-
-                    <p>
-                        Cliente:
-                        ${pedido.nombre}
-                    </p>
-
-                    <p>
-                        Correo:
-                        ${pedido.email}
-                    </p>
-
-                    <p>
-                        Total:
-                        $${Number(pedido.total).toLocaleString()}
-                    </p>
-
-                    <p>
-                        Estado:
-                        <strong>${pedido.estado}</strong>
-                    </p>
-
-                    <select id="estado-${pedido.id}">
-                        <option value="pendiente_pago">Pendiente de Pago</option>
-                        <option value="pagado">Pagado</option>
-                        <option value="enviado">Enviado</option>
-                        <option value="entregado">Entregado</option>
-                        <option value="cancelado">Cancelado</option>
-                    </select>
-
-                    <button
-                        onclick="actualizarEstadoPedido(${pedido.id})">
-                        Actualizar
-                    </button>
-
-                </div>
-            `;
-
-            document.getElementById(
-                `estado-${pedido.id}`
-            ).value = pedido.estado;
-
         });
 
+        const datosOriginales = await respuesta.json();
+        const contenedor = document.getElementById("lista-pedidos-admin");
+        if (!contenedor) return;
+
+        if (datosOriginales.length === 0) {
+            contenedor.innerHTML = `<p style="padding: 20px; color: #718096; text-align: center;">No hay pedidos registrados.</p>`;
+            return;
+        }
+
+        const pedidosAgrupados = Object.values(datosOriginales.reduce((acumulador, item) => {
+            if (!acumulador[item.id]) {
+                acumulador[item.id] = {
+                    id: item.id,
+                    nombre: item.nombre,
+                    email: item.email,
+                    total: item.total,
+                    estado: item.estado,
+                    productos: []
+                };
+            }
+            if (item.producto_nombre || item.producto) {
+                const nombreProd = item.producto_nombre || item.producto;
+                const cantProd = item.cantidad || 1;
+                acumulador[item.id].productos.push(`${nombreProd} (x${cantProd})`);
+            } else if (item.productos && Array.isArray(item.productos)) {
+                acumulador[item.id].productos = item.productos.map(p => `${p.nombre || p.producto_nombre} (x${p.cantidad || 1})`);
+            }
+            return acumulador;
+        }, {}));
+
+        let html = `
+            <div class="tabla-pedidos-wrapper">
+                <table class="tabla-pedidos">
+                    <thead>
+                        <tr>
+                            <th>N° Pedido</th>
+                            <th>Cliente / Contacto</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado Actual</th>
+                            <th>Gestión</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        pedidosAgrupados.forEach(pedido => {
+            const estadoActual = pedido.estado.toLowerCase();
+            const esPendiente = estadoActual === 'pendiente' || estadoActual === 'pendiente_pago';
+
+            const listaProductos = pedido.productos.length > 0
+                ? `<ul class="lista-productos-tabla">${pedido.productos.map(p => `<li>${p}</li>`).join('')}</ul>`
+                : `<span style="color: #a0aec0; font-style: italic;">Sin detalles</span>`;
+
+            html += `
+                <tr>
+                    <td><strong>#${pedido.id}</strong></td>
+                    <td>
+                        <div class="cliente-info">
+                            <span class="nombre">${pedido.nombre}</span>
+                            <span class="correo">${pedido.email}</span>
+                        </div>
+                    </td>
+                    <td>${listaProductos}</td>
+                    <td><span class="precio">$${Number(pedido.total).toLocaleString('es-CO')}</span></td>
+                    <td>
+                        <span class="badge-estado estado-${estadoActual}">
+                            ${pedido.estado.replace('_', ' ').toUpperCase()}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="acciones-celda">
+                            <select id="estado-${pedido.id}" class="select-tabla estado-${estadoActual}">
+                                <option value="pendiente_pago" ${esPendiente ? 'selected' : ''}>⏳ Pendiente de Pago</option>
+                                <option value="pagado" ${estadoActual === 'pagado' ? 'selected' : ''}>💳 Pagado</option>
+                                <option value="enviado" ${estadoActual === 'enviado' ? 'selected' : ''}>🚚 Enviado</option>
+                                <option value="entregado" ${estadoActual === 'entregado' ? 'selected' : ''}>✅ Entregado</option>
+                                <option value="cancelado" ${estadoActual === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+                            </select>
+                            
+                            <button class="btn-actualizar-tabla" onclick="actualizarEstadoPedido(${pedido.id})">
+                                Actualizar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        contenedor.innerHTML = html;
+
     } catch (error) {
-
-        console.error(error);
-
+        console.error("Error al cargar pedidos:", error);
     }
 }
 
 async function actualizarEstadoPedido(id) {
+    const selector = document.getElementById(`estado-${id}`);
+    if (!selector) return;
 
-    const nuevoEstado =
-        document.getElementById(
-            `estado-${id}`
-        ).value;
+    const nuevoEstado = selector.value;
 
     try {
-
-        const respuesta = await fetch(
-            `http://localhost:3000/api/pedidos/${id}/estado`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + token
-                },
-                body: JSON.stringify({
-                    nuevoEstado
-                })
-            }
-        );
+        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token
+            },
+            body: JSON.stringify({
+                estado: nuevoEstado
+            })
+        });
 
         const data = await respuesta.json();
 
-        if (!respuesta.ok) {
-
-            alert(data.error);
-
+        if (!res.ok) {
+            alert(data.error || "No se pudo actualizar");
             return;
         }
 
-        mostrarToast(
-            data.mensaje
-        );
-
+        mostrarToast(data.mensaje || "Estado actualizado con éxito");
         cargarPedidos();
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("Error al actualizar estado:", error);
     }
 }
+
+async function actualizarEstadoPedido(id) {
+    const selector = document.getElementById(`estado-${id}`);
+    if (!selector) return;
+
+    const nuevoEstado = selector.value;
+
+    try {
+        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token // Asegúrate de tener tu token aquí
+            },
+            body: JSON.stringify({
+                estado: nuevoEstado
+            })
+        });
+
+        const data = await respuesta.json();
+
+
+        if (!respuesta.ok) {
+            alert(data.error || "No se pudo actualizar el estado");
+            return;
+        }
+
+        alert(data.mensaje || "Estado actualizado con éxito");
+        cargarPedidos(); // Recarga la lista agrupada automáticamente
+
+    } catch (error) {
+        console.error("Error al actualizar estado:", error);
+    }
+}
+
+
 
 // ==========================================================================
 // INICIAR CARGA (DOM Ready con el nuevo llamado integrado al final)

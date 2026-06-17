@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 
-/* ========================= */
-/* VARIABLES GLOBALES */
-/* ========================= */
+/* ========================================================================== */
+/* 1. VARIABLES GLOBALES                                                       */
+/* ========================================================================== */
 
 :root {
     --azul-primario: #1E3CFF;
@@ -14,9 +14,9 @@
     --blanco: #FFFFFF;
 }
 
-/* ========================= */
-/* RESET Y GENERALES */
-/* ========================= */
+/* ========================================================================== */
+/* 2. RESET Y GENERALES                                                        */
+/* ========================================================================== */
 
 * {
     margin: 0;
@@ -37,9 +37,9 @@ body {
     flex: 1;
 }
 
-/* ========================= */
-/* HEADER Y NAVBAR*/
-/* ========================= */
+/* ========================================================================== */
+/* 3. HEADER Y NAVBAR                                                          */
+/* ========================================================================== */
 
 header {
     display: flex;
@@ -48,7 +48,7 @@ header {
     background-color: var(--blanco);
     padding: 10px 20px;
     border-bottom: 1px solid var(--gris-borde);
-    position: sticky; /* Se mantiene arriba */
+    position: sticky;
     top: 0;
     z-index: 1000;
 }
@@ -86,13 +86,12 @@ nav ul li a {
     transition: 0.3s;
 }
 
-nav ul li a:hover, 
+nav ul li a:hover,
 nav ul li a.active {
     color: var(--azul-primario);
     background: rgba(30, 60, 255, 0.08);
 }
 
-/* SUBMENUS ORIGINALES */
 nav ul li ul {
     display: none;
     position: absolute;
@@ -118,9 +117,9 @@ nav ul li ul li a:hover {
     background: var(--azul-fondo);
 }
 
-/* ========================= */
-/* HERO SECTION */
-/* ========================= */
+/* ========================================================================== */
+/* 4. HERO SECTION                                                             */
+/* ========================================================================== */
 
 .hero {
     display: flex;
@@ -146,9 +145,9 @@ nav ul li ul li a:hover {
     margin-bottom: 20px;
 }
 
-/* ========================= */
-/* SECCIÓN BANNERS  */
-/* ========================= */
+/* ========================================================================== */
+/* 5. BANNERS                                                                  */
+/* ========================================================================== */
 
 .banners-section {
     max-width: 1200px;
@@ -194,9 +193,9 @@ nav ul li ul li a:hover {
     text-align: left;
 }
 
-/* ========================= */
-/* BUSCADOR Y FILTROS */
-/* ========================= */
+/* ========================================================================== */
+/* 6. BUSCADOR Y FILTROS                                                       */
+/* ========================================================================== */
 
 .filtros {
     display: flex;
@@ -224,9 +223,9 @@ nav ul li ul li a:hover {
     box-shadow: 0 0 8px rgba(0, 180, 230, 0.4);
 }
 
-/* ========================= */
-/* PRODUCTOS */
-/* ========================= */
+/* ========================================================================== */
+/* 7. PRODUCTOS                                                                */
+/* ========================================================================== */
 
 .lista-productos {
     display: grid;
@@ -292,9 +291,9 @@ nav ul li ul li a:hover {
     margin: 5px 0;
 }
 
-/* ========================= */
-/* CALIFICACIÓN SERVICIO */
-/* ========================= */
+/* ========================================================================== */
+/* 8. CALIFICACIÓN SERVICIO                                                    */
+/* ========================================================================== */
 
 .calificacion-section {
     background: white;
@@ -316,25 +315,25 @@ nav ul li ul li a:hover {
     display: inline-block;
 }
 
-/* ========================= */
-/* FORMULARIOS (Contacto y Boletín) */
-/* ========================= */
+/* ========================================================================== */
+/* 9. FORMULARIOS (Contacto y Boletín)                                        */
+/* ========================================================================== */
 
 .interaccion-container {
     display: flex;
     justify-content: center;
-    align-items: stretch; /* Para que tengan la misma altura */
+    align-items: stretch;
     gap: 20px;
     max-width: 1100px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
-.contacto-section, 
+.contacto-section,
 .boletin-section {
-    flex: 1; /* Esto hace que midan lo mismo */
-    margin: 0; 
-    padding: 35px 30px !important; /* Espaciado interno optimizado */
+    flex: 1;
+    margin: 0;
+    padding: 35px 30px !important;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -343,7 +342,7 @@ nav ul li ul li a:hover {
     justify-content: space-between;
 }
 
-.contacto-section h3, 
+.contacto-section h3,
 .boletin-section h3 {
     font-size: 1.5rem;
     margin-bottom: 25px;
@@ -352,7 +351,6 @@ nav ul li ul li a:hover {
     letter-spacing: 0.5px;
 }
 
-/* Optimización de inputs en Contáctanos y Boletín */
 .contacto-section input,
 .contacto-section textarea,
 .boletin-section input {
@@ -371,7 +369,6 @@ nav ul li ul li a:hover {
     min-height: 110px;
 }
 
-/* Efecto de foco en inputs de contacto */
 .contacto-section input:focus,
 .contacto-section textarea:focus,
 .boletin-section input:focus {
@@ -379,7 +376,7 @@ nav ul li ul li a:hover {
     box-shadow: 0 0 8px rgba(30, 60, 255, 0.15);
 }
 
-.contacto-section .form-group, 
+.contacto-section .form-group,
 .boletin-section p {
     margin-bottom: 12px;
 }
@@ -392,11 +389,10 @@ nav ul li ul li a:hover {
 
 .boletin-form {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 10px;
 }
 
-/* Ajuste de botones en la sección de contacto */
 .contacto-section button,
 .boletin-section button {
     border-radius: 8px !important;
@@ -407,18 +403,12 @@ nav ul li ul li a:hover {
     letter-spacing: 0.5px;
 }
 
-/* Responsivo: Si la pantalla es pequeña, se vuelven a poner uno arriba del otro */
-@media (max-width: 850px) {
-    .interaccion-container {
-        flex-direction: column;
-    }
-}
+/* ========================================================================== */
+/* 10. BOTONES UNIFICADOS                                                      */
+/* ========================================================================== */
 
-/* ========================= */
-/* BOTONES UNIFICADOS */
-/* ========================= */
-
-.btn, .btn-agregar, .btn-ver-carrito, .registro button, .admin-form button, button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
+.btn, .btn-agregar, .btn-ver-carrito, .registro button, .admin-form button,
+button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     display: inline-block;
     padding: 12px 18px;
     background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
@@ -430,17 +420,18 @@ nav ul li ul li a:hover {
     cursor: pointer;
     transition: 0.3s;
     text-align: center;
-    width: 100%; /* Ajuste para formularios */
+    width: 100%;
 }
 
-.btn:hover, .btn-agregar:hover, .registro button:hover, button:hover, .btn-submit:hover, .perfil-seccion button:not(#logout-btn):hover {
+.btn:hover, .btn-agregar:hover, .registro button:hover, button:hover,
+.btn-submit:hover, .perfil-seccion button:not(#logout-btn):hover {
     background: var(--azul-hover);
     transform: translateY(-2px);
 }
 
-/* ========================= */
-/* CARRITO LATERAL  */
-/* ========================= */
+/* ========================================================================== */
+/* 11. CARRITO LATERAL                                                         */
+/* ========================================================================== */
 
 #overlay-mini {
     position: fixed;
@@ -450,7 +441,10 @@ nav ul li ul li a:hover {
     transition: 0.3s; z-index: 998;
 }
 
-#overlay-mini.activo { opacity: 1; visibility: visible; }
+#overlay-mini.activo {
+    opacity: 1;
+    visibility: visible;
+}
 
 .mini-carrito {
     position: fixed;
@@ -464,7 +458,9 @@ nav ul li ul li a:hover {
     z-index: 999;
 }
 
-.mini-carrito.activo { right: 0; }
+.mini-carrito.activo {
+    right: 0;
+}
 
 .mini-header {
     display: flex;
@@ -479,7 +475,9 @@ nav ul li ul li a:hover {
     font-size: 22px; cursor: pointer;
 }
 
-#mini-carrito-body { flex: 1; overflow-y: auto; margin: 20px 0; }
+#mini-carrito-body {
+    flex: 1; overflow-y: auto; margin: 20px 0;
+}
 
 .mini-item {
     display: flex; align-items: center; gap: 12px;
@@ -492,9 +490,12 @@ nav ul li ul li a:hover {
 .mini-precio { font-weight: bold; color: var(--azul-primario); }
 .mini-eliminar { background: none; border: none; cursor: pointer; color: #999; }
 
-.mini-footer { border-top: 1px solid var(--gris-borde); padding-top: 15px; }
+.mini-footer {
+    border-top: 1px solid var(--gris-borde);
+    padding-top: 15px;
+}
 
-/* BOTÓN FLOTANTE */
+/* Botón flotante del carrito */
 .carrito-flotante {
     position: fixed;
     bottom: 25px; right: 25px;
@@ -507,7 +508,9 @@ nav ul li ul li a:hover {
     z-index: 1000; transition: transform 0.2s ease;
 }
 
-.carrito-flotante:hover { transform: scale(1.1); }
+.carrito-flotante:hover {
+    transform: scale(1.1);
+}
 
 #contador-carrito {
     position: absolute; top: -5px; right: -5px;
@@ -516,11 +519,16 @@ nav ul li ul li a:hover {
     display: flex; justify-content: center; align-items: center;
 }
 
-/* ========================= */
-/* LOGIN / REGISTRO */
-/* ========================= */
+/* ========================================================================== */
+/* 12. LOGIN / REGISTRO                                                        */
+/* ========================================================================== */
 
-.registro-section { max-width: 500px; width: 90%; margin: 60px auto; text-align: center; }
+.registro-section {
+    max-width: 500px;
+    width: 90%;
+    margin: 60px auto;
+    text-align: center;
+}
 
 .registro {
     background-color: var(--blanco);
@@ -530,15 +538,29 @@ nav ul li ul li a:hover {
     border-top: 6px solid var(--azul-primario);
 }
 
-.registro .logo { display: block; margin: 0 auto 20px auto; }
+.registro .logo {
+    display: block;
+    margin: 0 auto 20px auto;
+}
 
-.form-group { text-align: left; margin-bottom: 18px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
+.form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
 
 .registro input {
-    width: 100%; padding: 12px;
+    width: 100%;
+    padding: 12px;
     border: 1px solid var(--gris-borde);
-    border-radius: 8px; font-size: 14px;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 .registro input:focus {
@@ -547,50 +569,21 @@ nav ul li ul li a:hover {
     outline: none;
 }
 
-.login-link { margin-top: 15px; font-size: 14px; }
-.login-link a { color: var(--azul-primario); font-weight: 600; text-decoration: none; }
-
-/* ========================= */
-/* PANEL ADMIN (Lógica intacta) */
-/* ========================= */
-
-.admin-panel { max-width: 900px; margin: 50px auto; padding: 20px; }
-.admin-form {
-    background: var(--blanco); padding: 25px;
-    border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    margin-bottom: 40px;
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
 }
 
-.admin-form form { display: flex; flex-direction: column; gap: 15px; }
-
-.upload-box {
-    border: 2px dashed var(--azul-primario);
-    border-radius: 12px; padding: 25px;
-    text-align: center; cursor: pointer;
-    background: var(--azul-fondo);
+.login-link a {
+    color: var(--azul-primario);
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.upload-box:hover { background: rgba(30, 60, 255, 0.05); }
-.preview-img { width: 120px; margin-top: 15px; display: none; border-radius: 8px; }
+/* ========================================================================== */
+/* 13. PERFIL DE USUARIO                                                       */
+/* ========================================================================== */
 
-.admin-productos {
-    background: var(--blanco); padding: 25px;
-    border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-}
-
-.admin-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px; margin-bottom: 12px; border-radius: 10px;
-    border: 1px solid var(--gris-borde); background: var(--azul-fondo);
-}
-
-.admin-precio { font-weight: bold; color: var(--azul-primario); }
-
-/* ========================= */
-/* PERFIL REESTRUCTURADO     */
-/* ========================= */
-
-/* Contenedor Flex de 2 Columnas */
 .perfil-container {
     display: flex;
     flex-wrap: wrap;
@@ -598,7 +591,7 @@ nav ul li ul li a:hover {
     margin: 40px auto;
     padding: 0 20px;
     gap: 30px;
-    text-align: left; 
+    text-align: left;
 }
 
 .perfil-col-izquierda {
@@ -617,7 +610,6 @@ nav ul li ul li a:hover {
     gap: 20px;
 }
 
-/* Tarjetas individuales del perfil */
 .perfil-seccion {
     background: var(--blanco);
     padding: 25px;
@@ -626,7 +618,6 @@ nav ul li ul li a:hover {
     border: 1px solid var(--gris-borde);
 }
 
-/* Títulos de sección adaptados a la estética institucional */
 .perfil-seccion h3 {
     font-size: 1.4rem;
     color: var(--gris-texto);
@@ -636,7 +627,6 @@ nav ul li ul li a:hover {
     text-transform: uppercase;
 }
 
-/* Estilo interior de la tarjeta de datos crudos */
 .perfil-card {
     background: transparent;
     padding: 0;
@@ -654,7 +644,6 @@ nav ul li ul li a:hover {
     color: var(--azul-primario);
 }
 
-/* Estilización unificada para inputs dentro de las secciones del perfil */
 .perfil-seccion input {
     width: 100%;
     padding: 12px;
@@ -671,7 +660,6 @@ nav ul li ul li a:hover {
     outline: none;
 }
 
-/* Botón de salida destructivo en color rojo plano */
 #logout-btn {
     background: #EF4444;
     color: white;
@@ -692,7 +680,6 @@ nav ul li ul li a:hover {
     transform: translateY(-2px);
 }
 
-/* Estado del último pedido */
 .badge-estado {
     background-color: #FEF3C7;
     color: #D97706;
@@ -703,7 +690,6 @@ nav ul li ul li a:hover {
     display: inline-block;
 }
 
-/* Historial de compras listado interno */
 #historial-compras p {
     font-size: 1.1rem;
     color: #555;
@@ -719,24 +705,24 @@ nav ul li ul li a:hover {
     color: var(--gris-texto);
 }
 
-/* ========================= */
-/* FOOTER PROFESIONAL */
-/* ========================= */
+/* ========================================================================== */
+/* 14. FOOTER                                                                  */
+/* ========================================================================== */
 
 .footer {
     background: var(--azul-primario);
     color: white;
-    padding: 50px 5% 20px 5%; 
+    padding: 50px 5% 20px 5%;
     margin-top: auto;
 }
 
 .footer-content {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr; 
-    gap: 40px; 
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
-    align-items: start; 
+    align-items: start;
 }
 
 .footer-simple .footer-content {
@@ -751,7 +737,7 @@ nav ul li ul li a:hover {
     border-bottom: 2px solid var(--azul-secundario);
     display: inline-block;
     font-size: 1.1rem;
-    padding-bottom: 4px; 
+    padding-bottom: 4px;
 }
 
 .footer-brand {
@@ -761,9 +747,8 @@ nav ul li ul li a:hover {
     margin-bottom: 15px;
 }
 
-
 .footer-brand h4 {
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .footer-brand img {
@@ -774,21 +759,21 @@ nav ul li ul li a:hover {
     padding: 4px;
 }
 
-.footer-col ul { 
-    list-style: none; 
-    padding: 0; 
+.footer-col ul {
+    list-style: none;
+    padding: 0;
     margin: 0;
 }
 
 .footer-col ul li {
-    margin-bottom: 12px; 
+    margin-bottom: 12px;
 }
 
 .footer-col a {
     color: white;
     text-decoration: none;
     opacity: 0.85;
-    display: inline-block; 
+    display: inline-block;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -805,30 +790,41 @@ nav ul li ul li a:hover {
 }
 
 .footer-bottom {
-    text-align: center; 
-    margin-top: 40px; /* Separamos un poco más la línea de copyright */
-    padding-top: 20px; 
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ========================= */
-/* RESPONSIVE */
-/* ========================= */
+/* ========================================================================== */
+/* 15. RESPONSIVE                                                              */
+/* ========================================================================== */
 
-@media(max-width:768px) {
+@media (max-width: 850px) {
+    .interaccion-container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
     .hero { flex-direction: column; text-align: center; }
     nav ul { flex-wrap: wrap; gap: 10px; justify-content: center; }
     .lista-productos { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
     .boletin-form { flex-direction: column; }
-    .perfil-container { flex-direction: column; } /* Adaptación móvil del perfil */
+    .perfil-container { flex-direction: column; }
 }
 
 /* ========================================================================== */
-/* ENTORNO INTEGRADO: ADMIN (admin.html)                                      */
-/* Adiciones exclusivas para las secciones de stock sueltas, pedidos y KPIs   */
+/* 16. PANEL ADMIN - ESTRUCTURA BASE                                           */
 /* ========================================================================== */
 
-/* Estilización de los encabezados internos del panel de control */
+.admin-panel {
+    width: 100% !important;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .admin-panel h2 {
     font-size: 1.5rem;
     color: var(--gris-texto);
@@ -839,22 +835,223 @@ nav ul li ul li a:hover {
     text-transform: uppercase;
 }
 
-/* Contenedor de Alerta de Stock (Línea de la casilla de verificación) */
-.admin-panel input[type="checkbox"] + label,
-.admin-panel p:has(input[type="checkbox"]) {
-    background: #FFFBEB;
-    border: 1px solid #FCD34D;
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-weight: bold;
-    color: #B45309;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+.admin-form {
+    background: var(--blanco);
+    padding: 35px 30px;
+    border-radius: 16px;
+    
+    box-shadow: 0 15px 35px rgba(30, 60, 255, 0.06), 
+                0 5px 15px rgba(0, 0, 0, 0.03);
+    
+    margin: 40px auto 50px auto;
+    max-width: 550px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(30, 60, 255, 0.1); 
+    box-sizing: border-box;
 }
 
-/* GESTIÓN DE STOCK (Solución al desplome vertical de image_7b006c.png) */
-/* Como tu HTML renderiza textos puros y brs sueltos, les damos un flujo flex inline ordenado */
+.admin-form::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--azul-primario), #00d2ff, var(--azul-secundario));
+}
+
+
+.admin-form h2 {
+    font-size: 1.6rem;
+    color: var(--gris-texto);
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+
+.admin-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; 
+}
+
+
+.admin-form form input[type="text"],
+.admin-form form input[type="number"],
+.admin-form form select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14.5px;
+    color: var(--gris-texto);
+    background-color: #f8fafc;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 48px;
+}
+
+
+.admin-form form input:focus,
+.admin-form form select:focus {
+    background-color: #ffffff;
+    border-color: var(--azul-primario);
+    /* Halo de luz azul neón suave alrededor del input */
+    box-shadow: 0 0 0 4px rgba(30, 60, 255, 0.12), 
+                0 4px 10px rgba(30, 60, 255, 0.05);
+}
+
+.upload-box {
+    border: 2px dashed rgba(30, 60, 255, 0.3);
+    background: linear-gradient(135deg, rgba(30, 60, 255, 0.01), rgba(0, 210, 255, 0.01));
+    border-radius: 12px;
+    padding: 10px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 125px;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+
+.upload-box:hover {
+    border-color: var(--azul-primario);
+    background: linear-gradient(135deg, rgba(30, 60, 255, 0.04), rgba(0, 210, 255, 0.04));
+    box-shadow: inset 0 0 12px rgba(30, 60, 255, 0.05);
+}
+
+.upload-content p {
+    font-weight: bold;
+    color: var(--azul-primario);
+    margin: 0 0 2px 0;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+}
+
+.upload-content span {
+    font-size: 12.5px;
+    color: #64748b;
+}
+
+.preview-img {
+    max-height: 75px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-top: 6px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra para la foto cargada */
+}
+
+/* ========================================================================== */
+/* MEJORA DE LUZ PARA EL BOTÓN DE ENVÍO                                       */
+/* ========================================================================== */
+.admin-form button[type="submit"] {
+    margin-top: 10px;
+    height: 50px;
+    font-size: 15.5px;
+    letter-spacing: 0.5px;
+    border-radius: 10px;
+    /* Tu gradiente original */
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    box-shadow: 0 4px 12px rgba(30, 60, 255, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* El botón se enciende e ilumina el formulario al poner el cursor */
+.admin-form button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(30, 60, 255, 0.35); /* Brillo neón intenso inferior */
+    filter: brightness(1.05); /* Incrementa levemente la luz del gradiente */
+}
+
+.admin-form button[type="submit"]:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(30, 60, 255, 0.2);
+}
+
+.upload-box {
+    border: 2px dashed var(--azul-primario);
+    border-radius: 12px;
+    padding: 10px 15px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--azul-fondo);
+}
+
+.upload-box:hover {
+    background: rgba(30, 60, 255, 0.05);
+}
+
+.upload-content p {
+    margin: 0 0 2px 0;
+    font-size: 13px;
+}
+
+.upload-content span {
+    font-size: 11px;
+}
+
+.preview-img {
+    max-height: 70px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-top: px;
+}
+
+.admin-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--gris-borde);
+    background: var(--azul-fondo);
+}
+
+.admin-item h4 {
+    font-size: 1.15rem;
+}
+
+.admin-precio {
+    font-weight: bold;
+    color: var(--azul-primario);
+}
+
+.admin-actions button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: white;
+}
+
+.admin-actions button:first-child { background: #10B981; }
+.admin-actions button:last-child { background: #EF4444; }
+
+/* Selectores y campos de gestión de pedidos */
+.admin-panel select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 2px solid var(--azul-primario);
+    background: white;
+    font-weight: bold;
+}
+
 .admin-panel input[value="Actualizar"] {
     background: var(--azul-primario);
     color: white;
@@ -864,7 +1061,7 @@ nav ul li ul li a:hover {
     font-size: 13px;
     cursor: pointer;
     font-weight: bold;
-    margin-right: 25px; /* Espaciado entre columnas */
+    margin-right: 25px;
     margin-bottom: 12px;
     text-transform: uppercase;
     transition: background 0.2s;
@@ -884,54 +1081,6 @@ nav ul li ul li a:hover {
     margin-left: 6px;
 }
 
-/* PRODUCTOS REGISTRADOS (Contenedor con scroll para las tarjetas CRUD de image_7b002c.png) */
-.admin-productos {
-    max-height: 480px;
-    overflow-y: auto;
-    padding: 15px;
-    background: var(--blanco);
-    border-radius: 12px;
-    border: 1px solid var(--gris-borde);
-}
-
-.admin-item h4 {
-    font-size: 1.15rem;
-}
-
-.admin-actions button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 13px;
-    text-transform: uppercase;
-    color: white;
-}
-
-.admin-actions button:first-child { background: #10B981; } /* Editar */
-.admin-actions button:last-child { background: #EF4444; } /* Eliminar */
-
-/* GESTIÓN DE PEDIDOS Y ENVÍOS (De plano en image_7b00c2.png a tarjeta pro) */
-.admin-panel p:has(+ select), 
-.admin-panel p:has(input[value*="estado"]) {
-    background: var(--blanco);
-    padding: 18px;
-    border-radius: 10px;
-    border-left: 5px solid #F59E0B;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-    margin-bottom: 15px;
-}
-
-/* Botones y Selectores de Despacho */
-.admin-panel select {
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 2px solid var(--azul-primario);
-    background: white;
-    font-weight: bold;
-}
-
 .admin-panel input[type="button"][value*="estado"] {
     background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
     color: white;
@@ -943,19 +1092,12 @@ nav ul li ul li a:hover {
     margin-left: 8px;
 }
 
-/* MÉTRICAS DEL SISTEMA (Organización de las líneas de texto en bloque) */
-.admin-panel h2:contains("Métricas") ~ text,
-.admin-panel h2:has(~ input[placeholder*="correo"]) ~ p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
-
-/* REGISTRAR NUEVO ADMINISTRADOR (Formulario inferior de image_7b00c2.png) */
+/* Formulario de nuevo administrador */
 .admin-panel form:has(input[placeholder*="correo"]) {
     background: var(--blanco);
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     max-width: 480px;
     margin-top: 15px;
     border-left: 5px solid var(--azul-secundario);
@@ -975,14 +1117,146 @@ nav ul li ul li a:hover {
     border-color: var(--azul-primario);
 }
 
-/* ========================================== */
-/* DISEÑO DE BOTONES DE ADMINISTRACIÓN (NUEVO)*/
-/* ========================================== */
+/* ========================================================================== */
+/* 17. PANEL ADMIN - VISTAS                                                    */
+/* ========================================================================== */
 
-/* Estilo moderno para los botones pequeños (Actualizar stock y Cambiar estado) */
+.vista-seccion {
+    display: none;
+    width: 100%;
+}
+
+.vista-seccion.activa {
+    display: block;
+    width: 100%;
+}
+
+/* ========================================================================== */
+/* 18. PANEL ADMIN - TABLAS DE PRODUCTOS                                       */
+/* ========================================================================== */
+
+.admin-productos {
+    width: 100%;
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 15px;
+    background: var(--blanco);
+    border-radius: 12px;
+    border: 1px solid var(--gris-borde);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.admin-productos-tabla-wrapper {
+    width: 100% !important;
+    box-sizing: border-box;
+    margin-top: 20px;
+    background: var(--blanco);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    overflow-x: auto;
+    position: relative; /* ⚡ Necesario para fijar la línea de luz */
+}
+
+/* ✨ ÚNICO CAMBIO: Añadimos solo la línea de luz superior respetando tus bordes redondos */
+.admin-productos-tabla-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #00d2ff, var(--azul-primario), var(--azul-secundario));
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.tabla-admin {
+    width: 100% !important;
+    border-collapse: collapse;
+    background: var(--blanco);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.tabla-admin th {
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    padding: 14px 16px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabla-admin td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--gris-borde);
+    vertical-align: middle;
+}
+
+.tabla-admin tbody tr:hover {
+    background-color: var(--azul-fondo);
+}
+
+/* Columnas específicas */
+.td-id { font-weight: bold; color: #777; width: 60px; }
+.td-img { width: 80px; }
+.td-img img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gris-borde); }
+.td-nombre { font-weight: bold; color: var(--gris-texto); font-size: 16px; }
+.td-desc { color: #666; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-precio { font-weight: bold; color: var(--azul-primario); font-size: 16px; }
+.td-acciones { width: 160px; }
+
+/* Indicadores de stock */
+.stock-bajo { background-color: #FEE2E2; color: #EF4444; padding: 5px 10px; border-radius: 4px; font-weight: bold; display: inline-block; }
+.stock-ok { background-color: #D1FAE5; color: #065F46; padding: 5px 10px; border-radius: 4px; font-weight: bold; display: inline-block; }
+
+/* Botones dentro de las tablas */
+.tabla-botones-container { display: flex; gap: 8px; }
+
+.btn-tabla-editar {
+    padding: 6px 14px;
+    background-color: transparent;
+    border: 1.5px solid var(--azul-primario);
+    color: var(--azul-primario);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.btn-tabla-editar:hover {
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+}
+
+.btn-tabla-eliminar {
+    padding: 6px 14px;
+    background-color: #EF4444;
+    border: none;
+    color: var(--blanco);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-tabla-eliminar:hover {
+    background-color: #DC2626;
+}
+/* ========================================================================== */
+/* 19. PANEL ADMIN - BOTONES DE ACCIÓN (Editar, Eliminar, Cambiar Estado)     */
+/* ========================================================================== */
+
 .panel-administracion button:not([type="submit"]):not(#logout-btn):not(#cerrar-mini),
 .panel-administracion input[type="button"],
-button[id^="btn-actualizar"], 
+button[id^="btn-actualizar"],
 button[onclick*="actualizarStock"],
 button[onclick*="cambiarEstado"],
 .panel-administracion form table button,
@@ -1004,7 +1278,6 @@ button[onclick*="cambiarEstado"],
     margin-left: 5px;
 }
 
-/* Efecto hover al pasar el cursor sobre los botones */
 .panel-administracion button:not([type="submit"]):not(#logout-btn):not(#cerrar-mini):hover,
 .panel-administracion input[type="button"]:hover,
 button[id^="btn-actualizar"]:hover,
@@ -1015,16 +1288,11 @@ button[onclick*="cambiarEstado"]:hover {
     box-shadow: 0 4px 10px rgba(22, 47, 204, 0.3);
 }
 
-/* ========================================== */
-/* BOTONES DE EDICIÓN, ELIMINACIÓN Y PEDIDOS  */
-/* ========================================== */
-
-/* Estilos base para los botones de las tarjetas (Editar y Eliminar) y Cambiar Estado */
-.panel-administracion button,
-.panel-administracion .productos-registrados-container button,
 button[onclick*="editarProducto"],
-button[onclick*="eliminarProducto"],
 button[onclick*="cambiarEstado"] {
+    background-color: transparent;
+    color: var(--azul-primario);
+    border: 1.5px solid var(--azul-primario);
     padding: 6px 14px;
     font-size: 13px;
     font-weight: bold;
@@ -1039,15 +1307,6 @@ button[onclick*="cambiarEstado"] {
     gap: 5px;
 }
 
-/* 1. DISEÑO PARA EL BOTÓN "EDITAR" Y "CAMBIAR ESTADO" (Azul elegante con borde) */
-button[onclick*="editarProducto"],
-button[onclick*="cambiarEstado"],
-.panel-administracion button:contains("Editar") {
-    background-color: transparent;
-    color: var(--azul-primario);
-    border: 1.5px solid var(--azul-primario);
-}
-
 button[onclick*="editarProducto"]:hover,
 button[onclick*="cambiarEstado"]:hover {
     background-color: var(--azul-primario);
@@ -1055,12 +1314,22 @@ button[onclick*="cambiarEstado"]:hover {
     box-shadow: 0 4px 8px rgba(30, 60, 255, 0.2);
 }
 
-/* 2. DISEÑO PARA EL BOTÓN "ELIMINAR" (Rojo sutil de advertencia) */
-button[onclick*="eliminarProducto"],
-.panel-administracion button:contains("Eliminar") {
+button[onclick*="eliminarProducto"] {
     background-color: transparent;
     color: #E11D48;
     border: 1.5px solid #E11D48;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 button[onclick*="eliminarProducto"]:hover {
@@ -1069,754 +1338,137 @@ button[onclick*="eliminarProducto"]:hover {
     box-shadow: 0 4px 8px rgba(225, 29, 72, 0.2);
 }
 
-/* Espaciado e integración en la fila de las tarjetas */
-.panel-administracion .producto-registrado-item, 
+.panel-administracion .producto-registrado-item,
 .panel-administracion div[style*="display: flex"] {
-    gap: 8px; /* Separa los botones para que no se peguen */
-}
-
-
-
-.vista-seccion {
-    display: none; 
-}
-
-.vista-seccion.activa {
-    display: block; 
-}
-.admin-fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 65px;
-    height: 65px;
-    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
-    color: var(--blanco);
-    font-size: 28px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
-    z-index: 1001; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
-}
-
-.admin-fab:hover {
-    transform: scale(1.1) rotate(15deg);
-    box-shadow: 0 12px 28px rgba(30, 60, 255, 0.45);
-}
-
-
-.admin-drawer {
-    position: fixed;
-    top: 0;
-    right: -340px;
-    width: 320px;
-    height: 100%;
-    background: var(--blanco);
-    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
-    padding: 30px 25px;
-    display: flex;
-    flex-direction: column;
-    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 1003;
-}
-
-.admin-drawer.abierto {
-    right: 0; 
-}
-
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--azul-primario);
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-.drawer-header h3 {
-    font-size: 1.4rem;
-    color: var(--gris-texto);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.close-drawer {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: #999;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.2s;
-}
-
-.close-drawer:hover {
-    color: #EF4444;
-    transform: scale(1.1);
-}
-
-
-.drawer-menu {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.menu-item {
-    padding: 14px 18px;
-    background: var(--azul-fondo);
-    color: var(--gris-texto);
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    border-left: 4px solid transparent;
-}
-
-.menu-item:hover {
-    background: rgba(30, 60, 255, 0.08);
-    color: var(--azul-primario);
-    border-left-color: var(--azul-primario);
-    transform: translateX(5px);
-}
-
-
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px); 
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s;
-    z-index: 1002;
-}
-
-.drawer-overlay.activo {
-    opacity: 1;
-    visibility: visible;
-}
-
-
-.toast-success {
-    background: linear-gradient(135deg, #10B981, #059669) !important;
-    font-family: 'Oswald', sans-serif !important;
-    font-weight: bold;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-}
-
-.toast-error {
-    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
-    font-family: 'Oswald', sans-serif !important;
-    font-weight: bold;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
-}
-
-.admin-productos-tabla-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 15px;
-}
-
-.tabla-admin {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--blanco);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-}
-
-.tabla-admin th {
-    background-color: var(--azul-primario);
-    color: var(--blanco);
-    padding: 14px;
-    text-align: left;
-    font-size: 14px;
-    text-transform: uppercase;
-}
-
-.tabla-admin td {
-    padding: 12px;
-    border-bottom: 1px solid var(--gris-borde);
-    vertical-align: middle;
-}
-
-.tabla-admin tbody tr:hover {
-    background-color: var(--azul-fondo);
-}
-
-/* Clases específicas de las celdas */
-.td-id { font-weight: bold; color: #666; }
-.td-img img { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gris-borde); }
-.td-nombre { font-weight: bold; color: var(--gris-texto); }
-.td-desc { color: #555; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.td-precio { font-weight: bold; color: var(--azul-primario); }
-
-.stock-bajo { background-color: #FEE2E2; color: #EF4444; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-.stock-ok { background-color: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-
-.tabla-botones-container { display: flex; gap: 6px; }
-.btn-tabla-editar { padding: 6px 12px; background: none; border: 1.5px solid var(--azul-primario); color: var(--azul-primario); border-radius: 4px; cursor: pointer; font-weight: bold; }
-.btn-tabla-eliminar { padding: 6px 12px; background: #EF4444; border: none; color: var(--blanco); border-radius: 4px; cursor: pointer; font-weight: bold; }
-
-/* ========================================================================== */
-/* ESTILOS: PANEL DE MÉTRICAS Y GRÁFICAS                                      */
-/* ========================================================================== */
-.grafica-container {
-    background: var(--blanco);
-    padding: 25px;
-    border-radius: 8px;
-    margin-top: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    max-height: 340px;
-    position: relative;
-}
-
-/* ========================================================================== */
-/* GESTIÓN DE USUARIOS E HISTORIAL DE COMPRAS                                 */
-/* ========================================================================== */
-.botones-usuarios-grid {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-}
-
-.btn-usuario-accion {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--blanco);
-    font-family: inherit;
-    text-transform: uppercase;
-}
-
-#btn-promover { background-color: var(--azul-primario); }
-#btn-degradar { background-color: var(--azul-secundario); }
-#btn-eliminar { background-color: #EF4444; }
-
-.admin-historial-box {
-    margin-top: 30px;
-    background: var(--blanco);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-}
-
-.buscar-historial-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-}
-
-.buscar-historial-form input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid var(--gris-borde);
-    border-radius: 6px;
-}
-
-.buscar-historial-form button {
-    padding: 12px 24px;
-    background-color: var(--azul-primario);
-    color: var(--blanco);
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Tarjetas individuales del historial de compras */
-.historial-item-card {
-    padding: 14px;
-    background: var(--azul-fondo);
-    border: 1px solid var(--gris-borde);
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.historial-item-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.historial-monto { color: var(--azul-primario); }
-.historial-id { color: var(--gris-texto); }
-.historial-item-detalles {
-    display: flex;
-    gap: 15px;
-    font-size: 0.9rem;
-    color: #555;
-    margin-top: 6px;
-}
-
-.historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
-.historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
-
-/* ========================================================================== */
-/* COMPONENTES DE NAVEGACIÓN DINÁMICA: FAB + DRAWER NAV                       */
-/* ========================================================================== */
-
-/* ========================================================================== */
-/* COMPONENTES DE NAVEGACIÓN DINÁMICA: FAB + DRAWER NAV                       */
-/* ========================================================================== */
-
-.vista-seccion {
-    display: none; 
-    width: 100%;
-}
-
-.vista-seccion.activa {
-    display: block; 
-    width: 100%;
-}
-
-.admin-fab {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 65px;
-    height: 65px;
-    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
-    color: var(--blanco);
-    font-size: 28px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
-    z-index: 1001; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
-}
-
-.admin-fab:hover {
-    transform: scale(1.1) rotate(15deg);
-    box-shadow: 0 12px 28px rgba(30, 60, 255, 0.45);
-}
-
-.admin-drawer {
-    position: fixed;
-    top: 0;
-    right: -340px;
-    width: 320px;
-    height: 100%;
-    background: var(--blanco);
-    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
-    padding: 30px 25px;
-    display: flex;
-    flex-direction: column;
-    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 1003;
-}
-
-.admin-drawer.abierto {
-    right: 0; 
-}
-
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--azul-primario);
-    padding-bottom: 15px;
-    margin-bottom: 25px;
-}
-
-.drawer-header h3 {
-    font-size: 1.4rem;
-    color: var(--gris-texto);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.close-drawer {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: #999;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.2s;
-}
-
-.close-drawer:hover {
-    color: #EF4444;
-    transform: scale(1.1);
-}
-
-.drawer-menu {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.menu-item {
-    padding: 14px 18px;
-    background: var(--azul-fondo);
-    color: var(--gris-texto);
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    border-left: 4px solid transparent;
-}
-
-.menu-item:hover {
-    background: rgba(30, 60, 255, 0.08);
-    color: var(--azul-primario);
-    border-left-color: var(--azul-primario);
-    transform: translateX(5px);
-}
-
-.drawer-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px); 
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s;
-    z-index: 1002;
-}
-
-.drawer-overlay.activo {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* ========================================================================== */
-/* PERSONALIZACIÓN DE COMPONENTES EXTERNOS (TOASTIFY)                         */
-/* ========================================================================== */
-
-.toast-success {
-    background: linear-gradient(135deg, #10B981, #059669) !important;
-    font-family: 'Oswald', sans-serif !important;
-    font-weight: bold;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
-}
-
-.toast-error {
-    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
-    font-family: 'Oswald', sans-serif !important;
-    font-weight: bold;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
-}
-
-/* ========================================================================== */
-/* SECCIÓN: EDITAR PRODUCTOS (TABLAS COMPLETAS FORZADAS AL 100%)              */
-/* ========================================================================== */
-
-/* Forzar al contenedor del panel de administración a no limitar el ancho */
-.admin-panel {
-    width: 100% !important;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.admin-productos-tabla-wrapper {
-    width: 100% !important;
-    box-sizing: border-box;
-    margin-top: 20px;
-    background: var(--blanco);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    padding: 15px;
-    overflow-x: auto;
-}
-
-.tabla-admin {
-    width: 100% !important;
-    border-collapse: collapse;
-    background: var(--blanco);
-    margin: 0;
-    padding: 0;
-    text-align: left;
-}
-
-.tabla-admin th {
-    background-color: var(--azul-primario);
-    color: var(--blanco);
-    padding: 14px 16px;
-    font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.tabla-admin td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--gris-borde);
-    vertical-align: middle;
-}
-
-.tabla-admin tbody tr:hover {
-    background-color: var(--azul-fondo);
-}
-
-/* Formatos de columna fijos */
-.td-id { 
-    font-weight: bold; 
-    color: #777; 
-    width: 60px;
-}
-
-.td-img {
-    width: 80px;
-}
-
-.td-img img { 
-    width: 48px; 
-    height: 48px; 
-    object-fit: cover; 
-    border-radius: 6px; 
-    border: 1px solid var(--gris-borde); 
-}
-
-.td-nombre { 
-    font-weight: bold; 
-    color: var(--gris-texto); 
-    font-size: 16px;
-}
-
-.td-desc { 
-    color: #666; 
-    max-width: 280px; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    white-space: nowrap; 
-}
-
-.td-precio { 
-    font-weight: bold; 
-    color: var(--azul-primario); 
-    font-size: 16px;
-}
-
-/* Modificadores del stock */
-.stock-bajo { 
-    background-color: #FEE2E2; 
-    color: #EF4444; 
-    padding: 5px 10px; 
-    border-radius: 4px; 
-    font-weight: bold; 
-    display: inline-block;
-}
-
-.stock-ok { 
-    background-color: #D1FAE5; 
-    color: #065F46; 
-    padding: 5px 10px; 
-    border-radius: 4px; 
-    font-weight: bold; 
-    display: inline-block;
-}
-
-/* Botones de acción alineados */
-.td-acciones {
-    width: 160px;
-}
-
-.tabla-botones-container { 
-    display: flex; 
     gap: 8px;
 }
 
-.btn-tabla-editar { 
-    padding: 6px 14px; 
-    background-color: transparent; 
-    border: 1.5px solid var(--azul-primario); 
-    color: var(--azul-primario); 
-    border-radius: 4px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    transition: all 0.2s ease;
-}
+/* ========================================================================== */
+/* 20. PANEL ADMIN - FAB + DRAWER LATERAL                                      */
+/* ========================================================================== */
 
-.btn-tabla-editar:hover {
-    background-color: var(--azul-primario);
+.admin-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
     color: var(--blanco);
-}
-
-.btn-tabla-eliminar { 
-    padding: 6px 14px; 
-    background-color: #EF4444; 
-    border: none; 
-    color: var(--blanco); 
-    border-radius: 4px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    transition: background-color 0.2s ease;
-}
-
-.btn-tabla-eliminar:hover {
-    background-color: #DC2626;
-}
-
-/* ========================================================================== */
-/* ESTILOS: PANEL DE MÉTRICAS Y GRÁFICAS                                      */
-/* ========================================================================== */
-.grafica-container {
-    background: var(--blanco);
-    padding: 25px;
-    border-radius: 8px;
-    margin-top: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    max-height: 340px;
-    position: relative;
-}
-
-/* ========================================================================== */
-/* GESTIÓN DE USUARIOS E HISTORIAL DE COMPRAS                                 */
-/* ========================================================================== */
-.botones-usuarios-grid {
+    font-size: 28px;
+    border-radius: 50%;
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-}
-
-.btn-usuario-accion {
-    flex: 1;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    color: var(--blanco);
-    font-family: inherit;
-    text-transform: uppercase;
-    transition: opacity 0.2s ease;
+    box-shadow: 0 8px 24px rgba(30, 60, 255, 0.3);
+    z-index: 1001;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
 }
 
-.btn-usuario-accion:hover {
-    opacity: 0.9;
+.admin-fab:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 28px rgba(30, 60, 255, 0.45);
 }
 
-#btn-promover { background-color: var(--azul-primario); }
-#btn-degradar { background-color: var(--azul-secundario); }
-#btn-eliminar { background-color: #EF4444; }
-
-.admin-historial-box {
-    margin-top: 30px;
+.admin-drawer {
+    position: fixed;
+    top: 0;
+    right: -340px;
+    width: 320px;
+    height: 100%;
     background: var(--blanco);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-}
-
-.buscar-historial-form {
+    box-shadow: -10px 0 35px rgba(0, 0, 0, 0.15);
+    padding: 30px 25px;
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    margin-top: 10px;
+    flex-direction: column;
+    transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 1003;
 }
 
-.buscar-historial-form input {
-    flex: 1;
-    padding: 12px;
-    border: 1px solid var(--gris-borde);
-    border-radius: 6px;
-    font-family: inherit;
+.admin-drawer.abierto {
+    right: 0;
 }
 
-.buscar-historial-form button {
-    padding: 12px 24px;
-    background-color: var(--azul-primario);
-    color: var(--blanco);
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.historial-item-card {
-    padding: 14px;
-    background: var(--azul-fondo);
-    border: 1px solid var(--gris-borde);
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.historial-item-header {
+.drawer-header {
     display: flex;
     justify-content: space-between;
-    font-weight: bold;
-    font-size: 1.1rem;
+    align-items: center;
+    border-bottom: 2px solid var(--azul-primario);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
 }
 
-.historial-monto { color: var(--azul-primario); }
-.historial-id { color: var(--gris-texto); }
-.historial-item-detalles {
+.drawer-header h3 {
+    font-size: 1.4rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.close-drawer {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.close-drawer:hover {
+    color: #EF4444;
+    transform: scale(1.1);
+}
+
+.drawer-menu {
+    list-style: none;
     display: flex;
-    gap: 15px;
-    font-size: 0.9rem;
-    color: #555;
-    margin-top: 6px;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
-.historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
-
-/* ===== MODAL EDITAR PRODUCTO ===== */
-.modal-editar {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 90%; max-width: 450px;
-    background: var(--blanco);
+.menu-item {
+    padding: 14px 18px;
+    background: var(--azul-fondo);
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    font-weight: bold;
     border-radius: 8px;
-    padding: 20px;
-    z-index: 1003;
-    opacity: 0; visibility: hidden;
-    transition: 0.3s ease;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
 }
 
-.modal-editar.activo {
-    opacity: 1; visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+.menu-item:hover {
+    background: rgba(30, 60, 255, 0.08);
+    color: var(--azul-primario);
+    border-left-color: var(--azul-primario);
+    transform: translateX(5px);
 }
 
-.modal-editar-content form input,
-.modal-editar-content form select {
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    margin-bottom: 10px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+    z-index: 1002;
 }
 
-/* Iconos de acciones */
-.btn-tabla-editar, .btn-tabla-eliminar {
-    font-size: 16px;
+.drawer-overlay.activo {
+    opacity: 1;
+    visibility: visible;
 }
 
-/* ==========================================================================
-   SISTEMA FLOTANTE Y MODAL GIGANTE DE HISTORIAL (ESTILO ONLINE DOGGIE)
-   ========================================================================== */
+/* ========================================================================== */
+/* 21. PANEL ADMIN - FAB FLOTANTE CON MENÚ DESPLEGABLE                        */
+/* ========================================================================== */
 
-/* Contenedor del Botón Flotante y su Menú */
 .fab-container {
     position: fixed;
     bottom: 30px;
@@ -1828,7 +1480,6 @@ button[onclick*="eliminarProducto"]:hover {
     gap: 12px;
 }
 
-/* El Botón Flotante Principal (Caja) */
 .floating-btn {
     width: 65px;
     height: 65px;
@@ -1850,7 +1501,6 @@ button[onclick*="eliminarProducto"]:hover {
     box-shadow: 0px 12px 24px rgba(30, 60, 255, 0.35);
 }
 
-/* Mini Menú Desplegable */
 .fab-menu {
     background-color: var(--blanco);
     border-radius: 12px;
@@ -1893,9 +1543,109 @@ button[onclick*="eliminarProducto"]:hover {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --------------------------------------------------------------------------
-   MODAL A PANTALLA COMPLETA (Estilo Tabla Grande de Productos)
-   -------------------------------------------------------------------------- */
+/* ========================================================================== */
+/* 22. PANEL ADMIN - MODAL EDITAR PRODUCTO */
+/* ========================================================================== */
+
+.modal-editar {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%; 
+    max-width: 480px; /* Un poco más espacioso para que respire el diseño */
+    background: var(--blanco);
+    border-radius: 12px; /* Esquinas suavizadas idénticas a tu formulario anterior */
+    padding: 30px;
+    z-index: 1003;
+    opacity: 0; 
+    visibility: hidden;
+    
+    /* Animación suave estilo "Pop-up" al abrirse */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s, visibility 0.3s;
+    
+    /* Sombra profunda que hace flotar la tarjeta sobre el fondo oscuro */
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(30, 60, 255, 0.05);
+    overflow: hidden; /* Corta la barra de luz neón para que encaje perfecta */
+    box-sizing: border-box;
+}
+
+/* 🌟 Línea de luz neón superior idéntica a tus otras secciones favoritas */
+.modal-editar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #00d2ff, var(--azul-primario), var(--azul-secundario));
+}
+
+.modal-editar.activo {
+    opacity: 1; 
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1); /* Crece suavemente al activarse */
+}
+
+/* Mantenemos tu flujo vertical original pero ordenado con separación exacta */
+.modal-editar-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Espaciado impecable entre inputs */
+}
+
+/* 🎨 UNIFICACIÓN: Mismos bordes, tamaños y alturas para que todo combine */
+.modal-editar-content form input,
+.modal-editar-content form select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--gris-borde, #cbd5e1);
+    border-radius: 8px;
+    font-size: 14.5px;
+    color: var(--gris-texto);
+    background-color: #ffffff;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    height: 46px; /* Altura perfecta e idéntica para cada casilla */
+    margin-bottom: 0 !important; /* Eliminamos el viejo margen que los desalineaba */
+}
+
+/* ✨ EFECTO LUZ: El halo neón azul que se enciende al hacer clic en un campo */
+.modal-editar-content form input:focus,
+.modal-editar-content form select:focus {
+    border-color: var(--azul-primario);
+    box-shadow: 0 0 0 4px rgba(30, 60, 255, 0.08); /* Destello azul sutil */
+}
+
+/* Botón principal de actualizar dentro del modal */
+.modal-editar-content form button[type="submit"] {
+    width: 100%;
+    height: 48px;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+/* Efecto hover interactivo para el botón */
+.modal-editar-content form button[type="submit"]:hover {
+    background: var(--azul-hover);
+    transform: translateY(-1px); /* Se eleva un milímetro */
+    box-shadow: 0 6px 15px rgba(30, 60, 255, 0.25); /* Proyecta más luz abajo */
+}
+
+/* ========================================================================== */
+/* 23. PANEL ADMIN - MODAL A PANTALLA COMPLETA                                */
+/* ========================================================================== */
 
 .modal-full-screen {
     position: fixed;
@@ -1905,17 +1655,15 @@ button[onclick*="eliminarProducto"]:hover {
     height: 100vh;
     background-color: var(--blanco);
     z-index: 2000;
-    display: none; /* Oculto por defecto */
+    display: none;
     flex-direction: column;
     overflow-y: auto;
 }
 
-/* Clase para mostrar el modal con flex */
 .modal-full-screen.open {
     display: flex;
 }
 
-/* Contenedor del contenido interno con márgenes amplios */
 .modal-full-container {
     width: 90%;
     max-width: 1400px;
@@ -1926,7 +1674,6 @@ button[onclick*="eliminarProducto"]:hover {
     gap: 25px;
 }
 
-/* Barra superior del Modal */
 .modal-full-header {
     display: flex;
     justify-content: space-between;
@@ -1960,7 +1707,6 @@ button[onclick*="eliminarProducto"]:hover {
     background-color: #DC2626;
 }
 
-/* TABLA GIGANTE (Réplica de image_860dfa.jpg) */
 .tabla-gigante-container {
     width: 100%;
     overflow-x: auto;
@@ -1973,12 +1719,11 @@ button[onclick*="eliminarProducto"]:hover {
     border-collapse: collapse;
     text-align: left;
     background-color: var(--blanco);
-    font-family: Arial, sans-serif; /* O la fuente base que uses para los datos */
+    font-family: Arial, sans-serif;
 }
 
-/* Cabecera Azul Rey idéntica a la foto */
 .tabla-gigante th {
-    background-color: #0046D5; /* El azul rey vibrante de tu captura */
+    background-color: #0046D5;
     color: var(--blanco);
     padding: 18px 20px;
     font-family: 'Oswald', sans-serif;
@@ -1987,7 +1732,6 @@ button[onclick*="eliminarProducto"]:hover {
     letter-spacing: 1px;
 }
 
-/* Filas anchas y limpias */
 .tabla-gigante td {
     padding: 18px 20px;
     border-bottom: 1px solid #E5E7EB;
@@ -2000,7 +1744,6 @@ button[onclick*="eliminarProducto"]:hover {
     background-color: #F8FAFC;
 }
 
-/* Estilos de los Badges de Estado */
 .badge-estado-tabla {
     display: inline-block;
     padding: 6px 14px;
@@ -2015,6 +1758,134 @@ button[onclick*="eliminarProducto"]:hover {
 .badge-enviado { background-color: #DBEAFE; color: #1E40AF; }
 .badge-entregado { background-color: #D1FAE5; color: #065F46; }
 
+/* ========================================================================== */
+/* 24. PANEL ADMIN - MÉTRICAS Y GRÁFICAS                                      */
+/* ========================================================================== */
+
+.grafica-container {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    max-height: 340px;
+    position: relative;
+}
+
+/* ========================================================================== */
+/* 25. PANEL ADMIN - GESTIÓN DE USUARIOS E HISTORIAL                          */
+/* ========================================================================== */
+
+.botones-usuarios-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-usuario-accion {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--blanco);
+    font-family: inherit;
+    text-transform: uppercase;
+    transition: opacity 0.2s ease;
+}
+
+.btn-usuario-accion:hover {
+    opacity: 0.9;
+}
+
+#btn-promover { background-color: var(--azul-primario); }
+#btn-degradar { background-color: var(--azul-secundario); }
+#btn-eliminar { background-color: #EF4444; }
+
+.admin-historial-box {
+    margin-top: 30px;
+    background: var(--blanco);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.buscar-historial-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.buscar-historial-form input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    font-family: inherit;
+}
+
+.buscar-historial-form button {
+    padding: 12px 24px;
+    background-color: var(--azul-primario);
+    color: var(--blanco);
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.historial-item-card {
+    padding: 14px;
+    background: var(--azul-fondo);
+    border: 1px solid var(--gris-borde);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.historial-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.historial-monto { color: var(--azul-primario); }
+.historial-id { color: var(--gris-texto); }
+
+.historial-item-detalles {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 6px;
+}
+
+.historial-vacio { color: #666; font-style: italic; text-align: center; padding: 15px 0; }
+.historial-error { color: #EF4444; font-weight: bold; text-align: center; padding: 15px 0; }
+
+/* ========================================================================== */
+/* 26. PANEL ADMIN - TOASTS / NOTIFICACIONES                                  */
+/* ========================================================================== */
+
+.toast-success {
+    background: linear-gradient(135deg, #10B981, #059669) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: bold;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
 
 .toast-online-doggie {
     position: fixed;
@@ -2022,40 +1893,25 @@ button[onclick*="eliminarProducto"]:hover {
     right: 24px;
     z-index: 9999;
     min-width: 320px;
-
     padding: 18px 24px;
     border-radius: 12px;
-
     color: white;
-
     font-family: 'Oswald', sans-serif;
     font-size: 16px;
     font-weight: bold;
-
     display: flex;
     align-items: center;
     gap: 12px;
-
     animation: slideIn 0.4s ease;
 }
 
 .toast-online-doggie.success {
-    background: linear-gradient(
-        135deg,
-        var(--azul-primario),
-        var(--azul-secundario)
-    );
-
+    background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
     box-shadow: 0 8px 24px rgba(30, 60, 255, 0.30);
 }
 
 .toast-online-doggie.error {
-    background: linear-gradient(
-        135deg,
-        #EF4444,
-        #DC2626
-    );
-
+    background: linear-gradient(135deg, #EF4444, #DC2626);
     box-shadow: 0 8px 24px rgba(239, 68, 68, 0.30);
 }
 
@@ -2071,12 +1927,127 @@ button[onclick*="eliminarProducto"]:hover {
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateX(120%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
+
+/* ==========================================
+   🚚 TABLA MODERNA DE GESTIÓN DE PEDIDOS 
+   ========================================== */
+.tabla-pedidos-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.tabla-pedidos {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    background: #ffffff;
+    font-size: 14px;
+}
+
+.tabla-pedidos th {
+    background-color: #1e3cff;
+    color: #ffffff;
+    padding: 14px 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.tabla-pedidos td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.tabla-pedidos tr:hover {
+    background-color: rgba(30, 60, 255, 0.01);
+}
+
+.cliente-info {
+    display: block;
+}
+
+.cliente-info .nombre {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.cliente-info .correo {
+    display: block;
+    font-size: 11px;
+    color: #a0aec0;
+    margin-top: 1px;
+}
+
+.lista-productos-tabla {
+    margin: 0;
+    padding-left: 16px;
+    font-size: 13px;
+    color: #4a5568;
+}
+
+.lista-productos-tabla li {
+    margin-bottom: 2px;
+}
+
+.tabla-pedidos .precio {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.acciones-celda {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.select-tabla {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #cbd5e0;
+    outline: none;
+    cursor: pointer;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+.btn-actualizar-tabla {
+    background-color: #00a3ff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-actualizar-tabla:hover {
+    background-color: #0087d1;
+}
+
+.badge-estado {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    text-align: center;
+}
+
+.estado-pendiente, .estado-pendiente_pago { background-color: #eef2ff; color: #1e3cff; }
+.estado-pagado { background-color: #ebf8ff; color: #2b6cb0; }
+.estado-enviado { background-color: #e6fffa; color: #319795; }
+.estado-entregado { background-color: #f0fff4; color: #38a169; }
+.estado-cancelado { background-color: #fff5f5; color: #e53e3e; }

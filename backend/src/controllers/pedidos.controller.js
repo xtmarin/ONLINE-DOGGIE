@@ -7,7 +7,7 @@ exports.crearPedido = async (req, res) => {
 
     try {
         const { carrito } = req.body;
-       const current_user = req.usuario;
+        const current_user = req.usuario;
 
         if (!carrito || carrito.length === 0) {
             return res.status(400).json({ mensaje: "Carrito vacío" });
@@ -84,13 +84,18 @@ exports.crearPedido = async (req, res) => {
             total
         });
 
+        const telefonoAdmin = process.env.ADMIN_WHATSAPP || "";
+        const mensajeWhatsApp = `Hola! Acabo de pagar el pedido #${pedido_id}. Aquí está mi comprobante.`;
+        const whatsappUrl = `https://wa.me/${telefonoAdmin}?text=${encodeURIComponent(mensajeWhatsApp)}`;
+
         const pedidoEmail = {
             id: pedido_id,
             user_name: current_user.nombre,
             user_email: current_user.email,
             total,
             items: itemsCorreo,
-            created_at: new Date()
+            created_at: new Date(),
+            whatsappUrl
         };
 
         await Promise.all([
@@ -104,9 +109,11 @@ exports.crearPedido = async (req, res) => {
             })
         ]);
 
+
         return res.json({
-            mensaje: "Pedido confirmado",
-            pedido_id
+            mensaje: "Pedido confirmed",
+            pedido_id,
+            whatsappUrl
         });
 
     } catch (error) {
@@ -169,7 +176,9 @@ exports.obtenerHistorial = async (req, res) => {
 
 exports.actualizarEstadoPedido = async (req, res) => {
     try {
+        // Corregido: Agregamos 'pendiente' para que coincida con tu Base de Datos
         const FLOW = {
+            pendiente: ["pagado", "cancelado"],
             pendiente_pago: ["pagado", "cancelado"],
             pagado: ["enviado", "cancelado"],
             enviado: ["entregado"],
@@ -184,8 +193,8 @@ exports.actualizarEstadoPedido = async (req, res) => {
             return res.status(400).json({ error: "Estado requerido" });
         }
 
-        if (!FLOW[estadoFormateado]) {
-            return res.status(400).json({ error: "Estado no válido" });
+        if (!FLOW.hasOwnProperty(estadoFormateado)) {
+            return res.status(400).json({ error: "Estado destino no válido" });
         }
 
         const pedidoActual = await pool.query(
@@ -197,7 +206,7 @@ exports.actualizarEstadoPedido = async (req, res) => {
             return res.status(404).json({ error: "Pedido no encontrado" });
         }
 
-        const estadoActual = pedidoActual.rows[0].estado;
+        const estadoActual = pedidoActual.rows[0].estado?.toLowerCase();
         const permitidos = FLOW[estadoActual] || [];
 
         if (!permitidos.includes(estadoFormateado)) {
@@ -245,22 +254,69 @@ exports.actualizarEstadoPedido = async (req, res) => {
     }
 };
 
+// En tu controllers/pedidos.controller.js
+
 exports.obtenerTodosPedidos = async (req, res) => {
     try {
-        const result = await pool.query(`
+        const { email } = req.query;
+
+        let queryText = `
             SELECT
-                p.id,
+                p.id AS pedido_id,
                 p.total,
                 p.estado,
                 p.fecha_creacion,
-                u.nombre,
-                u.email
+                u.nombre AS usuario_nombre,
+                u.email,
+                d.cantidad,
+                pr.nombre AS producto_nombre
             FROM pedidos p
             JOIN usuarios u ON u.id = p.usuario_id
-            ORDER BY p.id DESC
-        `);
+            LEFT JOIN detalle_pedido d ON p.id = d.pedido_id
+            LEFT JOIN productos pr ON pr.id = d.producto_id
+        `;
 
-        return res.json(result.rows);
+        const queryParams = [];
+
+
+        if (email) {
+            queryText += ` WHERE u.email LIKE $1`;
+            queryParams.push(`%${email.trim()}%`); 
+        }
+
+        queryText += ` ORDER BY p.id DESC`;
+
+        const result = await pool.query(queryText, queryParams);
+
+
+        const pedidos = {};
+        result.rows.forEach(row => {
+            if (!pedidos[row.pedido_id]) {
+                pedidos[row.pedido_id] = {
+                    id: row.pedido_id,
+                    total: row.total,
+                    fecha: row.fecha_creacion,
+                    estado: row.estado,
+                    usuario: row.usuario_nombre,
+                    email: row.email,
+                    productos: []
+                };
+            }
+            if (row.producto_nombre) {
+                pedidos[row.pedido_id].productos.push({
+                    nombre: row.producto_nombre,
+                    cantidad: row.cantidad
+                });
+            }
+        });
+
+        const listaPedidos = Object.values(pedidos);
+
+        if (email && listaPedidos.length === 0) {
+            return res.status(404).json({ error: `No se encontraron compras vinculadas al correo: ${email}` });
+        }
+
+        return res.json(listaPedidos);
 
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -286,6 +342,46 @@ exports.confirmarEntrega = async (req, res) => {
         return res.json({
             mensaje: "Entrega confirmada",
             pedido: result.rows[0]
+        });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+exports.confirmarEntregaCliente = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.usuario.id;
+
+
+        const result = await pool.query(
+            `UPDATE pedidos
+             SET estado = 'entregado'
+             WHERE id = $1 AND usuario_id = $2 AND estado = 'enviado'
+             RETURNING *`,
+            [id, userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({
+                error: "Pedido no encontrado, no te pertenece o aún no ha sido enviado."
+            });
+        }
+
+        const pedidoModificado = result.rows[0];
+
+
+        const pedidoEmail = {
+            ...pedidoModificado,
+            user_email: req.usuario.email,
+            user_name: req.usuario.nombre
+        };
+        await emailService.sendDeliveryConfirmationToClient({ order: pedidoEmail });
+
+        return res.json({
+            mensaje: "¡Gracias por confirmar tu entrega! Esperamos que disfrutes tu compra. 🐾",
+            pedido: pedidoModificado
         });
 
     } catch (error) {
