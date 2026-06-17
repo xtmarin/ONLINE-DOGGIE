@@ -7,6 +7,8 @@
     <title>Productos - Online Doggie</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -32,40 +34,31 @@
         <p>Todo lo que tu mascota necesita 🐶🐱</p>
     </section>
 
-   <section class="filtros">
+    <section class="filtros">
 
-    <input 
-        type="text"
-        id="buscador"
-        placeholder="Buscar producto..."
-        class="buscador"
-    >
+        <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
 
-    <select 
-        id="categoria"
-        name="categoria"
-        class="select-filtro"
-    >
+        <select id="categoria" name="categoria" class="select-filtro">
 
-        <option value="todos">
-            Todos los productos
-        </option>
+            <option value="todos">
+                Todos los productos
+            </option>
 
-        <option value="perros">
-            Perros
-        </option>
+            <option value="perros">
+                Perros
+            </option>
 
-        <option value="gatos">
-            Gatos
-        </option>
+            <option value="gatos">
+                Gatos
+            </option>
 
-        <option value="accesorios">
-            Accesorios
-        </option>
+            <option value="accesorios">
+                Accesorios
+            </option>
 
-    </select>
+        </select>
 
-</section>
+    </section>
 
     <section class="lista-productos" id="lista-productos">
     </section>
@@ -92,7 +85,11 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-col">
-                <h4>Online Doggie</h4>
+                <div class="footer-brand">
+                    <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Online Doggie">
+                    <h4>Online Doggie</h4>
+                </div>
+
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
             </div>
             <div class="footer-col">
@@ -105,15 +102,22 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Contacto</h4>
-                <p>📞 +57 300 123 4567</p>
-                <p>📧 contacto@onlinedoggie.com</p>
+
             </div>
             <div class="footer-col">
                 <h4>Redes sociales</h4>
                 <ul>
-                    <li><a href="https://instagram.com/onlinedoggie" target="_blank">📸 Instagram</a></li>
-                    <li><a href="https://facebook.com/onlinedoggie" target="_blank">📘 Facebook</a></li>
+                    <li>
+                        <a href="https://instagram.com/onlinedoggie" target="_blank">
+                            <i class="fa-brands fa-instagram"></i> Instagram
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://facebook.com/onlinedoggie" target="_blank">
+                            <i class="fa-brands fa-facebook"></i> Facebook
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -122,12 +126,14 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="./js/toast.js"></script>
+
     <script src="./js/filtros-productos.js"></script>
     <script src="./js/carrito-funciones.js"></script>
     <script src="./js/productos.js"></script>
     <script src="./js/carrito.js"></script>
     <script src="./js/usuario-navbar.js"></script>
-
 </body>
 
 </html>

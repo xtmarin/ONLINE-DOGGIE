@@ -1,15 +1,13 @@
 const token = localStorage.getItem("token");
 
 if (!token) {
-    alert("Debes iniciar sesión");
+    mostrarToast("Debes iniciar sesión", "error");
     window.location.href = "Login.html";
     throw new Error("Usuario no autenticado");
 }
 
 
-/* ==========================================================================
-   1. CARGAR PERFIL
-   ========================================================================== */
+/* 1. CARGAR PERFIL */
 
 async function cargarPerfil() {
     try {
@@ -20,7 +18,10 @@ async function cargarPerfil() {
         });
 
         if (!respuesta.ok) {
-            alert("Tu sesión expiró, inicia sesión nuevamente");
+            mostrarToast(
+                "Tu sesión expiró, inicia sesión nuevamente",
+                "error"
+            );
 
             localStorage.removeItem("token");
             localStorage.removeItem("usuario");
@@ -138,9 +139,7 @@ async function cargarHistorial() {
 }
 
 
-/* ==========================================================================
-   3. EDITAR PERFIL
-   ========================================================================== */
+/* 3. EDITAR PERFIL */
 
 const formEditarPerfil = document.getElementById("form-editar-perfil");
 
@@ -152,14 +151,20 @@ if (formEditarPerfil) {
         const email = document.getElementById("edit-email").value.trim();
 
         if (!nombre || !email) {
-            alert("Todos los campos son obligatorios");
+            mostrarToast(
+                "Todos los campos son obligatorios",
+                "error"
+            );
             return;
         }
 
         const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
         if (!emailValido) {
-            alert("El formato del correo no es válido");
+            mostrarToast(
+                "El formato del correo no es válido",
+                "error"
+            );
             return;
         }
 
@@ -175,7 +180,10 @@ if (formEditarPerfil) {
 
             const data = await respuesta.json();
 
-            alert(data.mensaje);
+            mostrarToast(
+                data.mensaje,
+                respuesta.ok ? "success" : "error"
+            );
 
             if (respuesta.ok) {
                 cargarPerfil();
@@ -183,6 +191,11 @@ if (formEditarPerfil) {
 
         } catch (error) {
             console.error("Error editando perfil:", error);
+
+            mostrarToast(
+                "Error conectando con el servidor",
+                "error"
+            );
         }
     });
 }
@@ -203,17 +216,26 @@ if (formCambiarPassword) {
         const confirmar = document.getElementById("password-confirmar").value.trim();
 
         if (!actual || !nueva || !confirmar) {
-            alert("Todos los campos son obligatorios");
+            mostrarToast(
+                "Todos los campos son obligatorios",
+                "error"
+            );
             return;
         }
 
         if (nueva.length < 8) {
-            alert("La nueva contraseña debe tener mínimo 8 caracteres");
+            mostrarToast(
+                "La nueva contraseña debe tener mínimo 8 caracteres",
+                "error"
+            );
             return;
         }
 
         if (nueva !== confirmar) {
-            alert("Las contraseñas no coinciden");
+            mostrarToast(
+                "Las contraseñas no coinciden",
+                "error"
+            );
             return;
         }
 
@@ -232,7 +254,10 @@ if (formCambiarPassword) {
 
             const data = await respuesta.json();
 
-            alert(data.mensaje);
+            mostrarToast(
+                data.mensaje,
+                respuesta.ok ? "success" : "error"
+            );
 
             if (respuesta.ok) {
                 formCambiarPassword.reset();
@@ -240,6 +265,11 @@ if (formCambiarPassword) {
 
         } catch (error) {
             console.error("Error cambiando contraseña:", error);
+
+            mostrarToast(
+                "Error conectando con el servidor",
+                "error"
+            );
         }
     });
 }

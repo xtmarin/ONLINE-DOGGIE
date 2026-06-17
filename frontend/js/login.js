@@ -31,10 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-
-/* ============================= */
-/* LOGIN                         */
-/* ============================= */
+/* LOGIN */
 
 async function loginUsuario(e) {
 
@@ -44,7 +41,7 @@ async function loginUsuario(e) {
     const password = document.getElementById("password").value.trim();
 
     if (!email || !password) {
-        alert("Completa todos los campos");
+        mostrarToast("Completa todos los campos", "error");
         return;
     }
 
@@ -67,7 +64,10 @@ async function loginUsuario(e) {
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            alert(data.mensaje || "Error al iniciar sesión");
+            mostrarToast(
+                data.mensaje || "Error al iniciar sesión",
+                "error"
+            );
             return;
         }
 
@@ -88,7 +88,7 @@ async function loginUsuario(e) {
             JSON.stringify(data.usuario)
         );
 
-        alert("Login exitoso 🚀");
+        mostrarToast("Login exitoso 🚀");
 
         if (data.usuario.rol === "admin") {
             window.location.href = "admin.html";
@@ -99,7 +99,10 @@ async function loginUsuario(e) {
     } catch (error) {
 
         console.error("Error en login:", error);
-        alert("Error conectando con el servidor");
+        mostrarToast(
+            "Error conectando con el servidor",
+            "error"
+        );
 
     }
 }
@@ -137,7 +140,7 @@ async function recuperarPassword(e) {
         .trim();
 
     if (!email) {
-        alert("Ingresa tu correo");
+        mostrarToast("Ingresa tu correo", "error");
         return;
     }
 
@@ -158,7 +161,7 @@ async function recuperarPassword(e) {
 
         const data = await respuesta.json();
 
-        alert(data.mensaje);
+        mostrarToast(data.mensaje);
 
         if (respuesta.ok) {
 
@@ -174,15 +177,15 @@ async function recuperarPassword(e) {
             error
         );
 
-        alert("Error conectando con el servidor");
+        mostrarToast(
+            "Error conectando con el servidor",
+            "error"
+        );
 
     }
 }
 
-
-/* ============================= */
-/* VERIFICAR CÓDIGO 2FA          */
-/* ============================= */
+/* VERIFICAR CÓDIGO 2FA */
 
 async function verificar2FA(e) {
 
@@ -194,7 +197,7 @@ async function verificar2FA(e) {
         .trim();
 
     if (!codigo) {
-        alert("Ingresa el código de verificación");
+        mostrarToast("Ingresa el código de verificación", "error");
         return;
     }
 
@@ -217,7 +220,10 @@ async function verificar2FA(e) {
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            alert(data.mensaje || "Código inválido");
+            mostrarToast(
+                data.mensaje || "Código inválido",
+                "error"
+            );
             return;
         }
 
@@ -227,7 +233,7 @@ async function verificar2FA(e) {
             JSON.stringify(data.usuario)
         );
 
-        alert("Verificación exitosa 🚀");
+        mostrarToast("Verificación exitosa 🚀");
 
         if (data.usuario.rol === "admin") {
             window.location.href = "admin.html";
@@ -242,7 +248,10 @@ async function verificar2FA(e) {
             error
         );
 
-        alert("Error conectando con el servidor");
+        mostrarToast(
+            "Error conectando con el servidor",
+            "error"
+        );
 
     }
 }

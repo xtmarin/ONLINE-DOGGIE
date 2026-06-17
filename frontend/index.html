@@ -7,6 +7,7 @@
     <title>ONLINE DOGGIE</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -98,7 +99,8 @@
                     </div>
                     <div class="form-group">
                         <label>Mensaje</label>
-                        <textarea id="contacto-mensaje" placeholder="¿En qué podemos ayudarte?" rows="4" required></textarea>
+                        <textarea id="contacto-mensaje" placeholder="¿En qué podemos ayudarte?" rows="4"
+                            required></textarea>
                     </div>
                     <button type="submit" class="btn">Enviar mensaje</button>
                     <p id="mensaje-contacto"></p>
@@ -123,8 +125,13 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-col">
-                <h4>Online Doggie</h4>
+                <div class="footer-brand">
+                    <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Online Doggie">
+                    <h4>Online Doggie</h4>
+                </div>
+
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
+                
             </div>
             <div class="footer-col">
                 <h4>Enlaces</h4>
@@ -137,14 +144,23 @@
             </div>
             <div class="footer-col">
                 <h4>Contacto</h4>
-                <p>📞 +57 300 123 4567</p>
-                <p>📧 contacto@onlinedoggie.com</p>
+                <p><i class="fa-solid fa-phone"></i> +57 300 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> contacto@onlinedoggie.com</p>
             </div>
             <div class="footer-col">
                 <h4>Redes sociales</h4>
                 <ul>
-                    <li><a href="https://instagram.com/onlinedoggie" target="_blank">📸 Instagram</a></li>
-                    <li><a href="https://facebook.com/onlinedoggie" target="_blank">📘 Facebook</a></li>
+                    <li>
+                        <a href="https://instagram.com/onlinedoggie" target="_blank">
+                            <i class="fa-brands fa-instagram"></i> Instagram
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="https://facebook.com/onlinedoggie" target="_blank">
+                            <i class="fa-brands fa-facebook"></i> Facebook
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -159,4 +175,5 @@
     <script src="./js/app.js"></script>
 
 </body>
+
 </html>

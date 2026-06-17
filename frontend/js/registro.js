@@ -1,5 +1,3 @@
-// REGISTRO DE USUARIO
-
 const formRegistro = document.getElementById("form-registro");
 
 if (formRegistro) {
@@ -16,17 +14,17 @@ if (formRegistro) {
         const direccion = document.getElementById("direccion").value.trim();
 
         if (!nombre || !email || !password || !direccion) {
-            alert("Todos los campos son obligatorios");
+            mostrarToast("Todos los campos son obligatorios", "error");
             return;
         }
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            alert("El formato del correo no es válido");
+            mostrarToast("El formato del correo no es válido", "error");
             return;
         }
 
         if (password.length < 8) {
-            alert("La contraseña debe tener mínimo 8 caracteres");
+            mostrarToast("La contraseña debe tener mínimo 8 caracteres", "error");
             return;
         }
 
@@ -59,7 +57,7 @@ if (formRegistro) {
                     email
                 );
 
-                alert(data.mensaje);
+                mostrarToast(data.mensaje);
 
                 document.getElementById(
                     "seccion-registro"
@@ -71,9 +69,9 @@ if (formRegistro) {
 
             } else {
 
-                alert(
-                    data.mensaje ||
-                    "Error en el registro"
+                mostrarToast(
+                    data.mensaje || "Error en el registro",
+                    "error"
                 );
 
             }
@@ -82,8 +80,9 @@ if (formRegistro) {
 
             console.error(error);
 
-            alert(
-                "Error registrando usuario: verifica que el servidor esté encendido."
+            mostrarToast(
+                "Error registrando usuario: verifica que el servidor esté encendido.",
+                "error"
             );
 
         } finally {
@@ -117,15 +116,15 @@ if (formVerificacion) {
 
             const codigo =
                 document.getElementById("codigo")
-                .value
-                .trim();
+                    .value
+                    .trim();
 
             if (!/^\d{6}$/.test(codigo)) {
 
-                alert(
-                    "El código debe contener exactamente 6 dígitos"
+                mostrarToast(
+                    "El código debe contener exactamente 6 dígitos",
+                    "error"
                 );
-
                 return;
             }
 
@@ -136,8 +135,9 @@ if (formVerificacion) {
 
             if (!email) {
 
-                alert(
-                    "No se encontró el correo para verificar. Regístrate nuevamente."
+                mostrarToast(
+                    "No se encontró el correo para verificar. Regístrate nuevamente.",
+                    "error"
                 );
 
                 return;
@@ -169,7 +169,7 @@ if (formVerificacion) {
                         "emailVerificacion"
                     );
 
-                    alert(
+                    mostrarToast(
                         "✅ Cuenta verificada con éxito"
                     );
 
@@ -178,9 +178,9 @@ if (formVerificacion) {
 
                 } else {
 
-                    alert(
-                        data.mensaje ||
-                        "Código incorrecto o expirado"
+                    mostrarToast(
+                        data.mensaje || "Código incorrecto o expirado",
+                        "error"
                     );
 
                 }
@@ -189,8 +189,9 @@ if (formVerificacion) {
 
                 console.error(error);
 
-                alert(
-                    "Error al verificar la cuenta"
+                mostrarToast(
+                    "Error al verificar la cuenta",
+                    "error"
                 );
 
             } finally {

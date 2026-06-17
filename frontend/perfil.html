@@ -7,6 +7,7 @@
     <title>Mi Perfil - Online Doggie</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -29,7 +30,7 @@
         <section class="perfil-container">
 
             <div class="perfil-col-izquierda">
-                
+
                 <div class="perfil-seccion">
                     <h3>👤 Mi Perfil</h3>
                     <div class="perfil-card" style="margin-top: 15px;">
@@ -53,13 +54,15 @@
                         <label for="input-direccion">Dirección</label>
                         <input type="text" id="input-direccion" placeholder="Ej: cr 44 127 sur -83">
                     </div>
-                    <button onclick="guardarDireccion()" class="btn" style="margin-top: 10px;">Actualizar dirección</button>
+                    <button onclick="guardarDireccion()" class="btn" style="margin-top: 10px;">Actualizar
+                        dirección</button>
                     <p id="mensaje-direccion" style="margin-top: 8px; font-weight: bold; font-size: 0.95rem;"></p>
                 </div>
 
                 <div class="perfil-seccion">
                     <h3>Editar Perfil</h3>
-                    <form id="form-editar-perfil" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                    <form id="form-editar-perfil"
+                        style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
                         <div class="form-group">
                             <label for="edit-nombre">Nombre</label>
                             <input type="text" id="edit-nombre" required>
@@ -74,7 +77,8 @@
 
                 <div class="perfil-seccion">
                     <h3>Cambiar Contraseña</h3>
-                    <form id="form-cambiar-password" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+                    <form id="form-cambiar-password"
+                        style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
                         <div class="form-group">
                             <label for="password-actual">Contraseña actual</label>
                             <input type="password" id="password-actual" placeholder="Contraseña actual" required>
@@ -85,7 +89,8 @@
                         </div>
                         <div class="form-group">
                             <label for="password-confirmar">Confirmar nueva contraseña</label>
-                            <input type="password" id="password-confirmar" placeholder="Confirmar nueva contraseña" required>
+                            <input type="password" id="password-confirmar" placeholder="Confirmar nueva contraseña"
+                                required>
                         </div>
                         <button type="submit" class="btn">Cambiar Contraseña</button>
                     </form>
@@ -96,10 +101,14 @@
         </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer footer-simple">
         <div class="footer-content">
             <div class="footer-col">
-                <h4>Online Doggie</h4>
+                <div class="footer-brand">
+                    <img src="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico" alt="Online Doggie">
+                    <h4>Online Doggie</h4>
+                </div>
+
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
             </div>
             <div class="footer-col">
@@ -112,8 +121,8 @@
             </div>
             <div class="footer-col">
                 <h4>Contacto</h4>
-                <p>📞 +57 300 123 4567</p>
-                <p>📧 contacto@onlinedoggie.com</p>
+                <p><i class="fa-solid fa-phone"></i> +57 300 123 4567</p>
+                <p><i class="fa-solid fa-envelope"></i> contacto@onlinedoggie.com</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -122,7 +131,7 @@
     </footer>
 
     <div class="fab-container">
-        
+
         <div class="fab-menu" id="fab-menu-desplegable">
             <button class="fab-menu-item" id="btn-abrir-modal-grande">
                 <span class="icon">🛍️</span> Ver Historial de Compras
@@ -137,7 +146,7 @@
 
     <div class="modal-full-screen" id="historial-modal-completo">
         <div class="modal-full-container">
-            
+
             <div class="modal-full-header">
                 <h2>🛍️ Historial Completo de Pedidos</h2>
                 <button class="btn-cerrar-modal" id="btn-cerrar-modal-grande">Cerrar Ventana</button>
@@ -201,4 +210,5 @@
     </script>
 
 </body>
+
 </html>

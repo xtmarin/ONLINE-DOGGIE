@@ -7,6 +7,7 @@
     <title>Registro - Online Doggie</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
@@ -51,15 +52,20 @@
             <div id="seccion-verificacion" style="display: none;">
                 <h2>Verifica tu cuenta</h2>
                 <p style="font-size: 14px; color: #666; margin-bottom: 20px; text-align: center;">
-                    Te hemos enviado un código de 6 dígitos a tu correo electrónico. Por favor, ingrésalo a continuación:
+                    Te hemos enviado un código de 6 dígitos a tu correo electrónico. Por favor, ingrésalo a
+                    continuación:
                 </p>
                 <form id="form-verificacion">
                     <div class="form-group">
                         <label>📩 Código de Verificación</label>
-                        <input type="text" id="codigo" placeholder="Ej. 123456" maxlength="6" required style="text-align: center; font-size: 18px; letter-spacing: 2px;">
+                        <input type="text" id="codigo" placeholder="Ej. 123456" maxlength="6" required
+                            style="text-align: center; font-size: 18px; letter-spacing: 2px;">
                     </div>
 
-                    <button type="submit" style="background-color: #0056b3; color: white; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#004085'" onmouseout="this.style.backgroundColor='#0056b3'">Confirmar Código</button>
+                    <button type="submit"
+                        style="background-color: #0056b3; color: white; border: none; cursor: pointer; transition: background 0.2s;"
+                        onmouseover="this.style.backgroundColor='#004085'"
+                        onmouseout="this.style.backgroundColor='#0056b3'">Confirmar Código</button>
                 </form>
             </div>
 
@@ -67,7 +73,10 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="./js/toast.js"></script>
     <script src="./js/registro.js"></script>
 
 </body>
+
 </html>

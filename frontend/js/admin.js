@@ -5,7 +5,7 @@ function mostrarToast(mensaje, tipo = "success") {
         text: mensaje,
         duration: 3500,
         close: true,
-        gravity: "top", 
+        gravity: "top",
         position: "right",
         stopOnFocus: true,
         className: tipo === "success" ? "toast-success" : "toast-error"
@@ -187,15 +187,15 @@ document.getElementById("filtro-categoria").addEventListener("change", aplicarFi
 /* ... (Formulario de crear/editar) ... */
 formProducto.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const nombre = document.getElementById("nombre").value.trim();
     const descripcion = document.getElementById("descripcion").value.trim();
-    
-    const categoria = document.getElementById("categoria").value; 
-    
+
+    const categoria = document.getElementById("categoria").value;
+
     const precioRaw = document.getElementById("precio").value;
-    const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, "")); 
-    
+    const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, ""));
+
     const stockRaw = document.getElementById("stock").value;
     const stock = parseInt(stockRaw.toString().replace(/[.,]/g, ""), 10);
 
@@ -217,10 +217,10 @@ formProducto.addEventListener("submit", async (e) => {
 
     let url = "http://localhost:3000/api/productos";
     let metodo = "POST";
-    
-    if (productoEditando) { 
-        url = `http://localhost:3000/api/productos/${productoEditando}`; 
-        metodo = "PUT"; 
+
+    if (productoEditando) {
+        url = `http://localhost:3000/api/productos/${productoEditando}`;
+        metodo = "PUT";
     }
 
     try {
@@ -231,7 +231,7 @@ formProducto.addEventListener("submit", async (e) => {
         });
 
         const data = await respuesta.json();
-        
+
         if (respuesta.ok) {
             alert(data.mensaje);
             // Resetear el formulario
@@ -240,9 +240,9 @@ formProducto.addEventListener("submit", async (e) => {
             preview.src = "";
             preview.style.display = "none";
             document.querySelector("#form-producto button").innerText = "Crear Producto";
-            
+
             // Recargar datos
-            cargarProductos(); 
+            cargarProductos();
             cargarAlertas();
             cargarMetricas();
         } else {
@@ -356,7 +356,7 @@ async function eliminarProducto(id) {
 
         alert(data.mensaje);
 
-       cargarProductos();
+        cargarProductos();
         cargarAlertas();
         cargarMetricas();
 
@@ -412,7 +412,7 @@ async function cargarCategoriasSelect() {
 cargarAlertas();
 cargarProductos();
 cargarMetricas();
-cargarCategoriasSelect(); 
+cargarCategoriasSelect();
 
 
 
@@ -440,18 +440,18 @@ overlay.addEventListener("click", cerrarMenu);
 
 
 menuItems.forEach(item => {
-    item.addEventListener("click", function() {
+    item.addEventListener("click", function () {
         const objetivo = this.getAttribute("data-target");
 
-      
+
         secciones.forEach(sec => sec.classList.remove("activa"));
 
 
         document.getElementById(objetivo).classList.add("activa");
 
-      
 
- 
+
+
         cerrarMenu();
     });
 });
@@ -467,8 +467,8 @@ async function cambiarRolUsuario(accion) {
         return;
     }
 
-    const url = accion === "promover" 
-        ? "http://localhost:3000/api/admin/promover" 
+    const url = accion === "promover"
+        ? "http://localhost:3000/api/admin/promover"
         : "http://localhost:3000/api/admin/degradar";
 
     try {
@@ -541,7 +541,7 @@ async function consultarHistorialCompras() {
 
     try {
         contenedor.innerHTML = "<p class='historial-vacio'>Buscando transacciones...</p>";
-        
+
         const respuesta = await fetch(`http://localhost:3000/api/admin/pedidos?email=${email}`, {
             headers: { "Authorization": "Bearer " + token }
         });
@@ -685,11 +685,16 @@ async function cargarMetricas() {
         if (respuesta.ok) {
             document.getElementById('met-productos').textContent = data.totalProductos;
             document.getElementById('met-usuarios').textContent = data.totalUsuarios;
-            document.getElementById('met-ventas').textContent = `$${data.totalVentas.toLocaleString()}`;
+            document.getElementById('met-ventas').textContent =
+                Number(data.totalVentas).toLocaleString('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0
+                });
 
             const ctx = document.getElementById('graficaMetricas')?.getContext('2d');
             if (!ctx) return;
-            
+
             if (miGrafica) miGrafica.destroy();
 
             miGrafica = new Chart(ctx, {

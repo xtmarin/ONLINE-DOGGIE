@@ -61,11 +61,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="rating" id="rating-${producto.id}">
                     <div class="estrellas-display">${estrellas}</div>
                     <span class="rating-info">
-                        ${
-                            promedio > 0
-                                ? `${promedio} / 5 (${total} valoraciones)`
-                                : "Sin valoraciones"
-                        }
+                        ${promedio > 0
+                    ? `${promedio} / 5 (${total} valoraciones)`
+                    : "Sin valoraciones"
+                }
                     </span>
                 </div>
 
@@ -179,14 +178,14 @@ async function enviarValoracion(productoId) {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        alert("Debes iniciar sesión para valorar un producto");
+        mostrarToast("Debes iniciar sesión para valorar un producto", "error");
         return;
     }
 
     const valor = valoraciones[productoId];
 
     if (!valor) {
-        alert("Selecciona una valoración entre 1 y 5 estrellas");
+        mostrarToast("Selecciona una valoración entre 1 y 5 estrellas", "error");
         return;
     }
 
@@ -216,7 +215,7 @@ async function enviarValoracion(productoId) {
 
         if (respuesta.ok) {
 
-            alert("Valoración registrada");
+            mostrarToast("Valoración registrada correctamente");
 
             const valRes = await fetch(
                 `http://localhost:3000/api/productos/${productoId}/valoracion`
@@ -254,14 +253,16 @@ async function enviarValoracion(productoId) {
 
         } else {
 
-            alert(data.error || "Error al enviar valoración");
-
+            mostrarToast(
+                data.error || "Error al enviar valoración",
+                "error"
+            );
         }
 
     } catch (error) {
 
         console.error("Error enviando valoración:", error);
-        alert("Error conectando con el servidor");
+        mostrarToast("Error conectando con el servidor", "error");
 
     }
 

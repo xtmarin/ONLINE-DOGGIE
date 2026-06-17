@@ -1,4 +1,3 @@
-// controllers/pedidos.controller.js
 const pool = require('../config/db');
 const emailService = require('../utils/emailService');
 const { generatePaymentQR } = require('../utils/qrService');
