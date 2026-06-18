@@ -48,7 +48,7 @@ async function loginUsuario(e) {
     try {
 
         const respuesta = await fetch(
-            "http://localhost:3000/api/auth/login",
+            "https://online-doggie-backend-production.up.railway.app/api/auth/login",
             {
                 method: "POST",
                 headers: {
@@ -147,7 +147,7 @@ async function recuperarPassword(e) {
     try {
 
         const respuesta = await fetch(
-            "http://localhost:3000/api/auth/recuperar",
+            "https://online-doggie-backend-production.up.railway.app/api/auth/recuperar",
             {
                 method: "POST",
                 headers: {
@@ -204,7 +204,7 @@ async function verificar2FA(e) {
     try {
 
         const respuesta = await fetch(
-            "http://localhost:3000/api/auth/verificar-2fa",
+            "https://online-doggie-backend-production.up.railway.app/api/auth/verificar-2fa",
             {
                 method: "POST",
                 headers: {
