@@ -62,7 +62,7 @@ function mostrarPreview(archivo) {
 
 async function cargarAlertas() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/productos/stock-bajo", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos/stock-bajo", {
             headers: { "Authorization": "Bearer " + token }
         });
         const productos = await respuesta.json();
@@ -82,7 +82,7 @@ async function cargarAlertas() {
 
 async function cargarStock() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/productos");
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
         const contenedor = document.getElementById("lista-stock");
         contenedor.innerHTML = "";
@@ -108,7 +108,7 @@ async function cargarStock() {
 async function actualizarStock(id) {
     const nuevoStock = document.getElementById(`stock-input-${id}`).value;
     if (nuevoStock === "" || nuevoStock < 0) { alert("Ingresa un valor de stock válido"); return; }
-    const respuesta = await fetch(`http://localhost:3000/api/productos/${id}/stock`, {
+    const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${id}/stock`, {
         method: "PATCH",
         headers: {
             "Authorization": "Bearer " + token,
@@ -124,7 +124,7 @@ async function actualizarStock(id) {
 /* ... Cargar Productos  ... */
 async function cargarProductos() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/productos");
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
         productosCache = productos;
 
@@ -141,7 +141,7 @@ function renderTablaProductos(productos) {
     tbody.innerHTML = "";
 
     productos.forEach(producto => {
-        const imagenUrl = producto.imagen ? `http://localhost:3000/uploads/${producto.imagen}` : 'http://localhost:3000/uploads/ONLINE-DOGGIE ICO.ico';
+        const imagenUrl = producto.imagen ? `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}` : 'https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico';
 
         tbody.innerHTML += `
             <tr>
@@ -215,11 +215,11 @@ formProducto.addEventListener("submit", async (e) => {
     const imagenInput = document.getElementById("imagen");
     if (imagenInput.files.length > 0) formData.append("imagen", imagenInput.files[0]);
 
-    let url = "http://localhost:3000/api/productos";
+    let url = "https://online-doggie-backend-production.up.railway.app/api/productos";
     let metodo = "POST";
 
     if (productoEditando) {
-        url = `http://localhost:3000/api/productos/${productoEditando}`;
+        url = `https://online-doggie-backend-production.up.railway.app/api/productos/${productoEditando}`;
         metodo = "PUT";
     }
 
@@ -278,7 +278,7 @@ function editarProducto(id) {
 
     if (producto.imagen) {
 
-        preview.src = `http://localhost:3000/uploads/${producto.imagen}`;
+        preview.src = `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
 
         preview.style.display = "block";
     } else {
@@ -323,7 +323,7 @@ async function eliminarProducto(id) {
     try {
 
         const respuesta = await fetch(
-            `http://localhost:3000/api/productos/${id}`,
+            `https://online-doggie-backend-production.up.railway.app/api/productos/${id}`,
             {
                 method: "DELETE",
                 headers: {
@@ -364,7 +364,7 @@ async function cargarCategoriasSelect() {
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/api/categorias");
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/categorias");
 
         const categorias = await respuesta.json();
 
@@ -453,8 +453,8 @@ async function cambiarRolUsuario(accion) {
     }
 
     const url = accion === "promover"
-        ? "http://localhost:3000/api/admin/promover"
-        : "http://localhost:3000/api/admin/degradar";
+        ? "https://online-doggie-backend-production.up.railway.app/api/admin/promover"
+        : "https://online-doggie-backend-production.up.railway.app/api/admin/degradar";
 
     try {
         const respuesta = await fetch(url, {
@@ -491,7 +491,7 @@ async function eliminarUsuarioSistema() {
     if (!confirmar) return;
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/admin/usuarios-eliminar`, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/usuarios-eliminar`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token,
@@ -527,7 +527,7 @@ async function consultarHistorialCompras() {
     try {
         contenedor.innerHTML = "<p class='historial-vacio'>Buscando transacciones...</p>";
 
-        const respuesta = await fetch(`http://localhost:3000/api/admin/pedidos?email=${email}`, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/pedidos?email=${email}`, {
             headers: { "Authorization": "Bearer " + token }
         });
         const pedidos = await respuesta.json();
@@ -583,7 +583,7 @@ function inicializarHistorialCompras() {
 
         try {
 
-            const respuesta = await fetch(`http://localhost:3000/api/pedidos?email=${encodeURIComponent(email)}`, {
+            const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos?email=${encodeURIComponent(email)}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}` 
@@ -674,7 +674,7 @@ let miGrafica = null;
 
 async function cargarMetricas() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/admin/metricas", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/admin/metricas", {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -722,7 +722,7 @@ async function cargarMetricas() {
 
 async function cargarPedidos() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos", {
             headers: {
                 Authorization: "Bearer " + token
             }
@@ -837,7 +837,7 @@ async function actualizarEstadoPedido(id) {
     const nuevoEstado = selector.value;
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos/${id}/estado`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -850,7 +850,7 @@ async function actualizarEstadoPedido(id) {
 
         const data = await respuesta.json();
 
-        if (!res.ok) {
+        if (!respuesta.ok) {
             alert(data.error || "No se pudo actualizar");
             return;
         }
@@ -870,7 +870,7 @@ async function actualizarEstadoPedido(id) {
     const nuevoEstado = selector.value;
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${id}/estado`, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos/${id}/estado`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

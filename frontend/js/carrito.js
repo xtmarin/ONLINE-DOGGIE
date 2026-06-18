@@ -195,7 +195,7 @@ function actualizarMiniCarrito() {
         const rutaImagen =
             (producto.imagen && producto.imagen.startsWith("http"))
                 ? producto.imagen
-                : `http://localhost:3000/uploads/${producto.imagen}`;
+                : `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
 
         contenedor.innerHTML += `
             <div class="mini-item">
@@ -264,7 +264,7 @@ async function finalizarCompra() {
     }
 
     try {
-        const respuesta = await fetch("http://localhost:3000/api/pedidos", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

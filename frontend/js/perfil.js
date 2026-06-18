@@ -11,7 +11,7 @@ if (!token) {
 
 async function cargarPerfil() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -65,7 +65,7 @@ async function cargarPerfil() {
 
 async function cargarHistorial() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/pedidos/historial", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos/historial", {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -169,7 +169,7 @@ if (formEditarPerfil) {
         }
 
         try {
-            const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+            const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
                 method: "PUT",
                 headers: {
                     "Authorization": "Bearer " + token,
@@ -240,7 +240,7 @@ if (formCambiarPassword) {
         }
 
         try {
-            const respuesta = await fetch("http://localhost:3000/api/auth/cambiar-password", {
+            const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/cambiar-password", {
                 method: "PUT",
                 headers: {
                     "Authorization": "Bearer " + token,
@@ -310,7 +310,7 @@ async function guardarDireccion() {
     const email = document.getElementById("edit-email")?.value.trim();
 
     try {
-        const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
             method: "PUT",
             headers: {
                 "Authorization": "Bearer " + token,

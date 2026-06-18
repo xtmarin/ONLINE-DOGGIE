@@ -25,7 +25,7 @@ function mostrarHistorialNav() {
         const div = document.createElement("div");
         div.classList.add("producto");
         div.innerHTML = `
-            <img src="http://localhost:3000/assets/img/${producto.imagen}" alt="${producto.nombre}">
+            <img src="https://online-doggie-backend-production.up.railway.app/assets/img/${producto.imagen}" alt="${producto.nombre}">
             <h3>${producto.nombre}</h3>
             <p class="precio">$${Number(producto.precio).toLocaleString("es-CO")}</p>
             <a href="productos.html" class="btn-agregar">Ver productos</a>
@@ -95,7 +95,7 @@ document.getElementById("form-contacto").addEventListener("submit", async (e) =>
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/api/contacto", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/contacto", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ nombre, email, mensaje })
@@ -144,7 +144,7 @@ document.getElementById("form-boletin").addEventListener("submit", async (e) => 
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/api/boletin", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/boletin", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })

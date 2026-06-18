@@ -33,7 +33,7 @@ if (formRegistro) {
             if (boton) boton.disabled = true;
 
             const respuesta = await fetch(
-                "http://localhost:3000/api/auth/registro",
+                "https://online-doggie-backend-production.up.railway.app/api/auth/registro",
                 {
                     method: "POST",
                     headers: {
@@ -148,7 +148,7 @@ if (formVerificacion) {
                 if (boton) boton.disabled = true;
 
                 const respuesta = await fetch(
-                    "http://localhost:3000/api/auth/verificarCuenta",
+                    "https://online-doggie-backend-production.up.railway.app/api/auth/verificarCuenta",
                     {
                         method: "POST",
                         headers: {

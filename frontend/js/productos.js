@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/api/productos");
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
 
         const contenedor = document.getElementById("lista-productos");
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             try {
                 const valRes = await fetch(
-                    `http://localhost:3000/api/productos/${producto.id}/valoracion`
+                    `https://online-doggie-backend-production.up.railway.app/api/productos/${producto.id}/valoracion`
                 );
 
                 const valData = await valRes.json();
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             div.innerHTML = `
                 <img 
-                    src="http://localhost:3000/uploads/${producto.imagen}" 
+                    src="https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}" 
                     alt="${producto.nombre}"
                 >
 
@@ -192,7 +192,7 @@ async function enviarValoracion(productoId) {
     try {
 
         const respuesta = await fetch(
-            `http://localhost:3000/api/productos/${productoId}/valorar`,
+            `https://online-doggie-backend-production.up.railway.app/api/productos/${productoId}/valorar`,
             {
                 method: "POST",
                 headers: {
@@ -218,7 +218,7 @@ async function enviarValoracion(productoId) {
             mostrarToast("Valoración registrada correctamente");
 
             const valRes = await fetch(
-                `http://localhost:3000/api/productos/${productoId}/valoracion`
+                `https://online-doggie-backend-production.up.railway.app/api/productos/${productoId}/valoracion`
             );
 
             const valData = await valRes.json();

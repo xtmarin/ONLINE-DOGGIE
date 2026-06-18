@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function cargarPedidosDelUsuario() {
     try {
-        const respuesta = await fetch("http://localhost:3000/api/pedidos/mis-pedidos", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos/mis-pedidos", {
             method: "GET",
             headers: {
                 "Authorization": "Bearer " + token
@@ -61,7 +61,7 @@ async function marcarComoRecibido(pedidoId) {
     if (!confirm("¿Confirmas que ya tienes el pedido en tus manos?")) return;
 
     try {
-        const respuesta = await fetch(`http://localhost:3000/api/pedidos/${pedidoId}/recibido`, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos/${pedidoId}/recibido`, {
             method: "PATCH",
             headers: {
                 "Authorization": "Bearer " + token

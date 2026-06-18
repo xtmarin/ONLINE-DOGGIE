@@ -10,7 +10,7 @@ async function verificarSesion() {
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/api/auth/perfil", {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
             headers: {
                 "Authorization": "Bearer " + token
             }
