@@ -1,15 +1,15 @@
 const token = localStorage.getItem("token");
 
 if (!token) {
+    
     window.location.href = "login.html";
-}else{
+} else {
+    
     verificarSesion();
 }
 
 async function verificarSesion() {
-
     try {
-
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
             headers: {
                 "Authorization": "Bearer " + token
@@ -17,20 +17,14 @@ async function verificarSesion() {
         });
 
         if (!respuesta.ok) {
-
+            
             localStorage.removeItem("token");
             window.location.href = "login.html";
-
         }
-
     } catch (error) {
-
+        
         localStorage.removeItem("token");
-        console.error("Error verificando sesión");
+        console.error("Error verificando sesión en el servidor:", error);
         window.location.href = "login.html";
-
     }
-
 }
-
-verificarSesion();

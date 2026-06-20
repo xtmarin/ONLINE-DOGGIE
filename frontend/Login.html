@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Online Doggie</title>
+    
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body>
@@ -32,9 +32,9 @@
         <section class="registro">
 
             <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Logo" class="logo">
-            <h2>Iniciar sesión</h2>
-
+            
             <form id="form-login">
+                <h2>Iniciar sesión</h2>
                 <div class="form-group">
                     <label for="email">🐶 Correo electrónico</label>
                     <input type="email" id="email" placeholder="tucorreo@ejemplo.com" required>
@@ -43,28 +43,26 @@
                     <label for="password">🐱 Contraseña</label>
                     <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
                 </div>
-                <button id="btn-login" type="submit">
-                    Iniciar sesión
-                </button>
+                <button id="btn-login" type="submit">Iniciar sesión</button>
                 <p>¿Olvidaste tu contraseña? <a href="#" id="btn-recuperar">Recupérala aquí</a></p>
                 <p>¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
             </form>
 
-            <form id="form-recuperar" style="display:none;">
+            <form id="form-recuperar" style="display: none;">
                 <h3>Recuperar contraseña</h3>
                 <div class="form-group">
-                    <label>Correo electrónico</label>
+                    <label for="email-recuperar">Correo electrónico</label>
                     <input type="email" id="email-recuperar" placeholder="tucorreo@ejemplo.com" required>
                 </div>
                 <button type="submit">Enviar correo de recuperación</button>
                 <p><a href="#" id="btn-volver-login">Volver al login</a></p>
             </form>
 
-            <form id="form-2fa" style="display:none;">
+            <form id="form-2fa" style="display: none;">
                 <h3>Verificación en dos pasos</h3>
                 <p>Ingresa el código que enviamos a tu correo</p>
                 <div class="form-group">
-                    <label>Código de verificación</label>
+                    <label for="codigo-2fa">Código de verificación</label>
                     <input type="text" id="codigo-2fa" placeholder="Ej: 123456" maxlength="6" required>
                 </div>
                 <button type="submit">Verificar código</button>
@@ -79,10 +77,9 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="./js/toast.js"></script>
+    <script src="./js/usuario-navbar.js"></script>
     <script src="./js/login.js"></script>
 
 </body>
-
 </html>

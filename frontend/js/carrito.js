@@ -50,30 +50,27 @@ function mostrarCarrito() {
         carritoBody.innerHTML += `
             <tr>
                 <td>${producto.nombre}</td>
-                <td>$${Number(producto.precio).toLocaleString()}</td>
+                <td>$${Number(producto.precio).toLocaleString("es-CO")}</td>
                 <td>${producto.cantidad}</td>
-                <td>$${subtotal.toLocaleString()}</td>
+                <td>$${subtotal.toLocaleString("es-CO")}</td>
                 <td><button onclick="eliminarProducto(${index})">❌</button></td>
             </tr>
         `;
     });
 
     const totalConDescuento = total - (total * descuentoAplicado / 100);
-
     const totalElemento = document.getElementById("total");
 
     if (totalElemento) {
         totalElemento.innerText = descuentoAplicado > 0
-            ? `Total: $${totalConDescuento.toLocaleString()} (${descuentoAplicado}% de descuento aplicado)`
-            : `Total: $${total.toLocaleString()}`;
+            ? `Total: $${totalConDescuento.toLocaleString("es-CO")} (${descuentoAplicado}% de descuento aplicado)`
+            : `Total: $${total.toLocaleString("es-CO")}`;
     }
 }
 
 function eliminarProducto(index) {
     let carrito = obtenerCarrito();
-
     carrito.splice(index, 1);
-
     guardarCarrito(carrito);
 
     mostrarCarrito();
@@ -83,7 +80,6 @@ function eliminarProducto(index) {
 
 function vaciarCarrito() {
     localStorage.removeItem("carrito");
-
     descuentoAplicado = 0;
 
     mostrarCarrito();
@@ -91,6 +87,7 @@ function vaciarCarrito() {
     actualizarContador();
 }
 
+/* SISTEMA DE ALERTAS (TOAST) */
 function mostrarToast(mensaje, tipo = 'success') {
     const toast = document.createElement('div');
     toast.innerHTML = `
@@ -144,6 +141,8 @@ function aplicarCupon() {
     const codigo = document.getElementById("input-cupon").value.trim().toUpperCase();
     const mensaje = document.getElementById("mensaje-cupon");
 
+    if (!mensaje) return;
+
     if (!codigo) {
         mensaje.textContent = "Ingresa un código de cupón";
         mensaje.style.color = "red";
@@ -152,14 +151,11 @@ function aplicarCupon() {
 
     if (cupones[codigo]) {
         descuentoAplicado = cupones[codigo];
-
         mensaje.textContent = `✅ Cupón aplicado: ${descuentoAplicado}% de descuento`;
         mensaje.style.color = "green";
-
         mostrarCarrito();
     } else {
         descuentoAplicado = 0;
-
         mensaje.textContent = "❌ Código inválido";
         mensaje.style.color = "red";
     }
@@ -170,7 +166,6 @@ function aplicarCupon() {
 function abrirMiniCarrito() {
     document.getElementById("mini-carrito")?.classList.add("activo");
     document.getElementById("overlay-mini")?.classList.add("activo");
-
     actualizarMiniCarrito();
 }
 
@@ -185,17 +180,15 @@ function actualizarMiniCarrito() {
     let total = 0;
 
     if (!contenedor) return;
-
     contenedor.innerHTML = "";
 
     carrito.forEach((producto, index) => {
         let subtotal = producto.precio * producto.cantidad;
         total += subtotal;
 
-        const rutaImagen =
-            (producto.imagen && producto.imagen.startsWith("http"))
-                ? producto.imagen
-                : `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
+        const rutaImagen = (producto.imagen && producto.imagen.startsWith("http"))
+            ? producto.imagen
+            : `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
 
         contenedor.innerHTML += `
             <div class="mini-item">
@@ -203,7 +196,7 @@ function actualizarMiniCarrito() {
                 <div class="mini-info">
                     <h4>${producto.nombre}</h4>
                     <p>Cantidad: ${producto.cantidad}</p>
-                    <p class="mini-precio">$${subtotal.toLocaleString()}</p>
+                    <p class="mini-precio">$${subtotal.toLocaleString("es-CO")}</p>
                 </div>
                 <button class="mini-eliminar" onclick="eliminarDesdeMini(${index})">✕</button>
             </div>
@@ -211,17 +204,14 @@ function actualizarMiniCarrito() {
     });
 
     const totalMini = document.getElementById("mini-total");
-
     if (totalMini) {
-        totalMini.innerText = "Total: $" + total.toLocaleString();
+        totalMini.innerText = "Total: $" + total.toLocaleString("es-CO");
     }
 }
 
 function eliminarDesdeMini(index) {
     let carrito = obtenerCarrito();
-
     carrito.splice(index, 1);
-
     guardarCarrito(carrito);
 
     actualizarMiniCarrito();
@@ -231,7 +221,6 @@ function eliminarDesdeMini(index) {
 
 function actualizarContador() {
     let carrito = obtenerCarrito();
-
     let totalCantidad = 0;
 
     carrito.forEach(producto => {
@@ -239,7 +228,6 @@ function actualizarContador() {
     });
 
     const contador = document.getElementById("contador-carrito");
-
     if (contador) {
         contador.innerText = totalCantidad;
     }
@@ -251,15 +239,19 @@ async function finalizarCompra() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        alert("Debes iniciar sesión para comprar");
-        window.location.href = "Login.html";
+        
+        mostrarToast("Debes iniciar sesión para comprar", "error");
+        setTimeout(() => {
+            window.location.href = "login.html"; // Ajustado a minúsculas para compatibilidad con Railway
+        }, 2000);
         return;
     }
 
     const carrito = obtenerCarrito();
 
     if (!carrito.length) {
-        alert("Tu carrito está vacío");
+       
+        mostrarToast("Tu carrito está vacío para procesar un pedido", "error");
         return;
     }
 
@@ -281,7 +273,8 @@ async function finalizarCompra() {
             return;
         }
 
-        mostrarToast('¡Pedido creado! Verifica tu correo para procesar el pago');
+        
+        mostrarToast('¡Pedido creado! Verifica tu correo para procesar el pago', 'success');
 
         localStorage.removeItem("carrito");
         mostrarCarrito();
@@ -290,6 +283,6 @@ async function finalizarCompra() {
 
     } catch (err) {
         console.error(err);
-        mostrarToast('Error de servidor', 'error');
+        mostrarToast('Error de servidor al conectar con la API', 'error');
     }
 }

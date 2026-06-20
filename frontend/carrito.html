@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito - Online Doggie</title>
+    
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico">
+    <link rel="icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -14,7 +15,7 @@
 
     <header class="header">
         <div class="logo">
-            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico" alt="Logo Online Doggie">
+            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -28,11 +29,11 @@
         </nav>
     </header>
 
-    <main style="padding:40px">
+    <main style="padding: 40px;">
 
         <h1>🛒 Tu Carrito</h1>
 
-        <table border="1" width="100%">
+        <table class="tabla-carrito" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr>
                     <th>Producto</th>
@@ -56,17 +57,16 @@
             <p id="mensaje-cupon"></p>
         </div>
 
-        <button onclick="vaciarCarrito()" class="btn-agregar">
-            Vaciar carrito
-        </button>
+        <div class="carrito-acciones" style="margin-top: 20px;">
+            <button onclick="vaciarCarrito()" class="btn-agregar" style="background-color: #ff4d4d; margin-right: 10px;">
+                Vaciar carrito
+            </button>
+            <button onclick="finalizarCompra()" class="btn-agregar">
+                Procesar Pago
+            </button>
+        </div>
 
-        <br><br>
-
-        <button onclick="finalizarCompra()" class="btn-agregar">
-            Procesar Pago
-        </button>
-
-        <section class="calificacion-section" id="seccion-calificacion" style="display:none; margin-top:30px;">
+        <section class="calificacion-section" id="seccion-calificacion" style="display: none; margin-top: 40px;">
             <h2>🎉 ¡Gracias por tu compra!</h2>
             <p>¿Cómo fue tu experiencia con nosotros?</p>
             <div class="estrellas-servicio" id="estrellas-servicio">
@@ -76,10 +76,10 @@
                 <span class="estrella-servicio" data-valor="4" onclick="seleccionarCalificacion(4)">☆</span>
                 <span class="estrella-servicio" data-valor="5" onclick="seleccionarCalificacion(5)">☆</span>
             </div>
-            <button class="btn-agregar" onclick="enviarCalificacion()" style="margin-top:10px;">
+            <button class="btn-agregar" onclick="enviarCalificacion()" style="margin-top: 15px;">
                 Enviar calificación
             </button>
-            <p id="mensaje-calificacion"></p>
+            <p id="mensaje-calificacion" style="margin-top: 10px; font-weight: bold;"></p>
         </section>
 
     </main>
@@ -88,10 +88,9 @@
         <div class="footer-content">
             <div class="footer-col">
                 <div class="footer-brand">
-                    <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico" alt="Online Doggie">
+                    <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Online Doggie">
                     <h4>Online Doggie</h4>
                 </div>
-
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
             </div>
             <div class="footer-col">
@@ -116,7 +115,6 @@
                             <i class="fa-brands fa-instagram"></i> Instagram
                         </a>
                     </li>
-
                     <li>
                         <a href="https://facebook.com/onlinedoggie" target="_blank">
                             <i class="fa-brands fa-facebook"></i> Facebook
@@ -130,14 +128,19 @@
         </div>
     </footer>
 
+    <script src="./js/toast.js"></script>
+    <script src="./js/usuario-navbar.js"></script>
     <script src="./js/carrito.js"></script>
 
     <script>
         let calificacionSeleccionada = 0;
 
         function mostrarCalificacionPostCompra() {
-            document.getElementById("seccion-calificacion").style.display = "block";
-            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            const seccion = document.getElementById("seccion-calificacion");
+            if (seccion) {
+                seccion.style.display = "block";
+                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            }
         }
 
         function seleccionarCalificacion(valor) {
@@ -148,19 +151,32 @@
         }
 
         function enviarCalificacion() {
-            const mensaje = document.getElementById("mensaje-calificacion");
+            
             if (!calificacionSeleccionada) {
-                mensaje.textContent = "Selecciona una calificación antes de enviar";
-                mensaje.style.color = "red";
+                if (typeof mostrarToast === "function") {
+                    mostrarToast("Selecciona una calificación antes de enviar", "error");
+                } else {
+                    const mensaje = document.getElementById("mensaje-calificacion");
+                    mensaje.textContent = "Selecciona una calificación antes de enviar";
+                    mensaje.style.color = "red";
+                }
                 return;
             }
-            mensaje.textContent = `✅ ¡Gracias por tu calificación de ${calificacionSeleccionada} estrellas! Esto nos ayuda a mejorar.`;
-            mensaje.style.color = "green";
-            calificacionSeleccionada = 0;
-            document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
+
+            if (typeof mostrarToast === "function") {
+                mostrarToast(`¡Gracias por calificarnos con ${calificacionSeleccionada} estrellas! 🐾`, "success");
+               
+                calificacionSeleccionada = 0;
+                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
+            } else {
+                const mensaje = document.getElementById("mensaje-calificacion");
+                mensaje.textContent = `✅ ¡Gracias por tu calificación de ${calificacionSeleccionada} estrellas!`;
+                mensaje.style.color = "green";
+                calificacionSeleccionada = 0;
+                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
+            }
         }
     </script>
 
 </body>
-
 </html>

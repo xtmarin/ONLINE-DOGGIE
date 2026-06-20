@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONLINE DOGGIE</title>
+    
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -64,7 +65,7 @@
             </div>
         </section>
 
-        <section class="historial-navegacion" id="seccion-historial-nav" style="display:none;">
+        <section class="historial-navegacion" id="seccion-historial-nav" style="display: none;">
             <h2>Vistos recientemente</h2>
             <div id="historial-nav-lista" class="lista-productos"></div>
         </section>
@@ -79,28 +80,28 @@
                 <span class="estrella-servicio" data-valor="4" onclick="seleccionarCalificacion(4)">☆</span>
                 <span class="estrella-servicio" data-valor="5" onclick="seleccionarCalificacion(5)">☆</span>
             </div>
-            <button class="btn" onclick="enviarCalificacion()" style="margin-top:10px;">
+            <button class="btn" onclick="enviarCalificacion()" style="margin-top: 10px;">
                 Enviar calificación
             </button>
             <p id="mensaje-calificacion"></p>
         </section>
 
         <div class="interaccion-container">
+            
             <section class="contacto-section">
                 <h2>Contáctanos</h2>
                 <form id="form-contacto">
                     <div class="form-group">
-                        <label>Nombre</label>
+                        <label for="contacto-nombre">Nombre</label>
                         <input type="text" id="contacto-nombre" placeholder="Tu nombre" required>
                     </div>
                     <div class="form-group">
-                        <label>Correo electrónico</label>
+                        <label for="contacto-email">Correo electrónico</label>
                         <input type="email" id="contacto-email" placeholder="tucorreo@ejemplo.com" required>
                     </div>
                     <div class="form-group">
-                        <label>Mensaje</label>
-                        <textarea id="contacto-mensaje" placeholder="¿En qué podemos ayudarte?" rows="4"
-                            required></textarea>
+                        <label for="contacto-mensaje">Mensaje</label>
+                        <textarea id="contacto-mensaje" placeholder="¿En qué podemos ayudarte?" rows="4" required></textarea>
                     </div>
                     <button type="submit" class="btn">Enviar mensaje</button>
                     <p id="mensaje-contacto"></p>
@@ -129,9 +130,7 @@
                     <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Online Doggie">
                     <h4>Online Doggie</h4>
                 </div>
-
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
-                
             </div>
             <div class="footer-col">
                 <h4>Enlaces</h4>
@@ -155,7 +154,6 @@
                             <i class="fa-brands fa-instagram"></i> Instagram
                         </a>
                     </li>
-
                     <li>
                         <a href="https://facebook.com/onlinedoggie" target="_blank">
                             <i class="fa-brands fa-facebook"></i> Facebook
@@ -169,11 +167,11 @@
         </div>
     </footer>
 
+    <script src="./js/toast.js"></script>
+    <script src="./js/usuario-navbar.js"></script>
     <script src="./js/carrito-funciones.js"></script>
     <script src="./js/carrito.js"></script>
-    <script src="./js/usuario-navbar.js"></script>
     <script src="./js/app.js"></script>
 
 </body>
-
 </html>

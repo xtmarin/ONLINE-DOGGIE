@@ -1,11 +1,19 @@
 const token = localStorage.getItem("token"); 
 
 document.addEventListener("DOMContentLoaded", () => {
+    
     if (!token) {
-        alert("Debes iniciar sesión para ver tu historial");
-        window.location.href = "login.html"; // Redirigir si no está logueado
+        if (typeof mostrarToast === "function") {
+            mostrarToast("Debes iniciar sesión para ver tu historial", "error");
+        }
+        
+       
+        setTimeout(() => {
+            window.location.href = "login.html"; 
+        }, 2000);
         return;
     }
+    
     cargarPedidosDelUsuario();
 });
 
@@ -21,28 +29,33 @@ async function cargarPedidosDelUsuario() {
         const pedidos = await respuesta.json();
 
         if (respuesta.ok) {
-           
             renderizarHistorial(pedidos);
         } else {
             console.error("Error al traer pedidos:", pedidos.error);
+            if (typeof mostrarToast === "function") {
+                mostrarToast("No se pudieron cargar tus pedidos", "error");
+            }
         }
     } catch (error) {
         console.error("Error de red:", error);
+        if (typeof mostrarToast === "function") {
+            mostrarToast("Error de conexión con el servidor", "error");
+        }
     }
 }
 
-
 function renderizarHistorial(pedidos) {
     const contenedor = document.getElementById("historial-contenedor");
+    if (!contenedor) return;
+    
     contenedor.innerHTML = "";
 
     if (pedidos.length === 0) {
-        contenedor.innerHTML = "<p>Aún no has realizado ninguna compra de Online Doggie 🐾</p>";
+        contenedor.innerHTML = "<p style='text-align:center; padding:2rem;'>Aún no has realizado ninguna compra de Online Doggie 🐾</p>";
         return;
     }
 
     pedidos.forEach(pedido => {
-        
         const botonConfirmar = pedido.estado === 'enviado' 
             ? `<button class="btn-confirmar-recibido" onclick="marcarComoRecibido(${pedido.id})">✅ Ya recibí mi pedido</button>`
             : '';
@@ -57,7 +70,10 @@ function renderizarHistorial(pedidos) {
     });
 }
 
+
+/*CONFIRMAR RECEPCIÓN DEL PEDIDO */
 async function marcarComoRecibido(pedidoId) {
+   
     if (!confirm("¿Confirmas que ya tienes el pedido en tus manos?")) return;
 
     try {
@@ -71,14 +87,22 @@ async function marcarComoRecibido(pedidoId) {
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            alert(data.error);
+            if (typeof mostrarToast === "function") {
+                mostrarToast(data.error || "No se pudo actualizar el estado", "error");
+            }
             return;
         }
 
-        alert(data.mensaje);
+        if (typeof mostrarToast === "function") {
+            mostrarToast(data.mensaje || "¡Pedido confirmado como recibido!", "success");
+        }
+        
         cargarPedidosDelUsuario(); 
 
     } catch (error) {
         console.error("Error al confirmar entrega:", error);
+        if (typeof mostrarToast === "function") {
+            mostrarToast("Error al conectar con el servidor", "error");
+        }
     }
 }

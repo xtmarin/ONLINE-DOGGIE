@@ -107,7 +107,11 @@ async function cargarStock() {
 
 async function actualizarStock(id) {
     const nuevoStock = document.getElementById(`stock-input-${id}`).value;
-    if (nuevoStock === "" || nuevoStock < 0) { alert("Ingresa un valor de stock válido"); return; }
+    if (nuevoStock === "" || nuevoStock < 0) { 
+        Swal.fire('Cantidad incorrecta', "Ingresa un valor de stock válido", 'warning'); 
+        return; 
+    }
+    
     const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${id}/stock`, {
         method: "PATCH",
         headers: {
@@ -117,8 +121,14 @@ async function actualizarStock(id) {
         body: JSON.stringify({ stock: parseInt(nuevoStock) })
     });
     const data = await respuesta.json();
-    alert(data.mensaje);
-    cargarAlertas(); cargarProductos();
+    
+    if(respuesta.ok) {
+        mostrarToast(data.mensaje || "Stock actualizado"); 
+        cargarAlertas(); 
+        cargarProductos();
+    } else {
+        Swal.fire('Error', data.error || "No se pudo actualizar el stock", 'error');
+    }
 }
 
 /* ... Cargar Productos  ... */
@@ -199,9 +209,9 @@ formProducto.addEventListener("submit", async (e) => {
     const stockRaw = document.getElementById("stock").value;
     const stock = parseInt(stockRaw.toString().replace(/[.,]/g, ""), 10);
 
-    // 3. Validar que sean números
+
     if (isNaN(precio) || isNaN(stock)) {
-        alert("El precio y el stock deben ser números válidos");
+        Swal.fire('Datos inválidos', "El precio y el stock deben ser números válidos", 'warning');
         return;
     }
 
@@ -233,20 +243,26 @@ formProducto.addEventListener("submit", async (e) => {
         const data = await respuesta.json();
 
         if (respuesta.ok) {
-            alert(data.mensaje);
-            // Resetear el formulario
+            
+            Swal.fire({
+                title: '¡Operación Exitosa!',
+                text: data.mensaje,
+                icon: 'success',
+                timer: 2000, 
+                showConfirmButton: false
+            });
+
             productoEditando = null;
             formProducto.reset();
             preview.src = "";
             preview.style.display = "none";
             document.querySelector("#form-producto button").innerText = "Crear Producto";
 
-            // Recargar datos
             cargarProductos();
             cargarAlertas();
             cargarMetricas();
         } else {
-            alert("Error: " + (data.error || "No se pudo procesar la solicitud"));
+            Swal.fire('Error', data.error || "No se pudo procesar la solicitud", 'error');
         }
     } catch (error) {
         console.error("Error en el envío:", error);
@@ -314,46 +330,50 @@ if (overlayModal) {
 
 async function eliminarProducto(id) {
 
-    const confirmar = confirm(
-        "¿Seguro que deseas eliminar este producto?"
-    );
+    Swal.fire({
+        title: '¿Estás seguro de eliminar este producto?',
+        text: "¡Esta acción no se puede deshacer en Online Doggie!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e53e3e',
+        cancelButtonColor: '#718096',
+        confirmButtonText: 'Sí, eliminar permanentemente',
+        cancelButtonText: 'Cancelar',
+        backdrop: `rgba(0, 0, 0, 0.4)`
+    }).then(async (result) => {
 
-    if (!confirmar) return;
+        if (result.isConfirmed) {
+            try {
+                const respuesta = await fetch(
+                    `https://online-doggie-backend-production.up.railway.app/api/productos/${id}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        }
+                    }
+                );
 
-    try {
+                const data = await respuesta.json();
 
-        const respuesta = await fetch(
-            `https://online-doggie-backend-production.up.railway.app/api/productos/${id}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + token
+                if (!respuesta.ok) {
+                    Swal.fire('Error', data.error || "No se pudo eliminar el producto", 'error');
+                    return;
                 }
+
+
+                mostrarToast(data.mensaje || "Producto eliminado correctamente");
+
+                cargarProductos();
+                cargarAlertas();
+                cargarMetricas();
+
+            } catch (error) {
+                console.error("Error eliminando producto:", error);
+                Swal.fire('Error de conexión', "No se pudo conectar con el servidor", 'error');
             }
-        );
-
-        const data = await respuesta.json();
-
-        if (!respuesta.ok) {
-            alert(data.error || "Error al eliminar producto");
-            return;
         }
-
-        alert(data.mensaje);
-
-        cargarProductos();
-        cargarAlertas();
-        cargarMetricas();
-
-    } catch (error) {
-
-        console.error("Error eliminando producto:", error);
-
-        alert(
-            "Error al conectar con el servidor"
-        );
-
-    }
+    });
 }
 
 // =============================
@@ -487,31 +507,41 @@ async function eliminarUsuarioSistema() {
         return;
     }
 
-    const confirmar = confirm(`¿Está seguro de eliminar permanentemente al usuario ${email}?`);
-    if (!confirmar) return;
+    Swal.fire({
+        title: '¿Confirmas la eliminación?',
+        text: `¿Está seguro de eliminar permanentemente al usuario ${email}? perderá todo acceso.`,
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar usuario',
+        cancelButtonText: 'Conservar usuario'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/usuarios-eliminar`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + token,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await respuesta.json();
 
-    try {
-        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/usuarios-eliminar`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email: email })
-        });
-        const data = await respuesta.json();
-
-        if (respuesta.ok) {
-            mostrarToast(data.mensaje || "Usuario eliminado correctamente");
-            document.getElementById("form-nuevo-admin").reset();
-            cargarMetricas();
-        } else {
-            mostrarToast(data.error || "No se pudo eliminar al usuario", "error");
+                if (respuesta.ok) {
+                    mostrarToast(data.mensaje || "Usuario eliminado correctamente");
+                    document.getElementById("form-nuevo-admin").reset();
+                    cargarMetricas();
+                } else {
+                    Swal.fire('Atención', data.error || "No se pudo eliminar al usuario", 'warning');
+                }
+            } catch (error) {
+                console.error("Error eliminando usuario:", error);
+                mostrarToast("Error de comunicación con el servidor", "error");
+            }
         }
-    } catch (error) {
-        console.error("Error eliminando usuario:", error);
-        mostrarToast("Error de comunicación con el servidor", "error");
-    }
+    });
 }
 
 // Búsqueda del Historial de Compras por Correo
@@ -586,13 +616,13 @@ function inicializarHistorialCompras() {
             const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos?email=${encodeURIComponent(email)}`, {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${token}` 
+                    "Authorization": `Bearer ${token}`
                 }
             });
 
             const datos = await respuesta.json();
 
-           
+
             if (!respuesta.ok) {
                 contenedorHistorial.innerHTML = `<p class="historial-error">❌ ${datos.error || 'Error en la consulta.'}</p>`;
                 return;
@@ -606,12 +636,12 @@ function inicializarHistorialCompras() {
             contenedorHistorial.innerHTML = "";
 
             datos.forEach(compra => {
-                
+
                 const fechaFormateada = new Date(compra.fecha).toLocaleDateString('es-ES', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
 
-               
+
                 const card = document.createElement('div');
                 card.className = 'historial-item-card';
 
@@ -641,7 +671,7 @@ function inicializarHistorialCompras() {
                 detalles.appendChild(spanFecha);
                 detalles.appendChild(spanEstado);
 
-                
+
                 if (compra.productos && compra.productos.length > 0) {
                     const divProductos = document.createElement('div');
                     divProductos.className = 'historial-item-productos';

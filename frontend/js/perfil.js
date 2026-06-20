@@ -1,5 +1,6 @@
 const token = localStorage.getItem("token");
 
+/* VALIDACIÓN DE SESIÓN INICIAL */
 if (!token) {
     mostrarToast("Debes iniciar sesión", "error");
     window.location.href = "Login.html";
@@ -7,26 +8,36 @@ if (!token) {
 }
 
 
-/* 1. CARGAR PERFIL */
+/* INICIALIZACIÓN Y EVENT LISTENERS */
+document.addEventListener("DOMContentLoaded", () => {
+    cargarPerfil();
+    cargarHistorial();
 
+    const formEditarPerfil = document.getElementById("form-editar-perfil");
+    const formCambiarPassword = document.getElementById("form-cambiar-password");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (formEditarPerfil) formEditarPerfil.addEventListener("submit", editarPerfil);
+    if (formCambiarPassword) formCambiarPassword.addEventListener("submit", cambiarPassword);
+    if (logoutBtn) logoutBtn.addEventListener("click", cerrarSesion);
+});
+
+
+/* CARGAR PERFIL */
 async function cargarPerfil() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
+            headers: { "Authorization": "Bearer " + token }
         });
 
         if (!respuesta.ok) {
-            mostrarToast(
-                "Tu sesión expiró, inicia sesión nuevamente",
-                "error"
-            );
-
+            mostrarToast("Tu sesión expiró, inicia sesión nuevamente", "error");
             localStorage.removeItem("token");
             localStorage.removeItem("usuario");
-
-            window.location.href = "Login.html";
+            
+            setTimeout(() => {
+                window.location.href = "Login.html";
+            }, 1500);
             return;
         }
 
@@ -35,22 +46,18 @@ async function cargarPerfil() {
         const perfilNombre = document.getElementById("perfil-nombre");
         const perfilEmail = document.getElementById("perfil-email");
         const perfilRol = document.getElementById("perfil-rol");
-
         const editNombre = document.getElementById("edit-nombre");
         const editEmail = document.getElementById("edit-email");
 
         if (perfilNombre) perfilNombre.textContent = usuario.nombre;
         if (perfilEmail) perfilEmail.textContent = usuario.email;
         if (perfilRol) perfilRol.textContent = usuario.rol;
-
         if (editNombre) editNombre.value = usuario.nombre;
         if (editEmail) editEmail.value = usuario.email;
 
         if (usuario.direccion) {
             const direccionInput = document.getElementById("input-direccion");
-            if (direccionInput) {
-                direccionInput.value = usuario.direccion;
-            }
+            if (direccionInput) direccionInput.value = usuario.direccion;
         }
 
     } catch (error) {
@@ -59,21 +66,14 @@ async function cargarPerfil() {
 }
 
 
-/* ==========================================================================
-   2. TABLA HISTORIAL DE COMPRAS (INTEGRADA CON DRAWER Y BADGES)
-   ========================================================================== */
-
+/* HISTORIAL DE COMPRAS */
 async function cargarHistorial() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos/historial", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
+            headers: { "Authorization": "Bearer " + token }
         });
 
-        if (!respuesta.ok) {
-            return;
-        }
+        if (!respuesta.ok) return;
 
         const pedidos = await respuesta.json();
         const tablaBody = document.getElementById("historial-compras-tabla-body");
@@ -90,7 +90,6 @@ async function cargarHistorial() {
             return;
         }
 
-        // Mapeo dinámico para asociar cada estado de la BD con una clase CSS del badge
         const clasesEstado = {
             "pendiente": "badge-pendiente",
             "pagado": "badge-enviado",
@@ -101,7 +100,6 @@ async function cargarHistorial() {
 
         let filasHtml = "";
 
-        // Recorremos los pedidos y desglosamos sus productos en filas independientes para la tabla
         pedidos.forEach(pedido => {
             const estadoTexto = pedido.estado || "pendiente";
             const claseBadge = clasesEstado[estadoTexto.toLowerCase()] || "badge-enviado";
@@ -139,161 +137,97 @@ async function cargarHistorial() {
 }
 
 
-/* 3. EDITAR PERFIL */
+/* EDITAR PERFIL */
+async function editarPerfil(e) {
+    e.preventDefault();
 
-const formEditarPerfil = document.getElementById("form-editar-perfil");
+    const nombre = document.getElementById("edit-nombre").value.trim();
+    const email = document.getElementById("edit-email").value.trim();
 
-if (formEditarPerfil) {
-    formEditarPerfil.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    if (!nombre || !email) {
+        mostrarToast("Todos los campos son obligatorios", "error");
+        return;
+    }
 
-        const nombre = document.getElementById("edit-nombre").value.trim();
-        const email = document.getElementById("edit-email").value.trim();
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailValido) {
+        mostrarToast("El formato del correo no es válido", "error");
+        return;
+    }
 
-        if (!nombre || !email) {
-            mostrarToast(
-                "Todos los campos son obligatorios",
-                "error"
-            );
-            return;
-        }
+    try {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ nombre, email })
+        });
 
-        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const data = await respuesta.json();
+        mostrarToast(data.mensaje, respuesta.ok ? "success" : "error");
 
-        if (!emailValido) {
-            mostrarToast(
-                "El formato del correo no es válido",
-                "error"
-            );
-            return;
-        }
+        if (respuesta.ok) cargarPerfil();
 
-        try {
-            const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
-                method: "PUT",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ nombre, email })
-            });
-
-            const data = await respuesta.json();
-
-            mostrarToast(
-                data.mensaje,
-                respuesta.ok ? "success" : "error"
-            );
-
-            if (respuesta.ok) {
-                cargarPerfil();
-            }
-
-        } catch (error) {
-            console.error("Error editando perfil:", error);
-
-            mostrarToast(
-                "Error conectando con el servidor",
-                "error"
-            );
-        }
-    });
+    } catch (error) {
+        console.error("Error editando perfil:", error);
+        mostrarToast("Error conectando con el servidor", "error");
+    }
 }
 
 
-/* ==========================================================================
-   4. CAMBIAR CONTRASEÑA
-   ========================================================================== */
+/* CAMBIAR CONTRASEÑA */
+async function cambiarPassword(e) {
+    e.preventDefault();
 
-const formCambiarPassword = document.getElementById("form-cambiar-password");
+    const actual = document.getElementById("password-actual").value.trim();
+    const nueva = document.getElementById("password-nueva").value.trim();
+    const confirmar = document.getElementById("password-confirmar").value.trim();
 
-if (formCambiarPassword) {
-    formCambiarPassword.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    if (!actual || !nueva || !confirmar) {
+        mostrarToast("Todos los campos son obligatorios", "error");
+        return;
+    }
 
-        const actual = document.getElementById("password-actual").value.trim();
-        const nueva = document.getElementById("password-nueva").value.trim();
-        const confirmar = document.getElementById("password-confirmar").value.trim();
+    if (nueva.length < 8) {
+        mostrarToast("La nueva contraseña debe tener mínimo 8 caracteres", "error");
+        return;
+    }
 
-        if (!actual || !nueva || !confirmar) {
-            mostrarToast(
-                "Todos los campos son obligatorios",
-                "error"
-            );
-            return;
+    if (nueva !== confirmar) {
+        mostrarToast("Las contraseñas no coinciden", "error");
+        return;
+    }
+
+    try {
+        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/cambiar-password", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                passwordActual: actual,
+                passwordNueva: nueva
+            })
+        });
+
+        const data = await respuesta.json();
+        mostrarToast(data.mensaje, respuesta.ok ? "success" : "error");
+
+        if (respuesta.ok) {
+            document.getElementById("form-cambiar-password").reset();
         }
 
-        if (nueva.length < 8) {
-            mostrarToast(
-                "La nueva contraseña debe tener mínimo 8 caracteres",
-                "error"
-            );
-            return;
-        }
-
-        if (nueva !== confirmar) {
-            mostrarToast(
-                "Las contraseñas no coinciden",
-                "error"
-            );
-            return;
-        }
-
-        try {
-            const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/cambiar-password", {
-                method: "PUT",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    passwordActual: actual,
-                    passwordNueva: nueva
-                })
-            });
-
-            const data = await respuesta.json();
-
-            mostrarToast(
-                data.mensaje,
-                respuesta.ok ? "success" : "error"
-            );
-
-            if (respuesta.ok) {
-                formCambiarPassword.reset();
-            }
-
-        } catch (error) {
-            console.error("Error cambiando contraseña:", error);
-
-            mostrarToast(
-                "Error conectando con el servidor",
-                "error"
-            );
-        }
-    });
+    } catch (error) {
+        console.error("Error cambiando contraseña:", error);
+        mostrarToast("Error conectando con el servidor", "error");
+    }
 }
 
 
-/* ==========================================================================
-   5. CERRAR SESIÓN (LOGOUT)
-   ========================================================================== */
-
-const logoutBtn = document.getElementById("logout-btn");
-
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("usuario");
-        window.location.href = "Login.html";
-    });
-}
-
-
-/* ==========================================================================
-   6. GUARDAR DIRECCIÓN DE ENVÍO
-   ========================================================================== */
-
+/* GUARDAR DIRECCIÓN DE ENVÍO */
 async function guardarDireccion() {
     const direccion = document.getElementById("input-direccion")?.value.trim();
     const msgEl = document.getElementById("mensaje-direccion");
@@ -316,11 +250,7 @@ async function guardarDireccion() {
                 "Authorization": "Bearer " + token,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                nombre,
-                email,
-                direccion
-            })
+            body: JSON.stringify({ nombre, email, direccion })
         });
 
         if (respuesta.ok) {
@@ -345,11 +275,9 @@ async function guardarDireccion() {
 }
 
 
-/* ==========================================================================
-   7. INICIALIZACIÓN DE FUNCIONES
-   ========================================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-    cargarPerfil();
-    cargarHistorial(); // Trae las compras y arma las filas estructuradas de la tabla directamente
-});
+/* CERRAR SESIÓN (LOGOUT) */
+function cerrarSesion() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.location.href = "Login.html";
+}
