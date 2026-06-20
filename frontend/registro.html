@@ -8,6 +8,12 @@
     
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
+
+    <script>
+        if (localStorage.getItem('token')) {
+            window.location.replace('index.html');
+        }
+    </script>
 </head>
 
 <body>
@@ -21,8 +27,6 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>

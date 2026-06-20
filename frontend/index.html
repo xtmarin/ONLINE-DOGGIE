@@ -22,7 +22,6 @@
             <ul>
                 <li><a href="index.html" class="active">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
@@ -137,7 +136,7 @@
                 <ul>
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
-                    <li><a href="perfil.html">Mi Perfil</a></li>
+                    <li><a href="carrito.html">Carrito</a></li>
                     <li><a href="login.html">Login</a></li>
                 </ul>
             </div>
@@ -172,6 +171,42 @@
     <script src="./js/carrito-funciones.js"></script>
     <script src="./js/carrito.js"></script>
     <script src="./js/app.js"></script>
+
+    <script>
+        let calificacionSeleccionada = 0;
+
+        function seleccionarCalificacion(valor) {
+            calificacionSeleccionada = valor;
+            document.querySelectorAll(".estrella-servicio").forEach((estrella, index) => {
+                estrella.textContent = index < valor ? "⭐" : "☆";
+            });
+        }
+
+        function enviarCalificacion() {
+            if (!calificacionSeleccionada) {
+                if (typeof mostrarToast === "function") {
+                    mostrarToast("Selecciona una calificación antes de enviar", "error");
+                } else {
+                    const mensaje = document.getElementById("mensaje-calificacion");
+                    mensaje.textContent = "Selecciona una calificación antes de enviar";
+                    mensaje.style.color = "red";
+                }
+                return;
+            }
+
+            if (typeof mostrarToast === "function") {
+                mostrarToast(`¡Gracias por calificar nuestra web con ${calificacionSeleccionada} estrellas! 🐾`, "success");
+                calificacionSeleccionada = 0;
+                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
+            } else {
+                const mensaje = document.getElementById("mensaje-calificacion");
+                mensaje.textContent = `✅ ¡Gracias por tu calificación de ${calificacionSeleccionada} estrellas!`;
+                mensaje.style.color = "green";
+                calificacionSeleccionada = 0;
+                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
+            }
+        }
+    </script>
 
 </body>
 </html>

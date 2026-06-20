@@ -22,8 +22,6 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li class="active"><a href="productos.html">Productos</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
@@ -35,10 +33,10 @@
     </section>
 
     <section class="filtros">
-        <label for="buscador" class="sr-only" style="display: none;">Buscar producto</label>
+        <label for="buscador" class="sr-only">Buscar producto</label>
         <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
 
-        <label for="categoria" class="sr-only" style="display: none;">Seleccionar categoría</label>
+        <label for="categoria" class="sr-only">Seleccionar categoría</label>
         <select id="categoria" name="categoria" class="select-filtro">
             <option value="todos">Todos los productos</option>
             <option value="perros">Perros</option>
@@ -83,7 +81,6 @@
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="carrito.html">Carrito</a></li>
-                    <li><a href="perfil.html">Mi Perfil</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -118,6 +115,27 @@
     <script src="./js/carrito.js"></script>
     <script src="./js/filtros-productos.js"></script>
     <script src="./js/productos.js"></script>
+
+    <script>
+        const miniCarrito = document.getElementById('mini-carrito');
+        const overlayMini = document.getElementById('overlay-mini');
+        const btnCerrarMini = document.getElementById('cerrar-mini');
+
+        function abrirMiniCarrito() {
+            miniCarrito.classList.add('open');
+            overlayMini.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarMiniCarrito() {
+            miniCarrito.classList.remove('open');
+            overlayMini.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        btnCerrarMini.addEventListener('click', cerrarMiniCarrito);
+        overlayMini.addEventListener('click', cerrarMiniCarrito);
+    </script>
 
 </body>
 </html>

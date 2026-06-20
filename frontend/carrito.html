@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.replace('login.html');
+        }
+    </script>
 </head>
 
 <body>
@@ -23,7 +29,6 @@
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
                 <li class="active"><a href="carrito.html">Carrito</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
@@ -98,7 +103,7 @@
                 <ul>
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
-                    <li><a href="perfil.html">Mi Perfil</a></li>
+                    <li><a href="carrito.html">Carrito</a></li>
                     <li><a href="login.html">Login</a></li>
                 </ul>
             </div>

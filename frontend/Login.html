@@ -8,6 +8,12 @@
     
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
+
+    <script>
+        if (localStorage.getItem('token')) {
+            window.location.replace('index.html');
+        }
+    </script>
 </head>
 
 <body>
@@ -21,8 +27,6 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
                 <li class="active"><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
@@ -43,7 +47,7 @@
                     <label for="password">🐱 Contraseña</label>
                     <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
                 </div>
-                <button id="btn-login" type="submit">Iniciar sesión</button>
+                <button type="submit">Iniciar sesión</button>
                 <p>¿Olvidaste tu contraseña? <a href="#" id="btn-recuperar">Recupérala aquí</a></p>
                 <p>¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
             </form>

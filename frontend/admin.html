@@ -10,6 +10,15 @@
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+        
+        if (!token || usuario.rol !== 'admin') {
+            window.location.replace('index.html');
+        }
+    </script>
 </head>
 
 <body>
@@ -21,9 +30,8 @@
         </div>
         <nav class="navbar">
             <ul>
-                <li><a href="index.html">Ir a la tienda</a></li>
-                <li><a href="productos.html">Ver productos</a></li>
-                <li><a href="perfil.html">Mi perfil</a></li>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="productos.html">Productos</a></li>
             </ul>
         </nav>
     </header>
@@ -160,7 +168,7 @@
         <div class="footer-content">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
         </div>
-    </footer>
+    </footer >
 
     <div id="admin-fab" class="admin-fab">
         <span>🛠️</span>
