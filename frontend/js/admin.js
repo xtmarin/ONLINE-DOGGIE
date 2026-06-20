@@ -1,17 +1,30 @@
-const token = localStorage.getItem("token");
-//toast
+// ==========================================================================
+// CONFIGURACIÓN GLOBAL Y AUTENTICACIÓN
+// ==========================================================================
+// Usamos el token global ya declarado en el HTML o lo recuperamos de forma segura
+if (!window.token) {
+    window.token = localStorage.getItem("token");
+}
+const accessToken = window.token;
+
+// Utilidad global para mostrar notificaciones Toast
 function mostrarToast(mensaje, tipo = "success") {
-    Toastify({
-        text: mensaje,
-        duration: 3500,
-        close: true,
-        gravity: "top",
-        position: "right",
-        stopOnFocus: true,
-        className: tipo === "success" ? "toast-success" : "toast-error"
-    }).showToast();
+    if (typeof Toastify !== "undefined") {
+        Toastify({
+            text: mensaje,
+            duration: 3500,
+            close: true,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+            className: tipo === "success" ? "toast-success" : "toast-error"
+        }).showToast();
+    } else {
+        console.log(`[Toast] ${tipo}: ${mensaje}`);
+    }
 }
 
+// Elementos del DOM del módulo de productos
 const inputImagen = document.getElementById("imagen");
 const preview = document.getElementById("preview");
 const formProducto = document.getElementById("form-producto");
@@ -19,37 +32,45 @@ const uploadBox = document.getElementById("upload-box");
 
 let productoEditando = null;
 let productosCache = [];
+let miGrafica = null;
 
+// ==========================================================================
+// GESTIÓN DE DRAG & DROP E IMÁGENES
+// ==========================================================================
+if (uploadBox && inputImagen) {
+    uploadBox.addEventListener("click", () => {
+        inputImagen.click();
+    });
 
-uploadBox.addEventListener("click", () => {
-    inputImagen.click();
-});
+    uploadBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadBox.classList.add("dragover");
+    });
 
-uploadBox.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    uploadBox.classList.add("dragover");
-});
+    uploadBox.addEventListener("dragleave", () => {
+        uploadBox.classList.remove("dragover");
+    });
 
-uploadBox.addEventListener("dragleave", () => {
-    uploadBox.classList.remove("dragover");
-});
+    uploadBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadBox.classList.remove("dragover");
+        const archivo = e.dataTransfer.files[0];
+        if (archivo) {
+            inputImagen.files = e.dataTransfer.files;
+            mostrarPreview(archivo);
+        }
+    });
+}
 
-uploadBox.addEventListener("drop", (e) => {
-    e.preventDefault();
-    uploadBox.classList.remove("dragover");
-    const archivo = e.dataTransfer.files[0];
-    if (archivo) {
-        inputImagen.files = e.dataTransfer.files;
-        mostrarPreview(archivo);
-    }
-});
-
-inputImagen.addEventListener("change", function () {
-    const archivo = this.files[0];
-    if (archivo) mostrarPreview(archivo);
-});
+if (inputImagen) {
+    inputImagen.addEventListener("change", function () {
+        const archivo = this.files[0];
+        if (archivo) mostrarPreview(archivo);
+    });
+}
 
 function mostrarPreview(archivo) {
+    if (!preview) return;
     const reader = new FileReader();
     reader.onload = function (e) {
         preview.src = e.target.result;
@@ -58,15 +79,18 @@ function mostrarPreview(archivo) {
     reader.readAsDataURL(archivo);
 }
 
-/* ... (Funciones de Alertas y Stock iguales) ... */
-
+// ==========================================================================
+// MÓDULO DE STOCK Y ALERTAS
+// ==========================================================================
 async function cargarAlertas() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos/stock-bajo", {
-            headers: { "Authorization": "Bearer " + token }
+            headers: { "Authorization": "Bearer " + accessToken }
         });
         const productos = await respuesta.json();
         const contenedor = document.getElementById("lista-alertas");
+        if (!contenedor) return;
+
         if (!productos.length) {
             contenedor.innerHTML = `<p class="sin-alertas">✅ Todos los productos tienen stock suficiente.</p>`;
             return;
@@ -77,7 +101,9 @@ async function cargarAlertas() {
                 <span class="alerta-stock">Stock: ${p.stock} unidades</span>
             </div>
         `).join("");
-    } catch (error) { console.error("Error cargando alertas:", error); }
+    } catch (error) {
+        console.error("Error cargando alertas:", error);
+    }
 }
 
 async function cargarStock() {
@@ -85,6 +111,10 @@ async function cargarStock() {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
         const contenedor = document.getElementById("lista-stock");
+
+        // Protección crucial: si no existe el contenedor en el HTML, salimos sin romper el script
+        if (!contenedor) return;
+
         contenedor.innerHTML = "";
         productos.forEach(producto => {
             contenedor.innerHTML += `
@@ -102,42 +132,52 @@ async function cargarStock() {
                 </div>
             `;
         });
-    } catch (error) { console.error("Error cargando stock:", error); }
+    } catch (error) {
+        console.error("Error cargando stock:", error);
+    }
 }
 
 async function actualizarStock(id) {
-    const nuevoStock = document.getElementById(`stock-input-${id}`).value;
-    if (nuevoStock === "" || nuevoStock < 0) { 
-        Swal.fire('Cantidad incorrecta', "Ingresa un valor de stock válido", 'warning'); 
-        return; 
+    const inputStock = document.getElementById(`stock-input-${id}`);
+    if (!inputStock) return;
+
+    const nuevoStock = inputStock.value;
+    if (nuevoStock === "" || nuevoStock < 0) {
+        Swal.fire('Cantidad incorrecta', "Ingresa un valor de stock válido", 'warning');
+        return;
     }
-    
-    const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${id}/stock`, {
-        method: "PATCH",
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ stock: parseInt(nuevoStock) })
-    });
-    const data = await respuesta.json();
-    
-    if(respuesta.ok) {
-        mostrarToast(data.mensaje || "Stock actualizado"); 
-        cargarAlertas(); 
-        cargarProductos();
-    } else {
-        Swal.fire('Error', data.error || "No se pudo actualizar el stock", 'error');
+
+    try {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${id}/stock`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ stock: parseInt(nuevoStock) })
+        });
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            mostrarToast(data.mensaje || "Stock actualizado");
+            cargarAlertas();
+            cargarProductos();
+        } else {
+            Swal.fire('Error', data.error || "No se pudo actualizar el stock", 'error');
+        }
+    } catch (error) {
+        console.error("Error actualizando stock:", error);
     }
 }
 
-/* ... Cargar Productos  ... */
+// ==========================================================================
+// MÓDULO DE PRODUCTOS (TABLA Y MANTENIMIENTO)
+// ==========================================================================
 async function cargarProductos() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
         productosCache = productos;
-
         renderTablaProductos(productosCache);
     } catch (error) {
         console.error("Error cargando productos en tabla:", error);
@@ -151,7 +191,9 @@ function renderTablaProductos(productos) {
     tbody.innerHTML = "";
 
     productos.forEach(producto => {
-        const imagenUrl = producto.imagen ? `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}` : 'https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico';
+        const imagenUrl = producto.imagen
+            ? `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`
+            : 'https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE ICO.ico';
 
         tbody.innerHTML += `
             <tr>
@@ -179,8 +221,11 @@ function renderTablaProductos(productos) {
 }
 
 function aplicarFiltrosTabla() {
-    const nombre = document.getElementById("filtro-nombre").value.trim().toLowerCase();
-    const categoria = document.getElementById("filtro-categoria").value;
+    const inputNombre = document.getElementById("filtro-nombre");
+    const inputCategoria = document.getElementById("filtro-categoria");
+
+    const nombre = inputNombre ? inputNombre.value.trim().toLowerCase() : "";
+    const categoria = inputCategoria ? inputCategoria.value : "";
 
     const filtrados = productosCache.filter(p => {
         const coincideNombre = p.nombre.toLowerCase().includes(nombre);
@@ -191,92 +236,93 @@ function aplicarFiltrosTabla() {
     renderTablaProductos(filtrados);
 }
 
-document.getElementById("filtro-nombre").addEventListener("input", aplicarFiltrosTabla);
-document.getElementById("filtro-categoria").addEventListener("change", aplicarFiltrosTabla);
+const filtroNombre = document.getElementById("filtro-nombre");
+const filtroCategoria = document.getElementById("filtro-categoria");
+if (filtroNombre) filtroNombre.addEventListener("input", aplicarFiltrosTabla);
+if (filtroCategoria) filtroCategoria.addEventListener("change", aplicarFiltrosTabla);
 
-/* ... (Formulario de crear/editar) ... */
-formProducto.addEventListener("submit", async (e) => {
-    e.preventDefault();
+if (formProducto) {
+    formProducto.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    const nombre = document.getElementById("nombre").value.trim();
-    const descripcion = document.getElementById("descripcion").value.trim();
+        const prefix = productoEditando ? "edit-" : "";
 
-    const categoria = document.getElementById("categoria").value;
+        const nombre = document.getElementById(prefix + "nombre").value.trim();
+        const descripcion = document.getElementById(prefix + "descripcion").value.trim();
+        const categoria = document.getElementById(prefix + "categoria").value;
+        const precioRaw = document.getElementById(prefix + "precio").value;
+        const stockRaw = document.getElementById(prefix + "stock").value;
 
-    const precioRaw = document.getElementById("precio").value;
-    const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, ""));
+        const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, ""));
+        const stock = parseInt(stockRaw.toString().replace(/[.,]/g, ""), 10);
 
-    const stockRaw = document.getElementById("stock").value;
-    const stock = parseInt(stockRaw.toString().replace(/[.,]/g, ""), 10);
+        if (isNaN(precio) || isNaN(stock)) {
+            Swal.fire('Datos inválidos', "El precio y el stock deben ser números válidos", 'warning');
+            return;
+        }
 
+        const formData = new FormData();
+        formData.append("nombre", nombre);
+        formData.append("descripcion", descripcion);
+        formData.append("precio", precio);
+        formData.append("categoria", categoria);
+        formData.append("stock", stock);
 
-    if (isNaN(precio) || isNaN(stock)) {
-        Swal.fire('Datos inválidos', "El precio y el stock deben ser números válidos", 'warning');
-        return;
-    }
+        const imagenInput = document.getElementById(prefix + "imagen");
+        if (imagenInput && imagenInput.files.length > 0) {
+            formData.append("imagen", imagenInput.files[0]);
+        }
 
-    const formData = new FormData();
-    formData.append("nombre", nombre);
-    formData.append("descripcion", descripcion);
-    formData.append("precio", precio); // Enviamos el limpio
-    formData.append("categoria", categoria);
-    formData.append("stock", stock);   // Enviamos el limpio
+        let url = "https://online-doggie-backend-production.up.railway.app/api/productos";
+        let metodo = "POST";
 
-    const imagenInput = document.getElementById("imagen");
-    if (imagenInput.files.length > 0) formData.append("imagen", imagenInput.files[0]);
+        if (productoEditando) {
+            url = `https://online-doggie-backend-production.up.railway.app/api/productos/${productoEditando}`;
+            metodo = "PUT";
+        }
 
-    let url = "https://online-doggie-backend-production.up.railway.app/api/productos";
-    let metodo = "POST";
-
-    if (productoEditando) {
-        url = `https://online-doggie-backend-production.up.railway.app/api/productos/${productoEditando}`;
-        metodo = "PUT";
-    }
-
-    try {
-        const respuesta = await fetch(url, {
-            method: metodo,
-            headers: { "Authorization": "Bearer " + token },
-            body: formData // Aquí enviamos el formData que ya tiene los números limpios
-        });
-
-        const data = await respuesta.json();
-
-        if (respuesta.ok) {
-            
-            Swal.fire({
-                title: '¡Operación Exitosa!',
-                text: data.mensaje,
-                icon: 'success',
-                timer: 2000, 
-                showConfirmButton: false
+        try {
+            const respuesta = await fetch(url, {
+                method: metodo,
+                headers: { "Authorization": "Bearer " + accessToken },
+                body: formData
             });
 
-            productoEditando = null;
-            formProducto.reset();
-            preview.src = "";
-            preview.style.display = "none";
-            document.querySelector("#form-producto button").innerText = "Crear Producto";
+            const data = await respuesta.json();
 
-            cargarProductos();
-            cargarAlertas();
-            cargarMetricas();
-        } else {
-            Swal.fire('Error', data.error || "No se pudo procesar la solicitud", 'error');
+            if (respuesta.ok) {
+                Swal.fire({
+                    title: '¡Operación Exitosa!',
+                    text: data.mensaje,
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                productoEditando = null;
+                formProducto.reset();
+                if (preview) {
+                    preview.src = "";
+                    preview.style.display = "none";
+                }
+                const btnSubmit = document.querySelector("#form-producto button");
+                if (btnSubmit) btnSubmit.innerText = "Crear Producto";
+
+                cargarProductos();
+                cargarAlertas();
+                cargarMetricas();
+            } else {
+                Swal.fire('Error', data.error || "No se pudo procesar la solicitud", 'error');
+            }
+        } catch (error) {
+            console.error("Error en el envío:", error);
+            alert("Ocurrió un error al guardar el producto");
         }
-    } catch (error) {
-        console.error("Error en el envío:", error);
-        alert("Ocurrió un error al guardar el producto");
-    }
-});
-
+    });
+}
 
 function editarProducto(id) {
-
-    const producto = productosCache.find(
-        p => Number(p.id) === Number(id)
-    );
-
+    const producto = productosCache.find(p => Number(p.id) === Number(id));
     if (!producto) {
         alert("Producto no encontrado");
         return;
@@ -290,46 +336,97 @@ function editarProducto(id) {
     document.getElementById("edit-categoria").value = producto.categoria_id;
     document.getElementById("edit-stock").value = producto.stock;
 
-    const preview = document.getElementById("edit-preview");
-
-    if (producto.imagen) {
-
-        preview.src = `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
-
-        preview.style.display = "block";
-    } else {
-
-        preview.src = "";
-        preview.style.display = "none";
+    const previewEdit = document.getElementById("edit-preview");
+    if (previewEdit) {
+        if (producto.imagen) {
+            previewEdit.src = `https://online-doggie-backend-production.up.railway.app/uploads/${producto.imagen}`;
+            previewEdit.style.display = "block";
+        } else {
+            previewEdit.src = "";
+            previewEdit.style.display = "none";
+        }
     }
 
+    const editImagenInput = document.getElementById("edit-imagen");
+    if (editImagenInput) editImagenInput.value = "";
 
-    document.getElementById("edit-imagen").value = "";
+    const modalEditar = document.getElementById("modal-editar");
+    const overlayModal = document.getElementById("modal-editar-overlay");
+    if (modalEditar) modalEditar.classList.add("activo");
+    if (overlayModal) overlayModal.classList.add("activo");
+}
 
-
-    document.getElementById("modal-editar").classList.add("activo");
-    document.getElementById("modal-editar-overlay").classList.add("activo");
+function cerrarModalEditar() {
+    const modalEditar = document.getElementById("modal-editar");
+    const overlayModal = document.getElementById("modal-editar-overlay");
+    if (modalEditar) modalEditar.classList.remove("activo");
+    if (overlayModal) overlayModal.classList.remove("activo");
 }
 
 const btnCerrarModal = document.getElementById("cerrar-modal-editar");
 const overlayModal = document.getElementById("modal-editar-overlay");
-
-function cerrarModalEditar() {
-    document.getElementById("modal-editar").classList.remove("activo");
-    document.getElementById("modal-editar-overlay").classList.remove("activo");
-}
-
-if (btnCerrarModal) {
-    btnCerrarModal.addEventListener("click", cerrarModalEditar);
-}
+if (btnCerrarModal) btnCerrarModal.addEventListener("click", cerrarModalEditar);
+if (overlayModal) overlayModal.addEventListener("click", cerrarModalEditar);
 
 
-if (overlayModal) {
-    overlayModal.addEventListener("click", cerrarModalEditar);
+const formEditarProducto = document.getElementById("form-editar-producto");
+
+if (formEditarProducto) {
+    formEditarProducto.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+
+        
+        const nombre = document.getElementById("edit-nombre").value.trim();
+        const descripcion = document.getElementById("edit-descripcion").value.trim();
+        const categoria = document.getElementById("edit-categoria").value;
+        const precio = parseFloat(document.getElementById("edit-precio").value);
+        const stock = parseInt(document.getElementById("edit-stock").value, 10);
+
+        const formData = new FormData();
+        formData.append("nombre", nombre);
+        formData.append("descripcion", descripcion);
+        formData.append("precio", precio);
+        formData.append("categoria", categoria);
+        formData.append("stock", stock);
+
+        
+        const imagenInput = document.getElementById("edit-imagen");
+        if (imagenInput && imagenInput.files.length > 0) {
+            formData.append("imagen", imagenInput.files[0]);
+        }
+
+        try {
+            
+            const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${productoEditando}`, {
+                method: "PUT",
+                headers: { "Authorization": "Bearer " + accessToken },
+                body: formData
+            });
+
+            const data = await respuesta.json();
+
+            if (respuesta.ok) {
+                
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('¡Éxito!', 'Producto actualizado correctamente', 'success');
+                }
+                cerrarModalEditar(); 
+                cargarProductos();   
+            } else {
+                throw new Error(data.error || "No se pudo actualizar");
+            }
+        } catch (error) {
+            console.error("Error al editar:", error);
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error', error.message, 'error');
+            } else {
+                alert("Error: " + error.message);
+            }
+        }
+    });
 }
 
 async function eliminarProducto(id) {
-
     Swal.fire({
         title: '¿Estás seguro de eliminar este producto?',
         text: "¡Esta acción no se puede deshacer en Online Doggie!",
@@ -341,18 +438,12 @@ async function eliminarProducto(id) {
         cancelButtonText: 'Cancelar',
         backdrop: `rgba(0, 0, 0, 0.4)`
     }).then(async (result) => {
-
         if (result.isConfirmed) {
             try {
-                const respuesta = await fetch(
-                    `https://online-doggie-backend-production.up.railway.app/api/productos/${id}`,
-                    {
-                        method: "DELETE",
-                        headers: {
-                            "Authorization": "Bearer " + token
-                        }
-                    }
-                );
+                const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${id}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": "Bearer " + accessToken }
+                });
 
                 const data = await respuesta.json();
 
@@ -361,13 +452,10 @@ async function eliminarProducto(id) {
                     return;
                 }
 
-
                 mostrarToast(data.mensaje || "Producto eliminado correctamente");
-
                 cargarProductos();
                 cargarAlertas();
                 cargarMetricas();
-
             } catch (error) {
                 console.error("Error eliminando producto:", error);
                 Swal.fire('Error de conexión', "No se pudo conectar con el servidor", 'error');
@@ -376,16 +464,9 @@ async function eliminarProducto(id) {
     });
 }
 
-// =============================
-// CARGAR CATEGORÍAS
-// =============================
-
 async function cargarCategoriasSelect() {
-
     try {
-
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/categorias");
-
         const categorias = await respuesta.json();
 
         const select = document.getElementById("categoria");
@@ -395,32 +476,20 @@ async function cargarCategoriasSelect() {
         const opcionesHTML = `<option value="">Selecciona una categoría</option>` +
             categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
 
-        select.innerHTML = opcionesHTML;
-        selectEdit.innerHTML = opcionesHTML;
-
+        if (select) select.innerHTML = opcionesHTML;
+        if (selectEdit) selectEdit.innerHTML = opcionesHTML;
         if (selectFiltro) {
             selectFiltro.innerHTML = `<option value="">Todas las categorías</option>` +
                 categorias.map(c => `<option value="${c.id}">${c.nombre}</option>`).join("");
         }
-
     } catch (error) {
-
         console.error("Error cargando categorías:", error);
-
     }
-
 }
 
-
-
-// Iniciar carga
-cargarAlertas();
-cargarProductos();
-cargarMetricas();
-cargarCategoriasSelect();
-
-
-
+// ==========================================================================
+// NAVEGACIÓN Y SIDEBAR (DRAWER)
+// ==========================================================================
 const fab = document.getElementById("admin-fab");
 const drawer = document.getElementById("admin-drawer");
 const overlay = document.getElementById("drawer-overlay");
@@ -428,43 +497,34 @@ const closeDrawerBtn = document.getElementById("close-drawer");
 const menuItems = document.querySelectorAll(".menu-item");
 const secciones = document.querySelectorAll(".vista-seccion");
 
-
-fab.addEventListener("click", () => {
-    drawer.classList.add("abierto");
-    overlay.classList.add("activo");
-});
-
-
-function cerrarMenu() {
-    drawer.classList.remove("abierto");
-    overlay.classList.remove("activo");
+if (fab && drawer && overlay) {
+    fab.addEventListener("click", () => {
+        drawer.classList.add("abierto");
+        overlay.classList.add("activo");
+    });
 }
 
-closeDrawerBtn.addEventListener("click", cerrarMenu);
-overlay.addEventListener("click", cerrarMenu);
+function cerrarMenu() {
+    if (drawer) drawer.classList.remove("abierto");
+    if (overlay) overlay.classList.remove("activo");
+}
 
+if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", cerrarMenu);
+if (overlay) overlay.addEventListener("click", cerrarMenu);
 
 menuItems.forEach(item => {
     item.addEventListener("click", function () {
         const objetivo = this.getAttribute("data-target");
-
-
         secciones.forEach(sec => sec.classList.remove("activa"));
-
-
-        document.getElementById(objetivo).classList.add("activa");
-
-
-
-
+        const seccionObjetivo = document.getElementById(objetivo);
+        if (seccionObjetivo) seccionObjetivo.classList.add("activa");
         cerrarMenu();
     });
 });
 
-// ==========================================
-// GESTIÓN DE EDITAR USUARIOS Y ROLES
-// ==========================================
-
+// ==========================================================================
+// GESTIÓN DE USUARIOS Y ROLES (ADMINISTRACIÓN)
+// ==========================================================================
 async function cambiarRolUsuario(accion) {
     const email = document.getElementById("admin-email").value.trim();
     if (!email) {
@@ -480,7 +540,7 @@ async function cambiarRolUsuario(accion) {
         const respuesta = await fetch(url, {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + token,
+                "Authorization": "Bearer " + accessToken,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ email: email })
@@ -489,7 +549,8 @@ async function cambiarRolUsuario(accion) {
 
         if (respuesta.ok) {
             mostrarToast(data.mensaje || `Rol de usuario actualizado con éxito`);
-            document.getElementById("form-nuevo-admin").reset();
+            const formAdmin = document.getElementById("form-nuevo-admin");
+            if (formAdmin) formAdmin.reset();
             cargarMetricas();
         } else {
             mostrarToast(data.error || "No se pudo cambiar el rol del usuario", "error");
@@ -522,7 +583,7 @@ async function eliminarUsuarioSistema() {
                 const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/usuarios-eliminar`, {
                     method: "DELETE",
                     headers: {
-                        "Authorization": "Bearer " + token,
+                        "Authorization": "Bearer " + accessToken,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({ email: email })
@@ -531,7 +592,8 @@ async function eliminarUsuarioSistema() {
 
                 if (respuesta.ok) {
                     mostrarToast(data.mensaje || "Usuario eliminado correctamente");
-                    document.getElementById("form-nuevo-admin").reset();
+                    const formAdmin = document.getElementById("form-nuevo-admin");
+                    if (formAdmin) formAdmin.reset();
                     cargarMetricas();
                 } else {
                     Swal.fire('Atención', data.error || "No se pudo eliminar al usuario", 'warning');
@@ -544,56 +606,17 @@ async function eliminarUsuarioSistema() {
     });
 }
 
-// Búsqueda del Historial de Compras por Correo
-async function consultarHistorialCompras() {
-    const email = document.getElementById("buscar-historial-email").value.trim();
-    const contenedor = document.getElementById("resultados-historial-compras");
+// Vinculación de Event Listeners para sección de usuarios
+const btnPromover = document.getElementById("btn-promover");
+const btnDegradar = document.getElementById("btn-degradar");
+const btnEliminar = document.getElementById("btn-eliminar");
 
-    if (!email) {
-        mostrarToast("Por favor ingrese un correo válido", "error");
-        return;
-    }
-
-    try {
-        contenedor.innerHTML = "<p class='historial-vacio'>Buscando transacciones...</p>";
-
-        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/pedidos?email=${email}`, {
-            headers: { "Authorization": "Bearer " + token }
-        });
-        const pedidos = await respuesta.json();
-
-        if (!respuesta.ok || !pedidos.length) {
-            contenedor.innerHTML = `<p class="historial-error">❌ No se encontraron compras vinculadas al correo: ${email}</p>`;
-            return;
-        }
-
-        contenedor.innerHTML = pedidos.map(pedido => `
-            <div class="historial-item-card">
-                <div class="historial-item-header">
-                    <span class="historial-id">Orden #${pedido.id}</span>
-                    <span class="historial-monto">$${Number(pedido.total).toLocaleString()}</span>
-                </div>
-                <div class="historial-item-detalles">
-                    <span>📦 Estado: <strong>${pedido.estado}</strong></span>
-                    <span>📅 Fecha: ${new Date(pedido.fecha).toLocaleDateString()}</span>
-                </div>
-            </div>
-        `).join("");
-
-    } catch (error) {
-        console.error("Error buscando historial:", error);
-        contenedor.innerHTML = "<p class='historial-error'>Error al recuperar las transacciones.</p>";
-    }
-}
-
-// Vinculación limpia de Event Listeners para la sección de usuarios
-document.getElementById("btn-promover")?.addEventListener("click", () => cambiarRolUsuario("promover"));
-document.getElementById("btn-degradar")?.addEventListener("click", () => cambiarRolUsuario("degradar"));
-document.getElementById("btn-eliminar")?.addEventListener("click", eliminarUsuarioSistema);
-document.getElementById("btn-buscar-historial")?.addEventListener("click", consultarHistorialCompras);
+if (btnPromover) btnPromover.addEventListener("click", () => cambiarRolUsuario("promover"));
+if (btnDegradar) btnDegradar.addEventListener("click", () => cambiarRolUsuario("degradar"));
+if (btnEliminar) btnEliminar.addEventListener("click", eliminarUsuarioSistema);
 
 // ==========================================================================
-// NUEVO ANEXO: MÓDULO INDEPENDIENTE HISTORIAL DE COMPRAS (CORREGIDO)
+// MÓDULO OPTIMIZADO: HISTORIAL DE COMPRAS DE USUARIOS
 // ==========================================================================
 function inicializarHistorialCompras() {
     const btnBuscarHistorial = document.getElementById('btn-buscar-historial');
@@ -612,16 +635,12 @@ function inicializarHistorialCompras() {
         contenedorHistorial.innerHTML = '<p class="historial-vacio">🔍 Buscando transacciones...</p>';
 
         try {
-
             const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos?email=${encodeURIComponent(email)}`, {
                 method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
+                headers: { "Authorization": `Bearer ${accessToken}` }
             });
 
             const datos = await respuesta.json();
-
 
             if (!respuesta.ok) {
                 contenedorHistorial.innerHTML = `<p class="historial-error">❌ ${datos.error || 'Error en la consulta.'}</p>`;
@@ -636,11 +655,9 @@ function inicializarHistorialCompras() {
             contenedorHistorial.innerHTML = "";
 
             datos.forEach(compra => {
-
                 const fechaFormateada = new Date(compra.fecha).toLocaleDateString('es-ES', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
-
 
                 const card = document.createElement('div');
                 card.className = 'historial-item-card';
@@ -671,7 +688,6 @@ function inicializarHistorialCompras() {
                 detalles.appendChild(spanFecha);
                 detalles.appendChild(spanEstado);
 
-
                 if (compra.productos && compra.productos.length > 0) {
                     const divProductos = document.createElement('div');
                     divProductos.className = 'historial-item-productos';
@@ -688,7 +704,6 @@ function inicializarHistorialCompras() {
 
                 card.appendChild(header);
                 card.appendChild(detalles);
-
                 contenedorHistorial.appendChild(card);
             });
 
@@ -699,27 +714,30 @@ function inicializarHistorialCompras() {
     });
 }
 
-// Métricas y Gráficas (Mantiene tu lógica original idéntica)
-let miGrafica = null;
-
+// ==========================================================================
+// DASHBOARD: MÉTRICAS Y GRÁFICOS (CHART.JS)
+// ==========================================================================
 async function cargarMetricas() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/admin/metricas", {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${accessToken}` }
         });
         const data = await respuesta.json();
 
         if (respuesta.ok) {
-            document.getElementById('met-productos').textContent = data.totalProductos;
-            document.getElementById('met-usuarios').textContent = data.totalUsuarios;
-            document.getElementById('met-ventas').textContent =
-                Number(data.totalVentas).toLocaleString('es-CO', {
+            const metProductos = document.getElementById('met-productos');
+            const metUsuarios = document.getElementById('met-usuarios');
+            const metVentas = document.getElementById('met-ventas');
+
+            if (metProductos) metProductos.textContent = data.totalProductos;
+            if (metUsuarios) metUsuarios.textContent = data.totalUsuarios;
+            if (metVentas) {
+                metVentas.textContent = Number(data.totalVentas).toLocaleString('es-CO', {
                     style: 'currency',
                     currency: 'COP',
                     minimumFractionDigits: 0
                 });
+            }
 
             const ctx = document.getElementById('graficaMetricas')?.getContext('2d');
             if (!ctx) return;
@@ -750,12 +768,13 @@ async function cargarMetricas() {
     }
 }
 
+// ==========================================================================
+// MÓDULO DE PEDIDOS GENERALES (TABLA GLOBAL)
+// ==========================================================================
 async function cargarPedidos() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos", {
-            headers: {
-                Authorization: "Bearer " + token
-            }
+            headers: { Authorization: "Bearer " + accessToken }
         });
 
         const datosOriginales = await respuesta.json();
@@ -854,7 +873,6 @@ async function cargarPedidos() {
         `;
 
         contenedor.innerHTML = html;
-
     } catch (error) {
         console.error("Error al cargar pedidos:", error);
     }
@@ -871,72 +889,37 @@ async function actualizarEstadoPedido(id) {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token
+                Authorization: "Bearer " + accessToken
             },
-            body: JSON.stringify({
-                estado: nuevoEstado
-            })
+            body: JSON.stringify({ estado: nuevoEstado })
         });
 
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            alert(data.error || "No se pudo actualizar");
+            Swal.fire('Error', data.error || "No se pudo actualizar el estado", 'error');
             return;
         }
 
         mostrarToast(data.mensaje || "Estado actualizado con éxito");
         cargarPedidos();
-
+        cargarMetricas();
     } catch (error) {
         console.error("Error al actualizar estado:", error);
     }
 }
-
-async function actualizarEstadoPedido(id) {
-    const selector = document.getElementById(`estado-${id}`);
-    if (!selector) return;
-
-    const nuevoEstado = selector.value;
-
-    try {
-        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/pedidos/${id}/estado`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token // Asegúrate de tener tu token aquí
-            },
-            body: JSON.stringify({
-                estado: nuevoEstado
-            })
-        });
-
-        const data = await respuesta.json();
-
-
-        if (!respuesta.ok) {
-            alert(data.error || "No se pudo actualizar el estado");
-            return;
-        }
-
-        alert(data.mensaje || "Estado actualizado con éxito");
-        cargarPedidos(); // Recarga la lista agrupada automáticamente
-
-    } catch (error) {
-        console.error("Error al actualizar estado:", error);
-    }
-}
-
-
 
 // ==========================================================================
-// INICIAR CARGA (DOM Ready con el nuevo llamado integrado al final)
+// INICIALIZACIÓN (DOM READY)
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     cargarCategoriasSelect();
     cargarProductos();
     cargarMetricas();
     cargarAlertas();
-
     cargarPedidos();
+    cargarStock();
+
+    // Encendemos correctamente el buscador avanzado de compras que tenías inactivo
+    inicializarHistorialCompras();
 });

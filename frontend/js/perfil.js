@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarPerfil();
     cargarHistorial();
 
+    cambiarVista('vista-configuracion')
+
     const formEditarPerfil = document.getElementById("form-editar-perfil");
     const formCambiarPassword = document.getElementById("form-cambiar-password");
     const logoutBtn = document.getElementById("logout-btn");
@@ -280,4 +282,20 @@ function cerrarSesion() {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
     window.location.href = "Login.html";
+}
+
+/* GESTIÓN DE VISTAS DINÁMICAS */
+function cambiarVista(idVista) {
+    
+    const vistas = document.querySelectorAll('.vista-seccion-perfil');
+    vistas.forEach(v => v.classList.remove('activa'));
+
+    const vistaSeleccionada = document.getElementById(idVista);
+    if (vistaSeleccionada) {
+        vistaSeleccionada.classList.add('activa');
+    }
+
+   
+    const drawer = document.getElementById('perfil-drawer');
+    if (drawer) drawer.classList.remove('abierto');
 }

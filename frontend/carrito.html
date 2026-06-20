@@ -34,59 +34,52 @@
         </nav>
     </header>
 
-    <main style="padding: 40px;">
+    <main class="main-carrito">
+        <div class="contenedor-cajita">
+            <div class="linea-superior"></div>
+            
+            <h1>🛒 Tu Carrito</h1>
 
-        <h1>🛒 Tu Carrito</h1>
+            <table class="tabla-carrito">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="carrito-body"></tbody>
+            </table>
 
-        <table class="tabla-carrito" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody id="carrito-body"></tbody>
-        </table>
+            <div class="resumen-carrito">
+                <div class="carrito-acciones">
 
-        <h2 id="total">Total: $0</h2>
+                    <h2 id="total">Total: $0</h2>
 
-        <div class="cupon-box">
-            <h3>¿Tienes un cupón?</h3>
-            <div class="cupon-form">
-                <input type="text" id="input-cupon" placeholder="Ingresa tu código">
-                <button onclick="aplicarCupon()">Aplicar</button>
+
+                    <button onclick="vaciarCarrito()" class="btn-carrito btn-vaciar">
+                        Vaciar carrito
+                    </button>
+                    
+                    <button onclick="finalizarCompra()" class="btn-carrito btn-pagar">
+                        Procesar Pago
+                    </button>
+                </div>
+
+                
+
+                <div class="cupon-box">
+                    <h3>¿Tienes un cupón?</h3>
+                    <div class="cupon-form">
+                        <input type="text" id="input-cupon" placeholder="Ingresa tu código">
+                        <button onclick="aplicarCupon()">Aplicar</button>
+                    </div>
+                    <p id="mensaje-cupon"></p>
+                </div>
             </div>
-            <p id="mensaje-cupon"></p>
         </div>
-
-        <div class="carrito-acciones" style="margin-top: 20px;">
-            <button onclick="vaciarCarrito()" class="btn-agregar" style="background-color: #ff4d4d; margin-right: 10px;">
-                Vaciar carrito
-            </button>
-            <button onclick="finalizarCompra()" class="btn-agregar">
-                Procesar Pago
-            </button>
-        </div>
-
-        <section class="calificacion-section" id="seccion-calificacion" style="display: none; margin-top: 40px;">
-            <h2>🎉 ¡Gracias por tu compra!</h2>
-            <p>¿Cómo fue tu experiencia con nosotros?</p>
-            <div class="estrellas-servicio" id="estrellas-servicio">
-                <span class="estrella-servicio" data-valor="1" onclick="seleccionarCalificacion(1)">☆</span>
-                <span class="estrella-servicio" data-valor="2" onclick="seleccionarCalificacion(2)">☆</span>
-                <span class="estrella-servicio" data-valor="3" onclick="seleccionarCalificacion(3)">☆</span>
-                <span class="estrella-servicio" data-valor="4" onclick="seleccionarCalificacion(4)">☆</span>
-                <span class="estrella-servicio" data-valor="5" onclick="seleccionarCalificacion(5)">☆</span>
-            </div>
-            <button class="btn-agregar" onclick="enviarCalificacion()" style="margin-top: 15px;">
-                Enviar calificación
-            </button>
-            <p id="mensaje-calificacion" style="margin-top: 10px; font-weight: bold;"></p>
-        </section>
-
     </main>
 
     <footer class="footer">
@@ -115,16 +108,8 @@
             <div class="footer-col">
                 <h4>Redes sociales</h4>
                 <ul>
-                    <li>
-                        <a href="https://instagram.com/onlinedoggie" target="_blank">
-                            <i class="fa-brands fa-instagram"></i> Instagram
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://facebook.com/onlinedoggie" target="_blank">
-                            <i class="fa-brands fa-facebook"></i> Facebook
-                        </a>
-                    </li>
+                    <li><a href="https://instagram.com/onlinedoggie" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a></li>
+                    <li><a href="https://facebook.com/onlinedoggie" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a></li>
                 </ul>
             </div>
         </div>
@@ -136,52 +121,6 @@
     <script src="./js/toast.js"></script>
     <script src="./js/usuario-navbar.js"></script>
     <script src="./js/carrito.js"></script>
-
-    <script>
-        let calificacionSeleccionada = 0;
-
-        function mostrarCalificacionPostCompra() {
-            const seccion = document.getElementById("seccion-calificacion");
-            if (seccion) {
-                seccion.style.display = "block";
-                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-            }
-        }
-
-        function seleccionarCalificacion(valor) {
-            calificacionSeleccionada = valor;
-            document.querySelectorAll(".estrella-servicio").forEach((estrella, index) => {
-                estrella.textContent = index < valor ? "⭐" : "☆";
-            });
-        }
-
-        function enviarCalificacion() {
-            
-            if (!calificacionSeleccionada) {
-                if (typeof mostrarToast === "function") {
-                    mostrarToast("Selecciona una calificación antes de enviar", "error");
-                } else {
-                    const mensaje = document.getElementById("mensaje-calificacion");
-                    mensaje.textContent = "Selecciona una calificación antes de enviar";
-                    mensaje.style.color = "red";
-                }
-                return;
-            }
-
-            if (typeof mostrarToast === "function") {
-                mostrarToast(`¡Gracias por calificarnos con ${calificacionSeleccionada} estrellas! 🐾`, "success");
-               
-                calificacionSeleccionada = 0;
-                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
-            } else {
-                const mensaje = document.getElementById("mensaje-calificacion");
-                mensaje.textContent = `✅ ¡Gracias por tu calificación de ${calificacionSeleccionada} estrellas!`;
-                mensaje.style.color = "green";
-                calificacionSeleccionada = 0;
-                document.querySelectorAll(".estrella-servicio").forEach(e => e.textContent = "☆");
-            }
-        }
-    </script>
 
 </body>
 </html>

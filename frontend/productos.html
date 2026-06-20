@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos - Online Doggie</title>
-    
+
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
+    <link rel="icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico"
+        type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
@@ -15,7 +16,8 @@
 
     <header class="header">
         <div class="logo">
-            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Logo Online Doggie">
+            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico"
+                alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -27,22 +29,22 @@
         </nav>
     </header>
 
-    <section class="banner-productos">
-        <h2>Nuestros productos</h2>
-        <p>Todo lo que tu mascota necesita 🐶🐱</p>
-    </section>
+    <section class="productos-header">
+        <div class="header-container">
+            <h2>Nuestros productos</h2>
+            <p>Todo lo que tu mascota necesita 🐶🐱</p>
 
-    <section class="filtros">
-        <label for="buscador" class="sr-only">Buscar producto</label>
-        <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
+            <div class="filtros-contenedor">
+                <input type="text" id="buscador" placeholder="🔍 Buscar producto..." class="buscador">
 
-        <label for="categoria" class="sr-only">Seleccionar categoría</label>
-        <select id="categoria" name="categoria" class="select-filtro">
-            <option value="todos">Todos los productos</option>
-            <option value="perros">Perros</option>
-            <option value="gatos">Gatos</option>
-            <option value="accesorios">Accesorios</option>
-        </select>
+                <select id="categoria" name="categoria" class="select-filtro">
+                    <option value="todos">Todos los productos</option>
+                    <option value="perros">Perros</option>
+                    <option value="gatos">Gatos</option>
+                    <option value="accesorios">Accesorios</option>
+                </select>
+            </div>
+        </div>
     </section>
 
     <main class="lista-productos" id="lista-productos"></main>
@@ -57,7 +59,7 @@
         <div id="mini-carrito-body"></div>
         <div class="mini-footer">
             <p id="mini-total">Total: $0</p>
-            <a href="carrito.html" class="btn-ver-carrito">Finalizar compra</a>
+            <a href="carrito.html" class="btn-ver-carrito">Ver tu carrito</a>
         </div>
     </aside>
 
@@ -69,7 +71,8 @@
         <div class="footer-content">
             <div class="footer-col">
                 <div class="footer-brand">
-                    <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Online Doggie">
+                    <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico"
+                        alt="Online Doggie">
                     <h4>Online Doggie</h4>
                 </div>
                 <p>Todo lo que tu mascota necesita en un solo lugar.</p>
@@ -106,6 +109,7 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
+
         </div>
     </footer>
 
@@ -117,4 +121,5 @@
     <script src="./js/productos.js"></script>
 
 </body>
+
 </html>

@@ -194,33 +194,67 @@ nav ul li ul li a:hover {
 }
 
 /* ========================================================================== */
-/* 6. BUSCADOR Y FILTROS                                                       */
+/* 6. BUSCADOR Y FILTROS                                                      */
 /* ========================================================================== */
 
-.filtros {
+.productos-header {
+    background: transparent;
+    padding: 20px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.productos-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.productos-header p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.filtros-contenedor {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    padding: 25px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
 .buscador,
 .select-filtro {
-    width: 250px;
-    padding: 12px 15px;
+    width: 240px;
+    padding: 8px 15px;
     border: 2px solid var(--azul-primario);
-    border-radius: 10px;
+    border-radius: 20px;
     outline: none;
-    font-size: 15px;
+    font-size: 14px;
     background: var(--blanco);
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.select-filtro {
+    cursor: pointer;
 }
 
 .buscador:focus,
 .select-filtro:focus {
     border-color: var(--azul-secundario);
-    box-shadow: 0 0 8px rgba(0, 180, 230, 0.4);
+    box-shadow: 0 0 6px rgba(0, 180, 230, 0.3);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 650px) {
+    .buscador, .select-filtro {
+        width: 90%;
+    }
 }
 
 /* ========================================================================== */
@@ -430,94 +464,130 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
 }
 
 /* ========================================================================== */
-/* 11. CARRITO LATERAL                                                         */
+/* 11. CARRITO Y CARRITO LATERAL                                              */
 /* ========================================================================== */
 
+/* --- Mini Carrito Lateral --- */
 #overlay-mini {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.45);
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     opacity: 0; visibility: hidden;
-    transition: 0.3s; z-index: 998;
+    transition: all 0.3s ease; z-index: 998;
 }
-
-#overlay-mini.activo {
-    opacity: 1;
-    visibility: visible;
-}
+#overlay-mini.activo { opacity: 1; visibility: visible; }
 
 .mini-carrito {
-    position: fixed;
-    top: 0; right: -400px;
+    position: fixed; top: 0; right: -400px;
     width: 380px; height: 100%;
     background: var(--blanco);
-    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
     padding: 25px;
     display: flex; flex-direction: column;
-    transition: right 0.4s ease;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
 }
-
-.mini-carrito.activo {
-    right: 0;
-}
+.mini-carrito.activo { right: 0; }
 
 .mini-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--gris-borde);
-    padding-bottom: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--gris-borde); padding-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-#cerrar-mini {
-    background: none; border: none;
-    font-size: 22px; cursor: pointer;
-}
-
-#mini-carrito-body {
-    flex: 1; overflow-y: auto; margin: 20px 0;
-}
+#mini-carrito-body { flex: 1; overflow-y: auto; margin-right: -10px; padding-right: 10px; }
 
 .mini-item {
     display: flex; align-items: center; gap: 12px;
-    margin-bottom: 15px; background: var(--azul-fondo);
-    padding: 8px; border-radius: 8px;
+    background: #f8fbff; padding: 10px; border-radius: 10px;
+    margin-bottom: 12px;
 }
-
 .mini-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
-.mini-info h4 { font-size: 14px; }
-.mini-precio { font-weight: bold; color: var(--azul-primario); }
-.mini-eliminar { background: none; border: none; cursor: pointer; color: #999; }
+.mini-info { flex: 1; }
+.mini-info h4 { font-size: 14px; margin: 0 0 4px 0; line-height: 1.2; }
+.mini-precio { font-weight: 700; color: var(--azul-primario); font-size: 0.95rem; }
+.mini-eliminar { background: none; border: none; cursor: pointer; color: #ff6b6b; padding: 5px; }
 
-.mini-footer {
-    border-top: 1px solid var(--gris-borde);
-    padding-top: 15px;
-}
+.mini-footer { border-top: 1px solid var(--gris-borde); padding-top: 20px; }
 
-/* Botón flotante del carrito */
+/* --- Botón Flotante --- */
 .carrito-flotante {
-    position: fixed;
-    bottom: 25px; right: 25px;
-    width: 60px; height: 60px;
+    position: fixed; bottom: 30px; right: 30px;
+    width: 65px; height: 65px;
     background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario));
-    color: white; font-size: 26px;
-    border-radius: 50%;
+    color: white; font-size: 24px; border-radius: 50%;
     display: flex; justify-content: center; align-items: center;
-    cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    z-index: 1000; transition: transform 0.2s ease;
+    cursor: pointer; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000; transition: transform 0.3s ease;
 }
-
-.carrito-flotante:hover {
-    transform: scale(1.1);
-}
+.carrito-flotante:hover { transform: scale(1.1); }
 
 #contador-carrito {
     position: absolute; top: -5px; right: -5px;
-    background: black; color: white; font-size: 12px;
-    width: 20px; height: 20px; border-radius: 50%;
+    background: #000; color: #fff; font-size: 11px; font-weight: bold;
+    width: 22px; height: 22px; border-radius: 50%;
     display: flex; justify-content: center; align-items: center;
 }
+
+/* --- Página de Carrito (carrito.html) unificada --- */
+.main-carrito { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+.contenedor-cajita {
+    background: var(--blanco);
+    padding: 35px 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(30, 60, 255, 0.06), 0 5px 15px rgba(0, 0, 0, 0.03);
+    margin: 40px auto 50px auto;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(30, 60, 255, 0.1);
+}
+
+/* La rayita estilo "Crear Producto" */
+.contenedor-cajita::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--azul-primario), #00d2ff, var(--azul-secundario));
+}
+
+.contenedor-cajita h1 { font-size: 24px; color: #333; margin-bottom: 25px; }
+
+.tabla-carrito { width: 100%; border-collapse: collapse; }
+.tabla-carrito th { 
+    background: #fcfcfc; color: #666; padding: 15px; 
+    text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+}
+.tabla-carrito td { padding: 20px 15px; border-bottom: 1px solid #eee; text-align: center; }
+
+/* Resumen y Botones */
+.resumen-carrito { 
+    margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;
+    display: flex; flex-direction: column; align-items: flex-end;
+}
+
+.carrito-acciones { display: flex; gap: 15px; width: 100%; justify-content: flex-end; margin-bottom: 20px; }
+
+#total { font-size: 28px; color: var(--azul-primario); margin-bottom: 15px; }
+
+.cupon-box { text-align: right; margin-bottom: 20px; }
+.cupon-form { display: flex; gap: 10px; }
+.cupon-form input { 
+    border: 2px solid #eee; padding: 10px 15px; border-radius: 10px; 
+    outline: none; transition: border 0.3s; width: 180px;
+}
+.cupon-form input:focus { border-color: var(--azul-primario); }
+
+/* Ajuste del botón vaciar (más pequeño) */
+.btn-carrito { 
+    padding: 10px 20px; border-radius: 10px; font-weight: 600; 
+    cursor: pointer; border: none; transition: transform 0.2s, opacity 0.2s;
+}
+.btn-vaciar { background: #fff0f0; color: #ff4d4d; font-size: 0.9rem; }
+.btn-pagar { background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario)); color: white; padding: 12px 30px; }
+.btn-carrito:hover { transform: translateY(-2px); opacity: 0.9; }
 
 /* ========================================================================== */
 /* 12. LOGIN / REGISTRO                                                        */
@@ -705,6 +775,95 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     color: var(--gris-texto);
 }
 
+/* Estructura de Vistas */
+.vista-seccion-perfil {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.vista-seccion-perfil.activa {
+    display: block;
+}
+
+/* Drawer (Menú Lateral) */
+.admin-drawer {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: var(--blanco);
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    transition: right 0.3s ease;
+    padding: 20px;
+    border-left: 1px solid var(--gris-borde);
+}
+
+.admin-drawer.abierto {
+    right: 0;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--azul-primario);
+}
+
+.drawer-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.menu-item:hover {
+    background: #edf2f7;
+}
+
+.menu-item.activa {
+    background: #ebf8ff;
+    border-left-color: var(--azul-primario);
+    color: var(--azul-primario);
+}
+
+/* Tabla Estilizada */
+.tabla-perfil-container {
+    overflow-x: auto;
+    margin-top: 15px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+}
+
+.tabla-perfil-diseno {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-perfil-diseno th {
+    background: var(--azul-primario);
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.tabla-perfil-diseno td {
+    padding: 12px;
+    border-bottom: 1px solid var(--gris-borde);
+}
+
 /* ========================================================================== */
 /* 14. FOOTER                                       */
 /* ========================================================================== */
@@ -730,12 +889,10 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     align-items: start;
 }
 
-
 .footer-col {
     flex: 1;
     min-width: 220px; 
 }
-
 
 .footer-col:first-child {
     flex: 1.5;
@@ -748,6 +905,7 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     text-align: center;
 }
 
+/* Línea decorativa solo para títulos de columnas comunes */
 .footer-col h4 {
     margin-top: 0;
     margin-bottom: 18px;
@@ -764,7 +922,8 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     margin-bottom: 15px;
 }
 
-.footer-brand h4 {
+/* FIX DE ESPECIFICIDAD: Apuntamos con precisión para eliminar la línea del logo */
+.footer-col .footer-brand h4 {
     margin-bottom: 0;
     border-bottom: none; 
     padding-bottom: 0;

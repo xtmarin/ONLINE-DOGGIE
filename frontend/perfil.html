@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - Online Doggie</title>
-    
     <link rel="stylesheet" href="./css/style.css">
     <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <script>
         if (!localStorage.getItem('token')) {
             window.location.replace('login.html');
         }
     </script>
 </head>
-
 <body>
 
     <header class="header">
@@ -28,215 +24,90 @@
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="productos.html">Productos</a></li>
-                <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="main-content">
-        <section class="perfil-container">
-
-            <div class="perfil-col-izquierda">
-                <div class="perfil-seccion">
-                    <h3><i class="fa-solid fa-id-card"></i> Datos de la Cuenta</h3>
-                    
-                    <div class="perfil-card-avatar">
-                        <div class="avatar-placeholder">🐶</div>
-                        <h4 id="perfil-nombre-header">Cargando...</h4>
-                    </div>
-
-                    <div class="perfil-card">
-                        <p><i class="fa-solid fa-user"></i> <strong>Nombre:</strong> <span id="perfil-nombre">Cargando...</span></p>
-                        <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> <span id="perfil-email">Cargando...</span></p>
-                        <p><i class="fa-solid fa-shield-halved"></i> <strong>Rol:</strong> <span id="perfil-rol" class="badge-rol">Cargando...</span></p>
-                    </div>
-                    
-                    <button id="logout-btn" class="btn-logout">
-                        <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
-                    </button>
+    <section class="perfil-container">
+        
+        <div class="perfil-col-izquierda">
+            <div class="perfil-seccion">
+                <h3><i class="fa-solid fa-id-card"></i> Datos de la Cuenta</h3>
+                <div class="perfil-card-avatar">
+                    <div class="avatar-placeholder">🐶</div>
+                    <h4 id="perfil-nombre-header">Cargando...</h4>
                 </div>
+                <div class="perfil-card">
+                    <p><i class="fa-solid fa-user"></i> <strong>Nombre:</strong> <span id="perfil-nombre">Cargando...</span></p>
+                    <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> <span id="perfil-email">Cargando...</span></p>
+                    <p><i class="fa-solid fa-shield-halved"></i> <strong>Rol:</strong> <span id="perfil-rol" class="badge-rol">Cargando...</span></p>
+                </div>
+                <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
             </div>
+        </div>
 
-            <div class="perfil-col-derecha">
-
+        <div class="perfil-col-derecha">
+            
+            <div id="vista-configuracion" class="vista-seccion-perfil">
                 <div class="perfil-seccion">
                     <h3><i class="fa-solid fa-location-dot"></i> Dirección de Entrega</h3>
-                    <p class="seccion-subtexto">
-                        Configura tu lugar de residencia para agilizar tus despachos y envíos a domicilio.
-                    </p>
-                    <div class="form-group icon-input">
-                        <label for="input-direccion">Dirección Residencial</label>
-                        <div class="input-wrapper">
-                            <i class="fa-solid fa-house"></i>
-                            <input type="text" id="input-direccion" placeholder="Ej: Calle 44 # 127 sur - 83">
-                        </div>
-                    </div>
-                    <button onclick="guardarDireccion()" class="btn btn-primary">
-                        <i class="fa-solid fa-floppy-disk"></i> Actualizar dirección
-                    </button>
-                    <p id="mensaje-direccion" class="status-mensaje"></p>
+                    <input type="text" id="input-direccion" placeholder="Ej: Calle 44 # 127 sur - 83">
+                    <button onclick="guardarDireccion()" class="btn btn-primary">Actualizar dirección</button>
                 </div>
 
                 <div class="perfil-seccion">
                     <h3><i class="fa-solid fa-user-pen"></i> Editar Información Personal</h3>
-                    <form id="form-editar-perfil" class="form-dashboard">
-                        <div class="form-group">
-                            <label for="edit-nombre">Nombre Completo</label>
-                            <input type="text" id="edit-nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-email">Correo Electrónico</label>
-                            <input type="email" id="edit-email" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa-solid fa-user-check"></i> Guardar cambios
-                        </button>
+                    <form id="form-editar-perfil">
+                        <input type="text" id="edit-nombre" required>
+                        <input type="email" id="edit-email" required>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
                     </form>
                 </div>
+            </div>
 
+            <div id="vista-historial" class="vista-seccion-perfil">
                 <div class="perfil-seccion">
-                    <h3><i class="fa-solid fa-lock"></i> Cambiar Contraseña</h3>
-                    <form id="form-cambiar-password" class="form-dashboard">
-                        <div class="form-group">
-                            <label for="password-actual">Contraseña Actual</label>
-                            <input type="password" id="password-actual" placeholder="Ingresa tu clave actual" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password-nueva">Nueva Contraseña</label>
-                            <input type="password" id="password-nueva" placeholder="Mínimo 6 caracteres" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password-confirmar">Confirmar Nueva Contraseña</label>
-                            <input type="password" id="password-confirmar" placeholder="Repite tu nueva clave" required>
-                        </div>
-                        <button type="submit" class="btn btn-secondary">
-                            <i class="fa-solid fa-key"></i> Actualizar Contraseña
-                        </button>
-                    </form>
+                    <h3><i class="fa-solid fa-clock-history"></i> Mi Historial de Compras</h3>
+                    <div class="tabla-perfil-container">
+                        <table class="tabla-perfil-diseno">
+                            <thead>
+                                <tr><th>Producto</th><th>Precio</th><th>Cant.</th><th>Estado</th></tr>
+                            </thead>
+                            <tbody id="historial-compras-tabla-body"></tbody>
+                        </table>
+                    </div>
                 </div>
-
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-col">
-                <div class="footer-brand">
-                    <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Online Doggie">
-                    <h4>Online Doggie</h4>
-                </div>
-                <p>Todo lo que tu mascota necesita en un solo lugar.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Enlaces</h4>
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="productos.html">Productos</a></li>
-                    <li><a href="carrito.html">Carrito</a></li>
-                    <li><a href="login.html">Login</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <p><i class="fa-solid fa-phone"></i> +57 300 123 4567</p>
-                <p><i class="fa-solid fa-envelope"></i> contacto@onlinedoggie.com</p>
-            </div>
-            <div class="footer-col">
-                <h4>Redes sociales</h4>
-                <ul>
-                    <li>
-                        <a href="https://instagram.com/onlinedoggie" target="_blank">
-                            <i class="fa-brands fa-instagram"></i> Instagram
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://facebook.com/onlinedoggie" target="_blank">
-                            <i class="fa-brands fa-facebook"></i> Facebook
-                        </a>
-                    </li>
-                </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    </section>
+</main>
 
     <div class="fab-container">
-        <div class="fab-menu" id="fab-menu-desplegable">
-            <button class="fab-menu-item" id="btn-abrir-modal-grande">
-                <span class="icon"><i class="fa-solid fa-basket-shopping"></i></span> Ver Mis Pedidos
-            </button>
-        </div>
-        <button class="floating-btn" id="main-fab-btn" title="Ver opciones de compras">
-            <i class="fa-solid fa-box-open"></i>
-        </button>
+        <button class="floating-btn" id="main-fab-btn"><i class="fa-solid fa-bars"></i></button>
     </div>
 
-    <div class="modal-full-screen" id="historial-modal-completo">
-        <div class="modal-full-container">
-            <div class="modal-full-header">
-                <h2><i class="fa-solid fa-clock-history"></i> Historial Completo de Pedidos</h2>
-                <button class="btn-cerrar-modal" id="btn-cerrar-modal-grande">
-                    <i class="fa-solid fa-xmark"></i> Cerrar Ventana
-                </button>
-            </div>
-
-            <div class="tabla-gigante-container">
-                <table class="tabla-gigante" style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th>ID / Detalle Pedido</th>
-                            <th>Precio Unitario</th>
-                            <th style="text-align: center;">Cantidad</th>
-                            <th>Estado de Envío</th>
-                            <th style="text-align: center;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historial-compras-tabla-body">
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: #888; padding: 40px;">
-                                <i class="fa-solid fa-circle-notch fa-spin"></i> Cargando tu historial de compras...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div id="perfil-drawer" class="admin-drawer">
+        <div class="drawer-header"><h3>Menú Perfil</h3><button id="close-drawer">✕</button></div>
+        <ul class="drawer-menu">
+            <li class="menu-item" data-target="vista-configuracion">⚙️ Configuración</li>
+            <li class="menu-item" data-target="vista-historial">📜 Historial de Pedidos</li>
+        </ul>
     </div>
 
-    <script src="./js/toast.js"></script>
     <script src="./js/usuario-navbar.js"></script>
     <script src="./js/perfil.js"></script>
-
     <script>
-        const mainFabBtn = document.getElementById('main-fab-btn');
-        const fabMenu = document.getElementById('fab-menu-desplegable');
-        const btnAbrirModal = document.getElementById('btn-abrir-modal-grande');
-        const modalGrande = document.getElementById('historial-modal-completo');
-        const btnCerrarModal = document.getElementById('btn-cerrar-modal-grande');
-
-        mainFabBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            fabMenu.classList.toggle('open');
+        // Lógica simple para alternar vistas (puedes poner esto en tu perfil.js si prefieres)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.vista-seccion-perfil').forEach(v => v.classList.remove('activa'));
+                document.getElementById(item.dataset.target).classList.add('activa');
+                document.getElementById('perfil-drawer').classList.remove('abierto');
+            });
         });
-
-        btnAbrirModal.addEventListener('click', () => {
-            fabMenu.classList.remove('open');
-            modalGrande.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        });
-
-        btnCerrarModal.addEventListener('click', () => {
-            modalGrande.classList.remove('open');
-            document.body.style.overflow = 'auto';
-        });
-
-        document.addEventListener('click', () => {
-            fabMenu.classList.remove('open');
-        });
+        document.getElementById('main-fab-btn').onclick = () => document.getElementById('perfil-drawer').classList.add('abierto');
+        document.getElementById('close-drawer').onclick = () => document.getElementById('perfil-drawer').classList.remove('abierto');
     </script>
-
 </body>
 </html>
