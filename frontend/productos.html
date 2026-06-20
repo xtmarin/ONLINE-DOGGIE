@@ -45,8 +45,7 @@
         </select>
     </section>
 
-    <main class="lista-productos" id="lista-productos">
-        </main>
+    <main class="lista-productos" id="lista-productos"></main>
 
     <div id="overlay-mini"></div>
 
@@ -81,6 +80,7 @@
                     <li><a href="index.html">Inicio</a></li>
                     <li><a href="productos.html">Productos</a></li>
                     <li><a href="carrito.html">Carrito</a></li>
+                    <li><a href="login.html">Login</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -115,27 +115,6 @@
     <script src="./js/carrito.js"></script>
     <script src="./js/filtros-productos.js"></script>
     <script src="./js/productos.js"></script>
-
-    <script>
-        const miniCarrito = document.getElementById('mini-carrito');
-        const overlayMini = document.getElementById('overlay-mini');
-        const btnCerrarMini = document.getElementById('cerrar-mini');
-
-        function abrirMiniCarrito() {
-            miniCarrito.classList.add('open');
-            overlayMini.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function cerrarMiniCarrito() {
-            miniCarrito.classList.remove('open');
-            overlayMini.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        btnCerrarMini.addEventListener('click', cerrarMiniCarrito);
-        overlayMini.addEventListener('click', cerrarMiniCarrito);
-    </script>
 
 </body>
 </html>

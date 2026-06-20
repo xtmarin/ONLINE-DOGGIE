@@ -706,7 +706,7 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
 }
 
 /* ========================================================================== */
-/* 14. FOOTER                                                                  */
+/* 14. FOOTER                                       */
 /* ========================================================================== */
 
 .footer {
@@ -714,15 +714,32 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     color: white;
     padding: 50px 5% 20px 5%;
     margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    clear: both;
 }
 
 .footer-content {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    display: flex; 
+    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
     align-items: start;
+}
+
+
+.footer-col {
+    flex: 1;
+    min-width: 220px; 
+}
+
+
+.footer-col:first-child {
+    flex: 1.5;
+    min-width: 260px;
 }
 
 .footer-simple .footer-content {
@@ -749,6 +766,8 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
 
 .footer-brand h4 {
     margin-bottom: 0;
+    border-bottom: none; 
+    padding-bottom: 0;
 }
 
 .footer-brand img {
@@ -757,6 +776,7 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     border-radius: 50%;
     background: white;
     padding: 4px;
+    object-fit: contain;
 }
 
 .footer-col ul {
@@ -773,7 +793,8 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     color: white;
     text-decoration: none;
     opacity: 0.85;
-    display: inline-block;
+    display: inline-flex; 
+    align-items: center;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -794,6 +815,15 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     margin-top: 40px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.carrito-flotante, 
+.fab-container {
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
+    z-index: 9999 !important;
+    margin: 0 !important; 
 }
 
 /* ========================================================================== */
