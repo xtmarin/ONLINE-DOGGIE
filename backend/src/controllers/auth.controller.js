@@ -3,17 +3,21 @@ const { hashPassword, verifyPassword, createToken } = require('../utils/security
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.BREVO_SMTP_USER,
-        pass: process.env.BREVO_SMTP_PASS
-    }
-});
+async function enviarCorreo(destinatario, asunto, html) {
+    await axios.post('https://api.brevo.com/v3/smtp/email', {
+        sender: { name: "Online Doggie 🐶", email: "jugando1404@gmail.com" },
+        to: [{ email: destinatario }],
+        subject: asunto,
+        htmlContent: html
+    }, {
+        headers: {
+            'api-key': process.env.BREVO_API_KEY,
+            'Content-Type': 'application/json'
+        }
+    });
+}
 
 // ─── Registro ──────────────────────────────────────────────────────────────────
 exports.registro = async (req, res) => {
@@ -53,21 +57,19 @@ exports.registro = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await transporter.sendMail({
-                from: '"Online Doggie 🐶" <jugando1404@gmail.com>',
-                to: email,
-                subject: 'Verifica tu cuenta - Online Doggie 🐶',
-                html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-            <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
-            <p>Tu código de verificación es:</p>
-            <h1 style="text-align:center; letter-spacing: 8px; color: #0056b3;">${codigoRegistro}</h1>
-            <p style="color: #888; font-size: 13px;">Este código expira en 15 minutos.</p>
-        </div>
-    `
-            });
+            await enviarCorreo(
+                email,
+                'Verifica tu cuenta - Online Doggie 🐶',
+                `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
+                        <p>Tu código de verificación es:</p>
+                        <h1 style="text-align:center; letter-spacing: 8px; color: #0056b3;">${codigoRegistro}</h1>
+                        <p style="color: #888; font-size: 13px;">Este código expira en 15 minutos.</p>
+                    </div>
+                `
+            );
         }
-
         res.json({
             mensaje: "Usuario registrado correctamente. Revisa tu correo para verificar la cuenta.",
             codigoSimulado: process.env.NODE_ENV === 'test' ? codigoRegistro : undefined
@@ -266,22 +268,20 @@ exports.recuperarPassword = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await transporter.sendMail({
-                from: '"Online Doggie 🐶" <jugando1404@gmail.com>',
-                to: email,
-                subject: 'Recuperar contraseña - Online Doggie',
-                html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-            <h2 style="color: #0056b3;">Recuperar contraseña</h2>
-            <p>Hola ${usuario.nombre},</p>
-            <p>Tu token de recuperación es:</p>
-            <p style="background:#f5f5f5; padding:12px; border-radius:6px; word-break:break-all; font-family:monospace;">${tokenRecuperar}</p>
-            <p style="color: #888; font-size: 13px;">Este token expira en 1 hora.</p>
-        </div>
-    `
-            });
+            await enviarCorreo(
+                email,
+                'Recuperar contraseña - Online Doggie',
+                `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #0056b3;">Recuperar contraseña</h2>
+                        <p>Hola ${usuario.nombre},</p>
+                        <p>Tu token de recuperación es:</p>
+                        <p style="background:#f5f5f5; padding:12px; border-radius:6px; word-break:break-all; font-family:monospace;">${tokenRecuperar}</p>
+                        <p style="color: #888; font-size: 13px;">Este token expira en 1 hora.</p>
+                    </div>
+                `
+            );
         }
-
         res.json({
             mensaje: "Se envió un correo con instrucciones para recuperar tu contraseña",
             tokenSimulado: process.env.NODE_ENV === 'test' ? tokenRecuperar : undefined
