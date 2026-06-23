@@ -598,25 +598,28 @@ async function cambiarRolUsuario(accion) {
 }
 
 async function eliminarUsuarioSistema() {
-    const email = document.getElementById("admin-email").value.trim();
+    const emailInput = document.getElementById("admin-email");
+    const email = emailInput ? emailInput.value.trim() : "";
+
     if (!email) {
-        mostrarToast("Por favor, ingrese el correo electrónico del usuario a eliminar", "error");
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Por favor, ingrese el correo electrónico', showConfirmButton: false, timer: 3000 });
         return;
     }
 
     Swal.fire({
         title: '¿Confirmas la eliminación?',
-        text: `¿Está seguro de eliminar permanentemente al usuario ${email}? perderá todo acceso.`,
-        icon: 'error',
+        text: `¿Está seguro de eliminar permanentemente al usuario ${email}? No se podrá revertir.`,
+        icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, eliminar usuario',
-        cancelButtonText: 'Conservar usuario'
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/usuarios-eliminar`, {
+                // RUTA CORREGIDA: /api/admin/eliminar
+                const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/admin/eliminar`, {
                     method: "DELETE",
                     headers: {
                         "Authorization": "Bearer " + accessToken,
@@ -624,19 +627,45 @@ async function eliminarUsuarioSistema() {
                     },
                     body: JSON.stringify({ email: email })
                 });
+
                 const data = await respuesta.json();
 
                 if (respuesta.ok) {
-                    mostrarToast(data.mensaje || "Usuario eliminado correctamente");
+                    // ÉXITO: Estilo Toast consistente
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.mensaje || "Usuario eliminado correctamente",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+
                     const formAdmin = document.getElementById("form-nuevo-admin");
                     if (formAdmin) formAdmin.reset();
-                    cargarMetricas();
+                    if (typeof cargarMetricas === 'function') cargarMetricas();
                 } else {
-                    Swal.fire('Atención', data.error || "No se pudo eliminar al usuario", 'warning');
+                    // ERROR DESDE BACKEND
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: data.mensaje || "No se pudo eliminar al usuario",
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
                 }
             } catch (error) {
                 console.error("Error eliminando usuario:", error);
-                mostrarToast("Error de comunicación con el servidor", "error");
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "Error de comunicación con el servidor",
+                    showConfirmButton: false,
+                    timer: 3000
+                });
             }
         }
     });

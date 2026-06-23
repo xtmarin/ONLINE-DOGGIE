@@ -74,7 +74,8 @@ exports.registro = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error crítico de registro:", error); // Muy importante ver esto en logs
+        res.status(500).json({ mensaje: "Error interno del servidor al intentar registrar." });
     }
 };
 
