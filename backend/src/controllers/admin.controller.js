@@ -48,7 +48,11 @@ const promoverUsuario = async (req, res) => {
         return res.json({ mensaje: `¡${nombreUsuario} ahora es Administrador!` });
 
     } catch (error) {
-        return res.status(500).json({ mensaje: "Error al actualizar el rol" });
+        console.error("ERROR DETALLADO EN BACKEND:", error); // <-- ESTA LÍNEA ES LA CLAVE
+        return res.status(500).json({ 
+            mensaje: "Error al actualizar el rol",
+            detalle: error.message // <-- Enviamos el error real al frontend
+        });
     }
 };
 
