@@ -1,25 +1,12 @@
 const pool = require('../config/db');
 const { hashPassword, verifyPassword, createToken } = require('../utils/security');
-const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        type: 'OAuth2',
-        user: process.env.EMAIL_USER,
-        clientId: process.env.GMAIL_CLIENTE_ID,
-        clientSecret: process.env.GMAIL_CLIENTE_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ─── Registro ──────────────────────────────────────────────────────────────────
 exports.registro = async (req, res) => {
     try {
         const { nombre, email, password, direccion } = req.body;
@@ -57,8 +44,8 @@ exports.registro = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await transporter.sendMail({
-                from: `"Online Doggie 🐶" <${process.env.EMAIL_USER}>`,
+            await resend.emails.send({
+                from: 'onboarding@resend.dev',
                 to: email,
                 subject: 'Verifica tu cuenta - Online Doggie 🐶',
                 html: `
@@ -83,6 +70,7 @@ exports.registro = async (req, res) => {
     }
 };
 
+// ─── Verificar cuenta ──────────────────────────────────────────────────────────
 exports.verificarCuenta = async (req, res) => {
     try {
         const { email, codigo } = req.body;
@@ -127,6 +115,7 @@ exports.verificarCuenta = async (req, res) => {
     }
 };
 
+// ─── Login ─────────────────────────────────────────────────────────────────────
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -180,6 +169,7 @@ exports.login = async (req, res) => {
     }
 };
 
+// ─── Verificar 2FA ─────────────────────────────────────────────────────────────
 exports.verificar2FA = async (req, res) => {
     try {
         const { codigo, tokenTemporal } = req.body;
@@ -241,7 +231,7 @@ exports.verificar2FA = async (req, res) => {
     }
 };
 
-
+// ─── Recuperar contraseña ──────────────────────────────────────────────────────
 exports.recuperarPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -267,19 +257,16 @@ exports.recuperarPassword = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await transporter.sendMail({
-                from: `"Online Doggie 🐶" <${process.env.EMAIL_USER}>`,
+            await resend.emails.send({
+                from: 'onboarding@resend.dev',
                 to: email,
                 subject: 'Recuperar contraseña - Online Doggie',
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
                         <h2 style="color: #0056b3;">Recuperar contraseña</h2>
                         <p>Hola ${usuario.nombre},</p>
-                        <p>Recibimos una solicitud para recuperar tu contraseña.</p>
                         <p>Tu token de recuperación es:</p>
-                        <p style="background:#f5f5f5; padding:12px; border-radius:6px; word-break:break-all; font-family:monospace;">
-                            ${tokenRecuperar}
-                        </p>
+                        <p style="background:#f5f5f5; padding:12px; border-radius:6px; word-break:break-all; font-family:monospace;">${tokenRecuperar}</p>
                         <p style="color: #888; font-size: 13px;">Este token expira en 1 hora.</p>
                     </div>
                 `
@@ -296,6 +283,7 @@ exports.recuperarPassword = async (req, res) => {
     }
 };
 
+// ─── Obtener perfil ────────────────────────────────────────────────────────────
 exports.obtenerPerfil = async (req, res) => {
     try {
         const result = await pool.query(
@@ -314,6 +302,7 @@ exports.obtenerPerfil = async (req, res) => {
     }
 };
 
+// ─── Editar perfil ─────────────────────────────────────────────────────────────
 exports.editarPerfil = async (req, res) => {
     try {
         const { nombre, email, direccion } = req.body;
@@ -339,6 +328,7 @@ exports.editarPerfil = async (req, res) => {
     }
 };
 
+// ─── Cambiar contraseña ────────────────────────────────────────────────────────
 exports.cambiarPassword = async (req, res) => {
     try {
         const { passwordActual, passwordNueva } = req.body;
