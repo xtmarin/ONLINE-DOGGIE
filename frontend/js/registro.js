@@ -19,7 +19,6 @@ async function registrarUsuario(e) {
     const password = document.getElementById("password").value.trim();
     const direccion = document.getElementById("direccion").value.trim();
 
-    // Validaciones de formulario
     if (!nombre || !email || !password || !direccion) {
         mostrarToast("Todos los campos son obligatorios", "error");
         return;
@@ -47,17 +46,22 @@ async function registrarUsuario(e) {
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            
             Swal.fire('Error', data.mensaje || "No se pudo completar el registro", 'error');
             return;
         }
 
-        
         localStorage.setItem("emailVerificacion", email);
-        Swal.fire('¡Casi listo!', 'Registro exitoso. Revisa tu correo para el código de verificación.', 'success');
 
-        document.getElementById("seccion-registro").style.display = "none";
-        document.getElementById("seccion-verificacion").style.display = "block";
+        
+        Swal.fire({
+            title: '¡Casi listo!',
+            text: 'Registro exitoso. Revisa tu correo para el código de verificación.',
+            icon: 'success',
+            confirmButtonColor: '#3085d6'
+        }).then(() => {
+            document.getElementById("seccion-registro").style.display = "none";
+            document.getElementById("seccion-verificacion").style.display = "block";
+        });
 
     } catch (error) {
         console.error("Error en registro:", error);
@@ -71,7 +75,7 @@ async function registrarUsuario(e) {
 async function verificarCuenta(e) {
     e.preventDefault();
 
-   const boton = e.target.querySelector('button[type="submit"]');
+    const boton = e.target.querySelector('button[type="submit"]');
     const codigo = document.getElementById("codigo").value.trim();
     const email = localStorage.getItem("emailVerificacion");
 
@@ -97,9 +101,15 @@ async function verificarCuenta(e) {
         }
 
         localStorage.removeItem("emailVerificacion");
-        Swal.fire('¡Éxito!', 'Cuenta verificada correctamente', 'success');
         
-        setTimeout(() => { window.location.href = "login.html"; }, 1500);
+        Swal.fire({
+            title: '¡Éxito!',
+            text: 'Cuenta verificada correctamente',
+            icon: 'success',
+            confirmButtonColor: '#3085d6'
+        }).then(() => {
+            window.location.href = "login.html";
+        });
 
     } catch (error) {
         Swal.fire('Error', "Error al procesar la verificación", 'error');

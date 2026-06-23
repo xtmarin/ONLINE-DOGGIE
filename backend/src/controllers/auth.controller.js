@@ -149,6 +149,12 @@ exports.login = async (req, res) => {
             return res.status(401).json({ mensaje: "Contraseña incorrecta" });
         }
 
+        if (!usuario.cuenta_verificada) {
+            return res.status(403).json({ 
+                mensaje: "Debes verificar tu cuenta mediante el código enviado a tu correo antes de iniciar sesión." 
+            });
+        }
+
         const token = createToken({
             id: usuario.id,
             email: usuario.email,
