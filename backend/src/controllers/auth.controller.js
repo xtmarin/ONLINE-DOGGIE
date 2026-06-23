@@ -3,11 +3,17 @@ const { hashPassword, verifyPassword, createToken } = require('../utils/security
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
 
-
-
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        type: 'OAuth2',
+        user: process.env.EMAIL_USER,
+        clientId: process.env.GMAIL_CLIENTE_ID,
+        clientSecret: process.env.GMAIL_CLIENTE_SECRET,
+        refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+    }
+});
 
 exports.registro = async (req, res) => {
     try {
@@ -46,16 +52,18 @@ exports.registro = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await resend.emails.send({
-                from: 'onboarding@resend.dev', // Nota: Resend te pide verificar un dominio después
+            await transporter.sendMail({
+                from: `"Online Doggie 🐶" <${process.env.EMAIL_USER}>`,
                 to: email,
                 subject: 'Verifica tu cuenta - Online Doggie 🐶',
                 html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-                <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
-                <p>Tu código de verificación es: <strong>${codigoRegistro}</strong></p>
-            </div>
-        `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
+                        <p>Tu código de verificación es:</p>
+                        <h1 style="text-align:center; letter-spacing: 8px; color: #0056b3;">${codigoRegistro}</h1>
+                        <p style="color: #888; font-size: 13px;">Este código expira en 15 minutos.</p>
+                    </div>
+                `
             });
         }
 
@@ -65,7 +73,7 @@ exports.registro = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error crítico de registro:", error); // Muy importante ver esto en logs
+        console.error("Error crítico de registro:", error);
         res.status(500).json({ mensaje: "Error interno del servidor al intentar registrar." });
     }
 };
@@ -92,7 +100,6 @@ exports.verificarCuenta = async (req, res) => {
             return res.status(400).json({ mensaje: "Esta cuenta ya se encuentra verificada" });
         }
 
-        // CORRECCIÓN AQUÍ: Forzamos string y quitamos espacios fantasmas en la comparación
         if (!usuario.codigo_verificacion || usuario.codigo_verificacion.toString().trim() !== codigo.toString().trim()) {
             return res.status(401).json({ mensaje: "El código de verificación es incorrecto" });
         }
@@ -133,7 +140,6 @@ exports.login = async (req, res) => {
         }
 
         const usuario = result.rows[0];
-
         const valid = await verifyPassword(password, usuario.password);
 
         if (!valid) {
@@ -230,6 +236,7 @@ exports.verificar2FA = async (req, res) => {
     }
 };
 
+
 exports.recuperarPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -256,14 +263,21 @@ exports.recuperarPassword = async (req, res) => {
 
         if (process.env.NODE_ENV !== 'test') {
             await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"Online Doggie 🐶" <${process.env.EMAIL_USER}>`,
                 to: email,
                 subject: 'Recuperar contraseña - Online Doggie',
-                html: `<p>Hola ${usuario.nombre},</p>
-                       <p>Recibimos una solicitud para recuperar tu contraseña.</p>
-                       <p>Tu token de recuperación es:</p>
-                       <p><strong>${tokenRecuperar}</strong></p>
-                       <p>Este enlace expira en 1 hora.</p>`
+                html: `
+                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #0056b3;">Recuperar contraseña</h2>
+                        <p>Hola ${usuario.nombre},</p>
+                        <p>Recibimos una solicitud para recuperar tu contraseña.</p>
+                        <p>Tu token de recuperación es:</p>
+                        <p style="background:#f5f5f5; padding:12px; border-radius:6px; word-break:break-all; font-family:monospace;">
+                            ${tokenRecuperar}
+                        </p>
+                        <p style="color: #888; font-size: 13px;">Este token expira en 1 hora.</p>
+                    </div>
+                `
             });
         }
 
