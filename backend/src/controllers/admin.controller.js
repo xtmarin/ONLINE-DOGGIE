@@ -40,10 +40,9 @@ const promoverUsuario = async (req, res) => {
 
         const nombreUsuario = resultado.rows[0].nombre;
 
-        // Intentamos registrar actividad; si falla, el catch principal lo captura
         await pool.query(
-            "INSERT INTO actividad (accion, fecha) VALUES ($1, NOW())",
-            [`El usuario ${email} fue promovido a Admin`]
+            "INSERT INTO actividad (accion, fecha) VALUES ($1, CURRENT_TIMESTAMP)",
+            [`El usuario ${nombreUsuario} (${email}) fue promovido a Admin`]
         );
 
         return res.json({ mensaje: `¡${nombreUsuario} ahora es Administrador!` });

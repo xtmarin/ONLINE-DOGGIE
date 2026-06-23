@@ -542,6 +542,8 @@ menuItems.forEach(item => {
 // GESTIÓN DE USUARIOS Y ROLES (ADMINISTRACIÓN)
 // ==========================================================================
 async function cambiarRolUsuario(accion) {
+    console.log("Iniciando acción:", accion); // Ver si la función dispara
+    
     const emailInput = document.getElementById("admin-email");
     const email = emailInput ? emailInput.value.trim() : "";
     
@@ -551,9 +553,12 @@ async function cambiarRolUsuario(accion) {
     }
 
     const ruta = accion === 'promover' ? '/api/admin/nuevo-admin' : '/api/admin/degradar';
+    const url = `https://online-doggie-backend-production.up.railway.app${ruta}`;
+    
+    console.log("Enviando petición a:", url);
 
     try {
-        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app${ruta}`, {
+        const respuesta = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -562,23 +567,28 @@ async function cambiarRolUsuario(accion) {
             body: JSON.stringify({ email })
         });
 
-        const data = await respuesta.json();
+       
+        let data;
+        try {
+            data = await respuesta.json();
+        } catch (e) {
+            console.error("El servidor no devolvió JSON:", await respuesta.text());
+            mostrarToast("Error: El servidor devolvió una respuesta inválida", "error");
+            return;
+        }
 
         if (respuesta.ok) {
             mostrarToast(data.mensaje || "Rol actualizado exitosamente");
-            
-            
             const formAdmin = document.getElementById("form-nuevo-admin");
             if (formAdmin) formAdmin.reset();
-            
-            
             if (typeof cargarMetricas === 'function') cargarMetricas();
         } else {
-           
-            mostrarToast(data.error || "No se pudo cambiar el rol", "error");
+            
+            console.error("Error del servidor:", data);
+            mostrarToast(data.error || data.mensaje || "No se pudo cambiar el rol", "error");
         }
     } catch (error) {
-        console.error("Error en la solicitud:", error);
+        console.error("Error de conexión:", error);
         mostrarToast("Error de conexión con el servidor", "error");
     }
 }
@@ -931,10 +941,10 @@ async function actualizarEstadoPedido(id) {
     }
 }
 
-// ==========================================================================
 // INICIALIZACIÓN (DOM READY)
-// ==========================================================================
+
 document.addEventListener("DOMContentLoaded", () => {
+   
     // 1. Cargas iniciales de datos
     cargarCategoriasSelect();
     cargarProductos();
@@ -946,13 +956,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Módulos especializados
     inicializarHistorialCompras();
 
-    // 3. Vinculación de botones de Gestión de Usuarios
-    const btnPromover = document.getElementById("btn-promover");
-    const btnDegradar = document.getElementById("btn-degradar");
-    const btnEliminar = document.getElementById("btn-eliminar");
+    // 3. Vinculación de botones mediante Delegación de Eventos
+    // Esto funciona aunque el DOM cambie o las vistas se oculten/muestren
+    document.addEventListener("click", (event) => {
+        const target = event.target;
 
-    if (btnPromover) btnPromover.addEventListener("click", () => cambiarRolUsuario("promover"));
-    if (btnDegradar) btnDegradar.addEventListener("click", () => mostrarToast("Función en mantenimiento", "error"));
-    if (btnEliminar) btnEliminar.addEventListener("click", () => mostrarToast("Función en mantenimiento", "error"));
-    console.log("Admin Panel inicializado correctamente.");
+        if (target.id === "btn-promover") {
+            cambiarRolUsuario("promover");
+        } 
+        else if (target.id === "btn-degradar") {
+            cambiarRolUsuario("degradar");
+        } 
+        else if (target.id === "btn-eliminar") {
+            // Asegúrate de tener definida la función eliminarUsuarioSistema()
+            if (typeof eliminarUsuarioSistema === 'function') {
+                eliminarUsuarioSistema();
+            } else {
+                console.error("La función eliminarUsuarioSistema no está definida.");
+            }
+        }
+    });
+
+    console.log("Admin Panel inicializado con delegación de eventos.");
 });
