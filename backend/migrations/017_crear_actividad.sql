@@ -1,0 +1,5 @@
+CREATE TABLE actividad (
+    id SERIAL PRIMARY KEY,
+    accion TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
