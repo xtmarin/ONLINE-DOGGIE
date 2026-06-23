@@ -15,12 +15,17 @@ async function enviarCorreo({ destinatario, asunto, html, attachments = [] }) {
     }));
   }
 
-  await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
-    headers: {
-      'api-key': process.env.BREVO_API_KEY,
-      'Content-Type': 'application/json'
-    }
-  });
+  try {
+    await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
+      headers: {
+        'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    console.error("❌ Error de Brevo:", JSON.stringify(error.response?.data, null, 2));
+    throw error;
+  }
 }
 
 function formatCurrency(amount) {
@@ -135,21 +140,6 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
     ]
   });
 }
-
-  await createTransporter().sendMail({
-    from: `"🐾 Online Doggie" <${process.env.EMAIL_USER}>`,
-    to: destinatario,
-    subject: `Pedido #${shortId} — Pago`,
-    html: emailWrapper(content),
-    attachments: [
-      {
-        filename: "qr_pago.png",
-        content: base64Data,
-        encoding: "base64",
-        cid: "qr_pago"
-      }
-    ]
-  });
 
 // CORREO 2 - ADMIN
 async function sendNewOrderToAdmin({ order }) {
