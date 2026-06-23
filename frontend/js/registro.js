@@ -40,85 +40,69 @@ async function registrarUsuario(e) {
 
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/registro", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ nombre, email, password, direccion })
         });
 
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            mostrarToast(data.mensaje || "Error en el registro", "error");
+            
+            Swal.fire('Error', data.mensaje || "No se pudo completar el registro", 'error');
             return;
         }
 
-        // Registro exitoso -> Pasar a verificación
+        
         localStorage.setItem("emailVerificacion", email);
-        mostrarToast(data.mensaje || "Registro exitoso. Revisa tu correo.", "success");
+        Swal.fire('¡Casi listo!', 'Registro exitoso. Revisa tu correo para el código de verificación.', 'success');
 
-        const seccionRegistro = document.getElementById("seccion-registro");
-        const seccionVerificacion = document.getElementById("seccion-verificacion");
-
-        if (seccionRegistro) seccionRegistro.style.display = "none";
-        if (seccionVerificacion) seccionVerificacion.style.display = "block";
+        document.getElementById("seccion-registro").style.display = "none";
+        document.getElementById("seccion-verificacion").style.display = "block";
 
     } catch (error) {
         console.error("Error en registro:", error);
-        mostrarToast("Error registrando usuario: verifica que el servidor esté encendido.", "error");
+        Swal.fire('Error', "No se pudo conectar con el servidor.", 'error');
     } finally {
         if (boton) boton.disabled = false;
     }
 }
 
+
 async function verificarCuenta(e) {
     e.preventDefault();
 
-    const boton = e.target.querySelector('button[type="submit"]');
+   const boton = e.target.querySelector('button[type="submit"]');
     const codigo = document.getElementById("codigo").value.trim();
-
-    // Validaciones de verificación
-    if (!/^\d{6}$/.test(codigo)) {
-        mostrarToast("El código debe contener exactamente 6 dígitos", "error");
-        return;
-    }
-
     const email = localStorage.getItem("emailVerificacion");
+
     if (!email) {
-        mostrarToast("No se encontró el correo para verificar. Regístrate nuevamente.", "error");
+        Swal.fire('Error', "Sesión expirada. Por favor regístrate de nuevo.", 'error');
+        window.location.reload();
         return;
     }
 
     try {
         if (boton) boton.disabled = true;
-
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/verificarCuenta", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, codigo })
         });
 
         const data = await respuesta.json();
 
         if (!respuesta.ok) {
-            mostrarToast(data.mensaje || "Código incorrecto o expirado", "error");
+            Swal.fire('Error', data.mensaje || "Código incorrecto", 'error');
             return;
         }
 
-      
         localStorage.removeItem("emailVerificacion");
-        mostrarToast("✅ Cuenta verificada con éxito", "success");
-
+        Swal.fire('¡Éxito!', 'Cuenta verificada correctamente', 'success');
         
-        setTimeout(() => {
-            window.location.href = "login.html";
-        }, 1000);
+        setTimeout(() => { window.location.href = "login.html"; }, 1500);
 
     } catch (error) {
-        console.error("Error en verificación:", error);
-        mostrarToast("Error al verificar la cuenta", "error");
+        Swal.fire('Error', "Error al procesar la verificación", 'error');
     } finally {
         if (boton) boton.disabled = false;
     }

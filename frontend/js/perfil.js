@@ -1,5 +1,9 @@
 const token = localStorage.getItem("token");
 
+let pedidosCompletos = [];
+let paginaActual = 1;
+const pedidosPorPagina = 5;
+
 /* VALIDACIÓN DE SESIÓN INICIAL */
 if (!token) {
     mostrarToast("Debes iniciar sesión", "error");
@@ -12,14 +16,13 @@ if (!token) {
 document.addEventListener("DOMContentLoaded", () => {
     cargarPerfil();
     cargarHistorial();
+    cambiarVista('vista-configuracion');
 
-    cambiarVista('vista-configuracion')
-
-    const formEditarPerfil = document.getElementById("form-editar-perfil");
+    const formUnificado = document.getElementById("form-unificado-perfil");
     const formCambiarPassword = document.getElementById("form-cambiar-password");
     const logoutBtn = document.getElementById("logout-btn");
 
-    if (formEditarPerfil) formEditarPerfil.addEventListener("submit", editarPerfil);
+    if (formUnificado) formUnificado.addEventListener("submit", actualizarTodoElPerfil);
     if (formCambiarPassword) formCambiarPassword.addEventListener("submit", cambiarPassword);
     if (logoutBtn) logoutBtn.addEventListener("click", cerrarSesion);
 });
@@ -36,7 +39,7 @@ async function cargarPerfil() {
             mostrarToast("Tu sesión expiró, inicia sesión nuevamente", "error");
             localStorage.removeItem("token");
             localStorage.removeItem("usuario");
-            
+
             setTimeout(() => {
                 window.location.href = "Login.html";
             }, 1500);
@@ -69,6 +72,7 @@ async function cargarPerfil() {
 
 
 /* HISTORIAL DE COMPRAS */
+
 async function cargarHistorial() {
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/pedidos/historial", {
@@ -77,83 +81,77 @@ async function cargarHistorial() {
 
         if (!respuesta.ok) return;
 
-        const pedidos = await respuesta.json();
-        const tablaBody = document.getElementById("historial-compras-tabla-body");
-
-        if (!tablaBody) return;
-
-        if (!pedidos.length) {
-            tablaBody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #666; padding: 25px;">
-                        No tienes compras registradas.
-                    </td>
-                </tr>`;
-            return;
-        }
-
-        const clasesEstado = {
-            "pendiente": "badge-pendiente",
-            "pagado": "badge-enviado",
-            "enviado": "badge-enviado",
-            "entregado": "badge-entregado",
-            "cancelado": "badge-pendiente"
-        };
-
-        let filasHtml = "";
-
-        pedidos.forEach(pedido => {
-            const estadoTexto = pedido.estado || "pendiente";
-            const claseBadge = clasesEstado[estadoTexto.toLowerCase()] || "badge-enviado";
-
-            pedido.productos.forEach(producto => {
-                filasHtml += `
-                    <tr>
-                        <td style="font-weight: bold;">${producto.nombre}</td>
-                        <td>$${Number(producto.precio).toLocaleString("es-CO")}</td>
-                        <td style="text-align: center;">${producto.cantidad}</td>
-                        <td>
-                            <span class="badge-estado-tabla ${claseBadge}">
-                                ${estadoTexto}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
-        });
-
-        tablaBody.innerHTML = filasHtml;
+        pedidosCompletos = await respuesta.json(); 
+        renderizarTabla(); 
 
     } catch (error) {
         console.error("Error cargando historial en tabla:", error);
         const tablaBody = document.getElementById("historial-compras-tabla-body");
         if (tablaBody) {
-            tablaBody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #EF4444; font-weight: bold; padding: 25px;">
-                        Error cargando la información del servidor.
-                    </td>
-                </tr>`;
+            tablaBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #EF4444; font-weight: bold; padding: 25px;">Error cargando la información.</td></tr>`;
         }
     }
 }
 
+function renderizarTabla() {
+    const tablaBody = document.getElementById("historial-compras-tabla-body");
+    const infoPagina = document.getElementById("info-pagina");
+    
+    if (!tablaBody) return;
 
-/* EDITAR PERFIL */
-async function editarPerfil(e) {
+    if (!pedidosCompletos.length) {
+        tablaBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #666; padding: 25px;">No tienes compras registradas.</td></tr>`;
+        return;
+    }
+
+    
+    const inicio = (paginaActual - 1) * pedidosPorPagina;
+    const fin = inicio + pedidosPorPagina;
+    const productosPagina = [];
+
+    
+    pedidosCompletos.slice(inicio, fin).forEach(pedido => {
+        pedido.productos.forEach(prod => productosPagina.push({ ...prod, estado: pedido.estado }));
+    });
+
+    const clasesEstado = { "pendiente": "badge-pendiente", "pagado": "badge-enviado", "enviado": "badge-enviado", "entregado": "badge-entregado", "cancelado": "badge-pendiente" };
+
+    let filasHtml = "";
+    productosPagina.forEach(producto => {
+        const estadoTexto = producto.estado || "pendiente";
+        const claseBadge = clasesEstado[estadoTexto.toLowerCase()] || "badge-enviado";
+        filasHtml += `
+            <tr>
+                <td style="font-weight: bold;">${producto.nombre}</td>
+                <td>$${Number(producto.precio).toLocaleString("es-CO")}</td>
+                <td style="text-align: center;">${producto.cantidad}</td>
+                <td><span class="badge-estado-tabla ${claseBadge}">${estadoTexto}</span></td>
+            </tr>`;
+    });
+
+    tablaBody.innerHTML = filasHtml;
+    if (infoPagina) infoPagina.textContent = `Página ${paginaActual} de ${Math.ceil(pedidosCompletos.length / pedidosPorPagina)}`;
+}
+
+
+document.getElementById("btn-anterior").addEventListener("click", () => {
+    if (paginaActual > 1) { paginaActual--; renderizarTabla(); }
+});
+
+document.getElementById("btn-siguiente").addEventListener("click", () => {
+    if (paginaActual < Math.ceil(pedidosCompletos.length / pedidosPorPagina)) { paginaActual++; renderizarTabla(); }
+});
+
+/* ACTUALIZAR TODO EL PERFIL (NOMBRE Y DIRECCIÓN) */
+async function actualizarTodoElPerfil(e) {
     e.preventDefault();
 
     const nombre = document.getElementById("edit-nombre").value.trim();
     const email = document.getElementById("edit-email").value.trim();
+    const direccion = document.getElementById("input-direccion").value.trim();
 
-    if (!nombre || !email) {
-        mostrarToast("Todos los campos son obligatorios", "error");
-        return;
-    }
-
-    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailValido) {
-        mostrarToast("El formato del correo no es válido", "error");
+    if (!nombre || !direccion) {
+        Swal.fire('Error', 'El nombre y la dirección son obligatorios', 'error');
         return;
     }
 
@@ -164,20 +162,24 @@ async function editarPerfil(e) {
                 "Authorization": "Bearer " + token,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ nombre, email })
+            body: JSON.stringify({ nombre, email, direccion })
         });
 
         const data = await respuesta.json();
-        mostrarToast(data.mensaje, respuesta.ok ? "success" : "error");
-
-        if (respuesta.ok) cargarPerfil();
+        
+        if (respuesta.ok) {
+           
+            Swal.fire('¡Éxito!', 'Perfil actualizado correctamente', 'success');
+            cargarPerfil(); 
+        } else {
+            Swal.fire('Error', data.mensaje || "No se pudo actualizar", 'error');
+        }
 
     } catch (error) {
-        console.error("Error editando perfil:", error);
-        mostrarToast("Error conectando con el servidor", "error");
+        console.error("Error al actualizar:", error);
+        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
     }
 }
-
 
 /* CAMBIAR CONTRASEÑA */
 async function cambiarPassword(e) {
@@ -228,55 +230,6 @@ async function cambiarPassword(e) {
     }
 }
 
-
-/* GUARDAR DIRECCIÓN DE ENVÍO */
-async function guardarDireccion() {
-    const direccion = document.getElementById("input-direccion")?.value.trim();
-    const msgEl = document.getElementById("mensaje-direccion");
-
-    if (!direccion) {
-        if (msgEl) {
-            msgEl.textContent = "Escribe una dirección primero";
-            msgEl.style.color = "red";
-        }
-        return;
-    }
-
-    const nombre = document.getElementById("edit-nombre")?.value.trim();
-    const email = document.getElementById("edit-email")?.value.trim();
-
-    try {
-        const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/auth/perfil", {
-            method: "PUT",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ nombre, email, direccion })
-        });
-
-        if (respuesta.ok) {
-            if (msgEl) {
-                msgEl.textContent = "✅ Dirección guardada correctamente.";
-                msgEl.style.color = "green";
-            }
-        } else {
-            const data = await respuesta.json();
-            if (msgEl) {
-                msgEl.textContent = data.mensaje || "Error al guardar";
-                msgEl.style.color = "red";
-            }
-        }
-
-    } catch (error) {
-        if (msgEl) {
-            msgEl.textContent = "Error conectando con el servidor";
-            msgEl.style.color = "red";
-        }
-    }
-}
-
-
 /* CERRAR SESIÓN (LOGOUT) */
 function cerrarSesion() {
     localStorage.removeItem("token");
@@ -286,7 +239,7 @@ function cerrarSesion() {
 
 /* GESTIÓN DE VISTAS DINÁMICAS */
 function cambiarVista(idVista) {
-    
+
     const vistas = document.querySelectorAll('.vista-seccion-perfil');
     vistas.forEach(v => v.classList.remove('activa'));
 
@@ -295,7 +248,7 @@ function cambiarVista(idVista) {
         vistaSeleccionada.classList.add('activa');
     }
 
-   
+
     const drawer = document.getElementById('perfil-drawer');
     if (drawer) drawer.classList.remove('abierto');
 }

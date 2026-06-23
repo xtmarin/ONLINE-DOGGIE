@@ -166,12 +166,16 @@ function aplicarCupon() {
 function abrirMiniCarrito() {
     document.getElementById("mini-carrito")?.classList.add("activo");
     document.getElementById("overlay-mini")?.classList.add("activo");
+   
+    document.querySelector(".carrito-flotante")?.classList.add("oculto");
     actualizarMiniCarrito();
 }
 
 function cerrarMiniCarrito() {
     document.getElementById("mini-carrito")?.classList.remove("activo");
     document.getElementById("overlay-mini")?.classList.remove("activo");
+   
+    document.querySelector(".carrito-flotante")?.classList.remove("oculto");
 }
 
 function actualizarMiniCarrito() {
@@ -195,7 +199,7 @@ function actualizarMiniCarrito() {
                 <img src="${rutaImagen}" class="mini-img" alt="${producto.nombre}">
                 <div class="mini-info">
                     <h4>${producto.nombre}</h4>
-                    <p>Cantidad: ${producto.cantidad}</p>
+                    <p class="mini-detalle">Cantidad: ${producto.cantidad}</p>
                     <p class="mini-precio">$${subtotal.toLocaleString("es-CO")}</p>
                 </div>
                 <button class="mini-eliminar" onclick="eliminarDesdeMini(${index})">✕</button>

@@ -205,8 +205,49 @@ nav ul li ul li a:hover {
 }
 
 .header-container {
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.textos-header {
+    text-align: left;
+}
+
+.productos-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.productos-header p {
+    color: #666;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.filtros-contenedor {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .textos-header {
+        margin-bottom: 15px;
+        text-align: center;
+    }
 }
 
 .productos-header h2 {
@@ -219,13 +260,6 @@ nav ul li ul li a:hover {
     color: #666;
     margin-bottom: 15px;
     font-size: 0.9rem;
-}
-
-.filtros-contenedor {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
 }
 
 .buscador,
@@ -494,17 +528,64 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     margin-bottom: 10px;
 }
 
-#mini-carrito-body { flex: 1; overflow-y: auto; margin-right: -10px; padding-right: 10px; }
+/* --- LIMPIEZA FORZADA PARA EL MINI CARRITO --- */
+
+#mini-carrito-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 35px 15px 15px 15px; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.mini-item:first-child {
+    margin-top: 10px;
+}
 
 .mini-item {
-    display: flex; align-items: center; gap: 12px;
-    background: #f8fbff; padding: 10px; border-radius: 10px;
-    margin-bottom: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    background: #fff;
+    height: auto; 
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
 }
-.mini-img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
-.mini-info { flex: 1; }
-.mini-info h4 { font-size: 14px; margin: 0 0 4px 0; line-height: 1.2; }
-.mini-precio { font-weight: 700; color: var(--azul-primario); font-size: 0.95rem; }
+
+.mini-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0; 
+}
+
+.mini-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0; /* Crucial para evitar que el texto empuje hacia afuera */
+}
+
+.mini-info h4 {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.mini-precio {
+    font-weight: 700;
+    color: var(--azul-primario);
+    font-size: 0.9rem;
+}
 .mini-eliminar { background: none; border: none; cursor: pointer; color: #ff6b6b; padding: 5px; }
 
 .mini-footer { border-top: 1px solid var(--gris-borde); padding-top: 20px; }
@@ -588,6 +669,10 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
 .btn-vaciar { background: #fff0f0; color: #ff4d4d; font-size: 0.9rem; }
 .btn-pagar { background: linear-gradient(135deg, var(--azul-primario), var(--azul-secundario)); color: white; padding: 12px 30px; }
 .btn-carrito:hover { transform: translateY(-2px); opacity: 0.9; }
+
+.carrito-flotante.oculto{
+    display: none;
+}
 
 /* ========================================================================== */
 /* 12. LOGIN / REGISTRO                                                        */
@@ -775,7 +860,7 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     color: var(--gris-texto);
 }
 
-/* Estructura de Vistas */
+
 .vista-seccion-perfil {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
@@ -785,7 +870,7 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     display: block;
 }
 
-/* Drawer (Menú Lateral) */
+
 .admin-drawer {
     position: fixed;
     top: 0;
@@ -839,7 +924,6 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     color: var(--azul-primario);
 }
 
-/* Tabla Estilizada */
 .tabla-perfil-container {
     overflow-x: auto;
     margin-top: 15px;
@@ -864,6 +948,52 @@ button[type="submit"], .btn-submit, .perfil-seccion button:not(#logout-btn) {
     border-bottom: 1px solid var(--gris-borde);
 }
 
+#form-unificado-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+#form-unificado-perfil label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gris-texto);
+    margin-bottom: -10px;
+}
+
+#form-unificado-perfil input[readonly] {
+    background-color: #f0f2f5;
+    cursor: not-allowed;
+    border: 1px solid #d1d5db;
+}
+
+#form-unificado-perfil .btn-primary {
+    width: 100%;
+    background: var(--azul-primario);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+#form-unificado-perfil .btn-primary:hover {
+    background: #0056b3; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+
+@media (max-width: 768px) {
+    .perfil-container {
+        flex-direction: column;
+    }
+}
 /* ========================================================================== */
 /* 14. FOOTER                                       */
 /* ========================================================================== */

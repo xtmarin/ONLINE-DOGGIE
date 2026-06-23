@@ -1,7 +1,3 @@
-// ==========================================================================
-// CONFIGURACIÓN GLOBAL Y AUTENTICACIÓN
-// ==========================================================================
-// Usamos el token global ya declarado en el HTML o lo recuperamos de forma segura
 if (!window.token) {
     window.token = localStorage.getItem("token");
 }
@@ -368,18 +364,20 @@ const overlayModal = document.getElementById("modal-editar-overlay");
 if (btnCerrarModal) btnCerrarModal.addEventListener("click", cerrarModalEditar);
 if (overlayModal) overlayModal.addEventListener("click", cerrarModalEditar);
 
-
 const formEditarProducto = document.getElementById("form-editar-producto");
 
 if (formEditarProducto) {
     formEditarProducto.addEventListener("submit", async (e) => {
-        e.preventDefault(); // Evita que la página se recargue
+        e.preventDefault();
 
-        
         const nombre = document.getElementById("edit-nombre").value.trim();
         const descripcion = document.getElementById("edit-descripcion").value.trim();
         const categoria = document.getElementById("edit-categoria").value;
-        const precio = parseFloat(document.getElementById("edit-precio").value);
+
+
+        const rawPrecio = document.getElementById("edit-precio").value;
+        const precio = parseFloat(rawPrecio.toString().replace(/\./g, '').replace(',', '.'));
+
         const stock = parseInt(document.getElementById("edit-stock").value, 10);
 
         const formData = new FormData();
@@ -389,14 +387,13 @@ if (formEditarProducto) {
         formData.append("categoria", categoria);
         formData.append("stock", stock);
 
-        
+
         const imagenInput = document.getElementById("edit-imagen");
         if (imagenInput && imagenInput.files.length > 0) {
             formData.append("imagen", imagenInput.files[0]);
         }
 
         try {
-            
             const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app/api/productos/${productoEditando}`, {
                 method: "PUT",
                 headers: { "Authorization": "Bearer " + accessToken },
@@ -406,25 +403,44 @@ if (formEditarProducto) {
             const data = await respuesta.json();
 
             if (respuesta.ok) {
-                
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire('¡Éxito!', 'Producto actualizado correctamente', 'success');
-                }
-                cerrarModalEditar(); 
-                cargarProductos();   
+                Swal.fire('¡Éxito!', 'Producto actualizado correctamente', 'success');
+                cerrarModalEditar();
+                cargarProductos();
+                cargarMetricas();
             } else {
                 throw new Error(data.error || "No se pudo actualizar");
             }
         } catch (error) {
             console.error("Error al editar:", error);
-            if (typeof Swal !== 'undefined') {
-                Swal.fire('Error', error.message, 'error');
-            } else {
-                alert("Error: " + error.message);
-            }
+            Swal.fire('Error', error.message, 'error');
         }
     });
 }
+
+const editUploadBox = document.getElementById("edit-upload-box");
+const editInputImagen = document.getElementById("edit-imagen");
+const editPreview = document.getElementById("edit-preview");
+
+if (editUploadBox && editInputImagen) {
+
+    editUploadBox.addEventListener("click", () => {
+        editInputImagen.click();
+    });
+
+
+    editInputImagen.addEventListener("change", function () {
+        const archivo = this.files[0];
+        if (archivo) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                editPreview.src = e.target.result;
+                editPreview.style.display = "block"; n
+            };
+            reader.readAsDataURL(archivo);
+        }
+    });
+}
+
 
 async function eliminarProducto(id) {
     Swal.fire({
@@ -526,38 +542,44 @@ menuItems.forEach(item => {
 // GESTIÓN DE USUARIOS Y ROLES (ADMINISTRACIÓN)
 // ==========================================================================
 async function cambiarRolUsuario(accion) {
-    const email = document.getElementById("admin-email").value.trim();
+    const emailInput = document.getElementById("admin-email");
+    const email = emailInput ? emailInput.value.trim() : "";
+    
     if (!email) {
-        mostrarToast("Por favor, ingrese el correo electrónico", "error");
+        mostrarToast("Por favor, ingrese un correo electrónico", "error");
         return;
     }
 
-    const url = accion === "promover"
-        ? "https://online-doggie-backend-production.up.railway.app/api/admin/promover"
-        : "https://online-doggie-backend-production.up.railway.app/api/admin/degradar";
+    const ruta = accion === 'promover' ? '/api/admin/nuevo-admin' : '/api/admin/degradar';
 
     try {
-        const respuesta = await fetch(url, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app${ruta}`, {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + accessToken,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             },
-            body: JSON.stringify({ email: email })
+            body: JSON.stringify({ email })
         });
+
         const data = await respuesta.json();
 
         if (respuesta.ok) {
-            mostrarToast(data.mensaje || `Rol de usuario actualizado con éxito`);
+            mostrarToast(data.mensaje || "Rol actualizado exitosamente");
+            
+            
             const formAdmin = document.getElementById("form-nuevo-admin");
             if (formAdmin) formAdmin.reset();
-            cargarMetricas();
+            
+            
+            if (typeof cargarMetricas === 'function') cargarMetricas();
         } else {
-            mostrarToast(data.error || "No se pudo cambiar el rol del usuario", "error");
+           
+            mostrarToast(data.error || "No se pudo cambiar el rol", "error");
         }
     } catch (error) {
-        console.error("Error alterando rol:", error);
-        mostrarToast("Error en la conexión con el servidor", "error");
+        console.error("Error en la solicitud:", error);
+        mostrarToast("Error de conexión con el servidor", "error");
     }
 }
 
@@ -913,6 +935,7 @@ async function actualizarEstadoPedido(id) {
 // INICIALIZACIÓN (DOM READY)
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Cargas iniciales de datos
     cargarCategoriasSelect();
     cargarProductos();
     cargarMetricas();
@@ -920,6 +943,16 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarPedidos();
     cargarStock();
 
-    // Encendemos correctamente el buscador avanzado de compras que tenías inactivo
+    // 2. Módulos especializados
     inicializarHistorialCompras();
+
+    // 3. Vinculación de botones de Gestión de Usuarios
+    const btnPromover = document.getElementById("btn-promover");
+    const btnDegradar = document.getElementById("btn-degradar");
+    const btnEliminar = document.getElementById("btn-eliminar");
+
+    if (btnPromover) btnPromover.addEventListener("click", () => cambiarRolUsuario("promover"));
+    if (btnDegradar) btnDegradar.addEventListener("click", () => mostrarToast("Función en mantenimiento", "error"));
+    if (btnEliminar) btnEliminar.addEventListener("click", () => mostrarToast("Función en mantenimiento", "error"));
+    console.log("Admin Panel inicializado correctamente.");
 });

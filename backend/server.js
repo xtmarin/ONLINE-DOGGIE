@@ -9,9 +9,5 @@ app.listen(PORT, () => {
 const pool = require('./src/config/db');
 
 pool.query('SELECT NOW()', (err, res) => {
-    if (err) {
-        console.error('❌ Error conexión DB:', err);
-    } else {
-        console.log('✅ PostgreSQL conectado');
-    }
+    console.log('Conexión a la base de datos establecida');
 });

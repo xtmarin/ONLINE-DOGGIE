@@ -7,14 +7,16 @@
     <title>Panel Administrador - Online Doggie</title>
 
     <link rel="stylesheet" href="./css/style.css">
-    <link rel="shortcut icon" href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" type="image/x-icon">
-    
+    <link rel="shortcut icon"
+        href="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico"
+        type="image/x-icon">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         const token = localStorage.getItem('token');
         const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-        
+
         if (!token || usuario.rol !== 'admin') {
             window.location.replace('index.html');
         }
@@ -25,7 +27,8 @@
 
     <header class="header">
         <div class="logo">
-            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico" alt="Logo Online Doggie">
+            <img src="https://online-doggie-backend-production.up.railway.app/uploads/ONLINE-DOGGIE%20ICO.ico"
+                alt="Logo Online Doggie">
             <h1>Online Doggie</h1>
         </div>
         <nav class="navbar">
@@ -147,18 +150,20 @@
                     </div>
                 </form>
             </div>
-        </div> 
-        
+        </div>
+
         <div id="vista-historial-compras" class="vista-seccion">
             <div class="admin-historial-box">
                 <h2>🔍 Consulta de Historial de Compras Global</h2>
                 <p>Busque y despliegue las transacciones comerciales ejecutadas por cualquier cliente del sistema.</p>
                 <div class="buscar-historial-form">
-                    <input type="email" id="buscar-historial-email" placeholder="Ingrese el correo exacto del usuario...">
+                    <input type="email" id="buscar-historial-email"
+                        placeholder="Ingrese el correo exacto del usuario...">
                     <button type="button" id="btn-buscar-historial">Buscar Historial</button>
                 </div>
                 <div id="resultados-historial-compras">
-                    <p class="historial-vacio">Ingrese un correo electrónico válido para desplegar las órdenes de compra asociadas.</p>
+                    <p class="historial-vacio">Ingrese un correo electrónico válido para desplegar las órdenes de compra
+                        asociadas.</p>
                 </div>
             </div>
         </div>
@@ -168,7 +173,7 @@
         <div class="footer-content">
             <p>&copy; 2026 Online Doggie. Todos los derechos reservados.</p>
         </div>
-    </footer >
+    </footer>
 
     <div id="admin-fab" class="admin-fab">
         <span>🛠️</span>
@@ -197,22 +202,22 @@
                 <h3>Editar producto</h3>
                 <button id="cerrar-modal-editar" class="close-drawer">✕</button>
             </div>
-            <form id="form-editar-producto">
-                <input type="text" id="edit-nombre" placeholder="Nombre del producto" required>
-                <input type="text" id="edit-descripcion" placeholder="Descripción" required>
-                <input type="number" id="edit-precio" placeholder="Precio" required>
-                <select id="edit-categoria" required>
+            <form id="form-editar-producto" enctype="multipart/form-data">
+                <input type="text" id="edit-nombre" name="nombre" placeholder="Nombre del producto" required>
+                <input type="text" id="edit-descripcion" name="descripcion" placeholder="Descripción" required>
+                <input type="number" id="edit-precio" name="precio" placeholder="Precio" required>
+                <select id="edit-categoria" name="categoria" required>
                     <option value="">Selecciona una categoría</option>
                 </select>
-                <input type="number" id="edit-stock" placeholder="Stock" required>
-                
+                <input type="number" id="edit-stock" name="stock" placeholder="Stock" required>
+
                 <div class="upload-box" id="edit-upload-box">
-                    <input type="file" id="edit-imagen" accept="image/*" hidden>
+                    <input type="file" id="edit-imagen" name="imagen" accept="image/*" hidden>
                     <div class="upload-content">
                         <p>📷 Cambiar imagen del producto</p>
                         <span>Haz clic o arrastra una nueva imagen aquí</span>
                     </div>
-                    <img id="edit-preview" class="preview-img">
+                    <img id="edit-preview" class="preview-img" style="display: none;">
                 </div>
                 <button type="submit">Actualizar Producto</button>
             </form>
@@ -226,4 +231,5 @@
     <script src="./js/admin.js"></script>
 
 </body>
+
 </html>

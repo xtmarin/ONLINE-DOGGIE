@@ -42,8 +42,8 @@ const promoverUsuario = async (req, res) => {
 
         // Intentamos registrar actividad; si falla, el catch principal lo captura
         await pool.query(
-            "INSERT INTO actividad (accion) VALUES ($1)",
-            [`El usuario ${nombreUsuario} (${email}) fue promovido a Admin`]
+            "INSERT INTO actividad (accion, fecha) VALUES ($1, NOW())",
+            [`El usuario ${email} fue promovido a Admin`]
         );
 
         return res.json({ mensaje: `¡${nombreUsuario} ahora es Administrador!` });
@@ -73,9 +73,34 @@ const obtenerTodosPedidos = async (req, res) => {
     }
 };
 
+const degradarUsuario = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const result = await pool.query("UPDATE usuarios SET rol = 'usuario' WHERE email = $1", [email]);
+        if (result.rowCount === 0) return res.status(404).json({ error: "Usuario no encontrado" });
+        res.json({ mensaje: "Usuario degradado a rol estándar" });
+    } catch (error) {
+        res.status(500).json({ error: "Error al degradar usuario" });
+    }
+};
+
+const eliminarUsuario = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const result = await pool.query("DELETE FROM usuarios WHERE email = $1", [email]);
+        if (result.rowCount === 0) return res.status(404).json({ error: "Usuario no encontrado" });
+        res.json({ mensaje: "Usuario eliminado del sistema" });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar usuario" });
+    }
+};
+
+
 module.exports = {
     obtenerMetricas,
     obtenerActividad,
     promoverUsuario,
-    obtenerTodosPedidos
+    obtenerTodosPedidos,
+    degradarUsuario,
+    eliminarUsuario
 };
