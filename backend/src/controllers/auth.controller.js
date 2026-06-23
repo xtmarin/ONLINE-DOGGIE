@@ -5,13 +5,18 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         type: 'OAuth2',
         user: process.env.EMAIL_USER,
         clientId: process.env.GMAIL_CLIENTE_ID,
         clientSecret: process.env.GMAIL_CLIENTE_SECRET,
         refreshToken: process.env.GMAIL_REFRESH_TOKEN,
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
