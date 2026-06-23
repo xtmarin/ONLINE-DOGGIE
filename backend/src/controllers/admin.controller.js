@@ -48,11 +48,35 @@ const promoverUsuario = async (req, res) => {
         return res.json({ mensaje: `¡${nombreUsuario} ahora es Administrador!` });
 
     } catch (error) {
-        console.error("ERROR DETALLADO EN BACKEND:", error); // <-- ESTA LÍNEA ES LA CLAVE
-        return res.status(500).json({ 
-            mensaje: "Error al actualizar el rol",
-            detalle: error.message // <-- Enviamos el error real al frontend
-        });
+        console.error("Error en promoverUsuario:", error);
+        return res.status(500).json({ mensaje: "Error al promover usuario" });
+    }
+};
+
+const degradarUsuario = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const resultado = await pool.query(
+            "UPDATE usuarios SET rol = 'usuario' WHERE email = $1 RETURNING nombre",
+            [email]
+        );
+
+        if (resultado.rowCount === 0) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        const nombreUsuario = resultado.rows[0].nombre;
+
+        await pool.query(
+            "INSERT INTO actividad (accion, fecha) VALUES ($1, CURRENT_TIMESTAMP)",
+            [`El usuario ${nombreUsuario} (${email}) fue degradado a usuario estándar`]
+        );
+
+        return res.json({ mensaje: `¡${nombreUsuario} ahora es usuario estándar!` });
+
+    } catch (error) {
+        console.error("Error en degradarUsuario:", error);
+        return res.status(500).json({ mensaje: "Error al degradar usuario" });
     }
 };
 
@@ -76,16 +100,7 @@ const obtenerTodosPedidos = async (req, res) => {
     }
 };
 
-const degradarUsuario = async (req, res) => {
-    const { email } = req.body;
-    try {
-        const result = await pool.query("UPDATE usuarios SET rol = 'usuario' WHERE email = $1", [email]);
-        if (result.rowCount === 0) return res.status(404).json({ error: "Usuario no encontrado" });
-        res.json({ mensaje: "Usuario degradado a rol estándar" });
-    } catch (error) {
-        res.status(500).json({ error: "Error al degradar usuario" });
-    }
-};
+
 
 const eliminarUsuario = async (req, res) => {
     const { email } = req.body;
