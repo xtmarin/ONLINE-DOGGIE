@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
     clientSecret: process.env.GMAIL_CLIENT_SECRET,
     refreshToken: process.env.GMAIL_REFRESH_TOKEN
   }
+  
 });
 
 exports.registro = async (req, res) => {
