@@ -1,12 +1,25 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 
-function createTransporter() {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+async function enviarCorreo({ destinatario, asunto, html, attachments = [] }) {
+  const payload = {
+    sender: { name: "Online Doggie 🐶", email: process.env.EMAIL_USER },
+    to: [{ email: destinatario }],
+    subject: asunto,
+    htmlContent: html
+  };
+
+  if (attachments.length > 0) {
+    payload.attachment = attachments.map(a => ({
+      content: a.content,
+      name: a.filename
+    }));
+  }
+
+  await axios.post('https://api.brevo.com/v3/smtp/email', payload, {
+    headers: {
+      'api-key': process.env.BREVO_API_KEY,
+      'Content-Type': 'application/json'
+    }
   });
 }
 
@@ -98,9 +111,7 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
     <h3>Cómo pagar</h3>
     <p>Referencia: ${paymentInfo?.concepto || ""}</p>
 
-    <div style="text-align:center;margin:20px 0;">
-      <img src="cid:qr_pago" style="width:220px;height:220px;" />
-    </div>
+    <p style="text-align:center;color:#1E3CFF;font-weight:600;">📎 Encontrarás el código QR de pago adjunto a este correo</p>
 
     <div style="text-align:center;margin:25px 0;">
       <p style="color:#4a5568;font-size:14px;margin-bottom:12px;">Una vez realices la transferencia, envíanos tu comprobante haciendo clic aquí:</p>
@@ -111,6 +122,19 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
 
     ${buildItemsTable(order.items)}
   `;
+
+  await enviarCorreo({
+    destinatario,
+    asunto: `Pedido #${shortId} — Pago`,
+    html: emailWrapper(content),
+    attachments: [
+      {
+        filename: "qr_pago.png",
+        content: base64Data
+      }
+    ]
+  });
+}
 
   await createTransporter().sendMail({
     from: `"🐾 Online Doggie" <${process.env.EMAIL_USER}>`,
@@ -126,7 +150,6 @@ async function sendPaymentQRToClient({ order, qrBase64, paymentInfo }) {
       }
     ]
   });
-}
 
 // CORREO 2 - ADMIN
 async function sendNewOrderToAdmin({ order }) {
@@ -134,20 +157,19 @@ async function sendNewOrderToAdmin({ order }) {
   const adminEmail = (process.env.ADMIN_EMAIL || "").trim();
 
   if (!adminEmail) {
-    console.warn("ADmIN_EMAIL no definido, no se enviará correo al admin");
+    console.warn("ADMIN_EMAIL no definido, no se enviará correo al admin");
     return;
   }
 
-  await createTransporter().sendMail({
-    from: `"🐾 Online Doggie" <${process.env.EMAIL_USER}>`,
-    to: process.env.ADMIN_EMAIL,
-    subject: `Nuevo pedido #${shortId}`,
+  await enviarCorreo({
+    destinatario: adminEmail,
+    asunto: `Nuevo pedido #${shortId}`,
     html: emailWrapper(`
       <h2>Nuevo pedido</h2>
       <p>Cliente: ${order.user_name}</p>
       <p>Email: ${order.user_email}</p>
       ${buildItemsTable(order.items)}
-    `),
+    `)
   });
 }
 
@@ -158,11 +180,10 @@ async function sendShippingConfirmationToClient({ order }) {
 
   if (!destinatario) return;
 
-  await createTransporter().sendMail({
-    from: `"🐾 Online Doggie" <${process.env.EMAIL_USER}>`,
-    to: destinatario,
-    subject: `Tu pedido #${shortId} fue enviado`,
-    html: emailWrapper(`<h2>🚚 Pedido enviado</h2>`),
+  await enviarCorreo({
+    destinatario,
+    asunto: `Tu pedido #${shortId} fue enviado`,
+    html: emailWrapper(`<h2>🚚 Pedido enviado</h2>`)
   });
 }
 
@@ -173,11 +194,10 @@ async function sendDeliveryConfirmationToClient({ order }) {
 
   if (!destinatario) return;
 
-  await createTransporter().sendMail({
-    from: `"🐾 Online Doggie" <${process.env.EMAIL_USER}>`,
-    to: destinatario,
-    subject: `Pedido #${shortId} entregado`,
-    html: emailWrapper(`<h2>🎉 Entrega confirmada</h2>`),
+  await enviarCorreo({
+    destinatario,
+    asunto: `Pedido #${shortId} entregado`,
+    html: emailWrapper(`<h2>🎉 Entrega confirmada</h2>`)
   });
 }
 
