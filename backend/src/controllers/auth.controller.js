@@ -3,19 +3,11 @@ const { hashPassword, verifyPassword, createToken } = require('../utils/security
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    type: 'OAuth2',
-    user: process.env.EMAIL_USER,
-    clientId: process.env.GMAIL_CLIENT_ID,
-    clientSecret: process.env.GMAIL_CLIENT_SECRET,
-    refreshToken: process.env.GMAIL_REFRESH_TOKEN
-  }
-});
+
+
 
 exports.registro = async (req, res) => {
     try {
@@ -54,22 +46,16 @@ exports.registro = async (req, res) => {
         );
 
         if (process.env.NODE_ENV !== 'test') {
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
+            await resend.emails.send({
+                from: 'onboarding@resend.dev', // Nota: Resend te pide verificar un dominio después
                 to: email,
                 subject: 'Verifica tu cuenta - Online Doggie 🐶',
                 html: `
-                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-                        <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
-                        <p>Gracias por registrarte. Para completar la creación de tu cuenta y empezar a comprar para tu peludito, por favor ingresa el siguiente código de verificación en la aplicación:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <span style="background-color: #f7f7f7; border: 2px dashed #0056b3; padding: 10px 20px; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #333; border-radius: 5px;">
-                                ${codigoRegistro}
-                            </span>
-                        </div>
-                        <p style="color: #666; font-size: 14px; text-align: center;">Este código es válido por 15 minutos.</p>
-                    </div>
-                `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                <h2 style="color: #0056b3; text-align: center;">¡Bienvenido a Online Doggie, ${nombre}!</h2>
+                <p>Tu código de verificación es: <strong>${codigoRegistro}</strong></p>
+            </div>
+        `
             });
         }
 
@@ -155,8 +141,8 @@ exports.login = async (req, res) => {
         }
 
         if (!usuario.cuenta_verificada) {
-            return res.status(403).json({ 
-                mensaje: "Debes verificar tu cuenta mediante el código enviado a tu correo antes de iniciar sesión." 
+            return res.status(403).json({
+                mensaje: "Debes verificar tu cuenta mediante el código enviado a tu correo antes de iniciar sesión."
             });
         }
 
