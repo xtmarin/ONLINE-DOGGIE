@@ -542,54 +542,58 @@ menuItems.forEach(item => {
 // GESTIÓN DE USUARIOS Y ROLES (ADMINISTRACIÓN)
 // ==========================================================================
 async function cambiarRolUsuario(accion) {
-    console.log("Iniciando acción:", accion); // Ver si la función dispara
-    
-    const emailInput = document.getElementById("admin-email");
-    const email = emailInput ? emailInput.value.trim() : "";
-    
+    const email = document.getElementById("admin-email").value.trim();
     if (!email) {
-        mostrarToast("Por favor, ingrese un correo electrónico", "error");
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Ingrese un correo', showConfirmButton: false, timer: 3000 });
         return;
     }
 
     const ruta = accion === 'promover' ? '/api/admin/nuevo-admin' : '/api/admin/degradar';
-    const url = `https://online-doggie-backend-production.up.railway.app${ruta}`;
     
-    console.log("Enviando petición a:", url);
-
     try {
-        const respuesta = await fetch(url, {
+        const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app${ruta}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
+            headers: { 
+                "Content-Type": "application/json", 
+                "Authorization": `Bearer ${accessToken}` 
             },
             body: JSON.stringify({ email })
         });
 
-       
-        let data;
-        try {
-            data = await respuesta.json();
-        } catch (e) {
-            console.error("El servidor no devolvió JSON:", await respuesta.text());
-            mostrarToast("Error: El servidor devolvió una respuesta inválida", "error");
-            return;
-        }
+        const data = await respuesta.json();
 
         if (respuesta.ok) {
-            mostrarToast(data.mensaje || "Rol actualizado exitosamente");
+            // Mensaje personalizado según la acción
+            const tituloExito = accion === 'promover' 
+                ? 'Usuario actualizado correctamente a admin' 
+                : 'Usuario actualizado correctamente a usuario';
+
+            // Usamos el formato Toast de SweetAlert2
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: tituloExito,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+            
             const formAdmin = document.getElementById("form-nuevo-admin");
             if (formAdmin) formAdmin.reset();
             if (typeof cargarMetricas === 'function') cargarMetricas();
         } else {
-            
-            console.error("Error del servidor:", data);
-            mostrarToast(data.error || data.mensaje || "No se pudo cambiar el rol", "error");
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: data.mensaje || "Error al actualizar rol",
+                showConfirmButton: false,
+                timer: 3000
+            });
         }
     } catch (error) {
-        console.error("Error de conexión:", error);
-        mostrarToast("Error de conexión con el servidor", "error");
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error de conexión', showConfirmButton: false, timer: 3000 });
     }
 }
 
