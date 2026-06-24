@@ -250,7 +250,8 @@ if (formProducto) {
         const stockRaw = document.getElementById(prefix + "stock").value;
 
         const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, ""));
-        const stock = parseInt(stockRaw.toString().replace(/[.,]/g, ""), 10);
+        const stockRaw = document.getElementById("edit-stock").value;
+        const stock = parseInt(stockRaw.toString().replace(/\D/g, ""), 10);
 
         if (isNaN(precio) || isNaN(stock)) {
             Swal.fire('Datos inválidos', "El precio y el stock deben ser números válidos", 'warning');
@@ -376,7 +377,12 @@ if (formEditarProducto) {
 
 
         const rawPrecio = document.getElementById("edit-precio").value;
-        const precio = parseFloat(rawPrecio.toString().replace(/\./g, '').replace(',', '.'));
+        const precio = parseFloat(rawPrecio.toString().replace(/\D/g, ""));
+
+        if (isNaN(precio)) {
+            Swal.fire('Error', 'El precio ingresado no es válido', 'error');
+            return;
+        }
 
         const stock = parseInt(document.getElementById("edit-stock").value, 10);
 
@@ -549,13 +555,13 @@ async function cambiarRolUsuario(accion) {
     }
 
     const ruta = accion === 'promover' ? '/api/admin/nuevo-admin' : '/api/admin/degradar';
-    
+
     try {
         const respuesta = await fetch(`https://online-doggie-backend-production.up.railway.app${ruta}`, {
             method: "POST",
-            headers: { 
-                "Content-Type": "application/json", 
-                "Authorization": `Bearer ${accessToken}` 
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             },
             body: JSON.stringify({ email })
         });
@@ -564,8 +570,8 @@ async function cambiarRolUsuario(accion) {
 
         if (respuesta.ok) {
             // Mensaje personalizado según la acción
-            const tituloExito = accion === 'promover' 
-                ? 'Usuario actualizado correctamente a admin' 
+            const tituloExito = accion === 'promover'
+                ? 'Usuario actualizado correctamente a admin'
                 : 'Usuario actualizado correctamente a usuario';
 
             // Usamos el formato Toast de SweetAlert2
@@ -578,7 +584,7 @@ async function cambiarRolUsuario(accion) {
                 timer: 3000,
                 timerProgressBar: true
             });
-            
+
             const formAdmin = document.getElementById("form-nuevo-admin");
             if (formAdmin) formAdmin.reset();
             if (typeof cargarMetricas === 'function') cargarMetricas();
@@ -977,7 +983,7 @@ async function actualizarEstadoPedido(id) {
 // INICIALIZACIÓN (DOM READY)
 
 document.addEventListener("DOMContentLoaded", () => {
-   
+
     // 1. Cargas iniciales de datos
     cargarCategoriasSelect();
     cargarProductos();
@@ -996,10 +1002,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (target.id === "btn-promover") {
             cambiarRolUsuario("promover");
-        } 
+        }
         else if (target.id === "btn-degradar") {
             cambiarRolUsuario("degradar");
-        } 
+        }
         else if (target.id === "btn-eliminar") {
             // Asegúrate de tener definida la función eliminarUsuarioSistema()
             if (typeof eliminarUsuarioSistema === 'function') {
