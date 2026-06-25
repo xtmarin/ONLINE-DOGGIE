@@ -170,6 +170,7 @@ async function actualizarStock(id) {
 // MÓDULO DE PRODUCTOS (TABLA Y MANTENIMIENTO)
 // ==========================================================================
 async function cargarProductos() {
+    console.log("Token enviado:", accessToken);
     try {
         const respuesta = await fetch("https://online-doggie-backend-production.up.railway.app/api/productos");
         const productos = await respuesta.json();
@@ -250,7 +251,6 @@ if (formProducto) {
         const stockRaw = document.getElementById(prefix + "stock").value;
 
         const precio = parseFloat(precioRaw.toString().replace(/[.,]/g, ""));
-        const stockRaw = document.getElementById("edit-stock").value;
         const stock = parseInt(stockRaw.toString().replace(/\D/g, ""), 10);
 
         if (isNaN(precio) || isNaN(stock)) {
@@ -440,7 +440,7 @@ if (editUploadBox && editInputImagen) {
             const reader = new FileReader();
             reader.onload = function (e) {
                 editPreview.src = e.target.result;
-                editPreview.style.display = "block"; n
+                editPreview.style.display = "block"; 
             };
             reader.readAsDataURL(archivo);
         }
